@@ -3,12 +3,11 @@ package ru.myproevent.domain.models
 import android.os.Parcelable
 import io.reactivex.Completable
 import io.reactivex.Single
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
-import java.io.File
 
 interface IProEventDataSource {
     @POST("auth/login")
@@ -136,8 +135,8 @@ data class Page(
 
 data class Pageable(
     val offset: Long,
-    val pageNumber: Integer,
-    val pageSize: Integer,
+    val pageNumber: Int,
+    val pageSize: Int,
     val paged: Boolean,
     val sort: Sort,
     val unpaged: Boolean

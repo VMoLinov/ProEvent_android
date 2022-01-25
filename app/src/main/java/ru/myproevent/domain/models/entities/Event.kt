@@ -1,7 +1,7 @@
 package ru.myproevent.domain.models.entities
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.util.*
 
 @Parcelize
@@ -26,6 +26,9 @@ data class Event(
         ACTUAL("ACTUAL"),
         COMPLETED("COMPLETED"),
         CANCELLED("CANCELLED");
-        companion object { fun fromString(status: String) = valueOf(status) }
+
+        companion object {
+            fun fromString(status: String) = valueOf(status)
+        }
     }
 }
