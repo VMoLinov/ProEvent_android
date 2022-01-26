@@ -15,14 +15,14 @@ import moxy.presenter.ProvidePresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.R
 import ru.myproevent.databinding.ActivityMainBinding
+import ru.myproevent.domain.models.LocalCiceroneHolder
 import ru.myproevent.ui.BackButtonListener
 import ru.myproevent.ui.fragments.TabContainerFragment
-import ru.myproevent.ui.presenters.main.BottomNavigationPresenter
 import ru.myproevent.ui.presenters.main.BottomNavigation
+import ru.myproevent.ui.presenters.main.BottomNavigationPresenter
+import ru.myproevent.ui.presenters.main.BottomNavigationView
 import ru.myproevent.ui.presenters.main.Tab
 import javax.inject.Inject
-import ru.myproevent.domain.models.LocalCiceroneHolder
-import ru.myproevent.ui.presenters.main.BottomNavigationView
 
 class BottomNavigationActivity : MvpAppCompatActivity(), BottomNavigation, BottomNavigationView {
     private val navigator: Navigator = AppNavigator(this, R.id.container)

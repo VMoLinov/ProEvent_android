@@ -14,13 +14,13 @@ import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.annotation.RequiresApi
-import androidx.core.net.toUri
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.bumptech.glide.Glide
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.textfield.TextInputLayout.END_ICON_NONE
+import com.yalantis.ucrop.UCrop
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.R
@@ -31,6 +31,7 @@ import ru.myproevent.ui.presenters.main.RouterProvider
 import ru.myproevent.ui.presenters.settings.account.AccountPresenter
 import ru.myproevent.ui.presenters.settings.account.AccountView
 import ru.myproevent.ui.views.KeyboardAwareTextInputEditText
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -42,32 +43,42 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
     var currYear: Int = calendar.get(Calendar.YEAR)
     var currMonth: Int = calendar.get(Calendar.MONTH)
     var currDay: Int = calendar.get(Calendar.DAY_OF_MONTH)
-    private lateinit var cropActivityResultLauncher: ActivityResultLauncher<Any?>
-    private val cropActivityResultContract = object : ActivityResultContract<Any?, Uri?>() {
+    private lateinit var pickImageActivityResultLauncher: ActivityResultLauncher<Any?>
+    private val pickImageActivityContract = object : ActivityResultContract<Any?, Uri?>() {
         override fun createIntent(context: Context, input: Any?): Intent {
-            //            val mimeTypes = arrayOf("image/jpg", "image/png")
-//            intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
             return Intent(Intent.ACTION_GET_CONTENT)
                 .setType("image/*")
                 .addCategory(Intent.CATEGORY_OPENABLE)
-
-//            private void pickFromGallery() {
-//                Intent intent = new Intent(Intent.ACTION_GET_CONTENT)
-//                    .setType("image/*")
-//                    .addCategory(Intent.CATEGORY_OPENABLE);
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//                    String[] mimeTypes = {"image/jpeg", "image/png"};
-//                    intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
-//                }
-//                startActivityForResult(Intent.createChooser(intent, getString(R.string.label_select_picture)), requestMode);
         }
+
         override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
-            return "".toUri()
+            return intent?.data
+        }
+    }
+    private lateinit var cropActivityResultLauncher: ActivityResultLauncher<Uri>
+    private val cropActivityContract = object : ActivityResultContract<Uri, Uri?>() {
+        override fun createIntent(context: Context, input: Uri): Intent {
+            val destinationName = Uri.fromFile(File.createTempFile("temp", "crop"))
+            val options = UCrop.Options()
+            options.setCircleDimmedLayer(true)
+            options.setShowCropFrame(false)
+            options.setShowCropGrid(false)
+            return UCrop.of(input, destinationName)
+                .withAspectRatio(1f, 1f)
+                .withOptions(options)
+                .getIntent(context)
+        }
+
+        override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
+            return intent?.let { UCrop.getOutput(it) }
         }
     }
 
     private fun initCropImage() {
-        cropActivityResultLauncher = registerForActivityResult(cropActivityResultContract) {
+        pickImageActivityResultLauncher = registerForActivityResult(pickImageActivityContract) {
+            it?.let { uri -> cropActivityResultLauncher.launch(uri) }
+        }
+        cropActivityResultLauncher = registerForActivityResult(cropActivityContract) {
             it?.let { uri ->
                 Glide.with(this)
                     .load(uri)
@@ -76,7 +87,7 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
                 newPictureUri = uri
             }
         }
-        binding.editUserImage.setOnClickListener { cropActivityResultLauncher.launch(null) }
+        binding.editUserImage.setOnClickListener { pickImageActivityResultLauncher.launch(null) }
     }
 
     private val dateEditClickListener = View.OnClickListener {
