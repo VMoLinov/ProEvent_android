@@ -14,7 +14,7 @@ class ImagesRepository @Inject constructor(private val api: IProEventDataSource)
     IImagesRepository {
 
     override fun saveImage(file: File): Call<UUIDBody> {
-        val filePart = file.asRequestBody("image/jpg".toMediaTypeOrNull())
+        val filePart = file.asRequestBody("image/png".toMediaTypeOrNull())
         val multipartBody = MultipartBody.Part.createFormData("file", "image", filePart)
         return api.saveImage("file", multipartBody)
     }

@@ -52,6 +52,5 @@ class Screens : IScreens {
     override fun participantByEmailPicker() = FragmentScreen { ParticipantByEmailPickerFragment.newInstance() }
     override fun addEventPlace(address: Address?): Screen = FragmentScreen { AddEventPlaceFragment.newInstance(address)}
     override fun eventParticipant(profileDto: ProfileDto) = FragmentScreen { EventParticipantFragment.newInstance(profileDto) }
-    // override fun userImage(): Screen = FragmentScreen { ImageFragment.newInstance() }
     override fun newPassword(email: String) = FragmentScreen { NewPasswordFragment.newInstance(email) }
 }

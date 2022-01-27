@@ -64,10 +64,12 @@ class ProEventProfilesRepository @Inject constructor(
                     if (profile.imgUri == null) {
                         profile.imgUri = oldProfile.imgUri
                     }
-                    if (newProfilePictureResponse != null && newProfilePictureResponse.isSuccessful) {
-                        profile.imgUri = newProfilePictureResponse.body()!!.uuid
-                    } else {
-                        throw HttpException(newProfilePictureResponse)
+                    if (newProfilePictureResponse != null) {
+                        if (newProfilePictureResponse.isSuccessful) {
+                            profile.imgUri = newProfilePictureResponse.body()!!.uuid
+                        } else {
+                            throw HttpException(newProfilePictureResponse)
+                        }
                     }
                     if (!oldProfile.imgUri.isNullOrBlank()) {
                         with(imagesRepository.deleteImage(oldProfile.imgUri!!).execute()) {
