@@ -108,8 +108,8 @@ class ContactsFragment : BaseMvpFragment<FragmentContactsBinding>(FragmentContac
 
     override fun showNoContactsLayout(status: Status) {
         binding.noContactsText.text = when (status) {
-            Status.ALL -> "У вас пока нет контактов"
-            else -> "У вас нет активных запросов"
+            Status.ALL -> getString(R.string.you_have_no_contacts)
+            else -> getString(R.string.you_have_no_active_requests)
         }
         binding.noContactsLayout.visibility = VISIBLE
     }

@@ -114,4 +114,6 @@
     <string name="new_password_hint">Введите новый пароль</string>
     <string name="new_password_confirm_title">Подтверждение нового пароля</string>
     <string name="new_password_confirm_hint">Подтвердите новый пароль</string>
+    <string name="you_have_no_contacts">У вас пока нет контактов</string>
+    <string name="you_have_no_active_requests">У вас нет активных запросов</string>
 </resources>

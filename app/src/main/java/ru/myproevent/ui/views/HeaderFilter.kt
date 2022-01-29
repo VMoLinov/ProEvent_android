@@ -48,8 +48,6 @@ class HeaderFilter @JvmOverloads constructor(
 
     private var menuMarginTop = (8 * dp).roundToInt()
 
-    //TODO: private var endIconSrc = R.drawable.ic_expand
-
     private var items: List<TextView> = emptyList()
     private var itemsTexts: List<String> = emptyList()
     private var titleTexts: List<String> = emptyList()
@@ -86,7 +84,6 @@ class HeaderFilter @JvmOverloads constructor(
     private var selectedItemIndex = 0
 
     private var userOnItemClickListener: ((index: Int, itemText: String) -> Unit)? = null
-    //TODO: private var endIconClickListener: (() -> Unit)? = null
 
     private fun onExpandButtonClick() = expandOrCollapseMenu()
 
@@ -173,10 +170,6 @@ class HeaderFilter @JvmOverloads constructor(
         userOnItemClickListener = clickListener
     }
 
-//    TODO: fun setOnEndIconClickListener(clickListener: (() -> Unit)?) {
-//        endIconClickListener = clickListener
-//    }
-
     fun setShadowView(@IdRes viewId: Int) {
         shadowViewId = viewId
         initShadowView()
@@ -226,8 +219,6 @@ class HeaderFilter @JvmOverloads constructor(
                 R.styleable.HeaderFilter_menuMarginTop,
                 menuMarginTop.toFloat()
             ).roundToInt()
-
-            //TODO: endIconSrc = getResourceId(R.styleable.Header_endIconDrawable, endIconSrc)
         }
     }
 
