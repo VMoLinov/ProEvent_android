@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="HeaderFilter">
+        <attr name="titleTextSize" format="dimension" />
+        <attr name="titleTextColor" format="color" />
+        <attr name="titleFontPath" format="reference" />
+        <attr name="buttonSrc" format="reference" />
+        <attr name="buttonColor" format="color" />
+        <attr name="buttonOnClickColor" format="color" />
+        <attr name="buttonMarginStart" format="dimension" />
+        <attr name="itemPaddingHorizontal" format="dimension" />
+        <attr name="itemPaddingVertical" format="dimension" />
+        <attr name="itemTextSize" format="dimension" />
+        <attr name="itemTextColor" format="color" />
+        <attr name="itemOnClickTextColor" format="color" />
+        <attr name="itemBackgroundColor" format="color" />
+        <attr name="itemOnClickBackgroundColor" format="color" />
+        <attr name="shadowView" format="reference" />
+        <attr name="menuMarginTop" format="dimension" />
+    </declare-styleable>
+</resources>

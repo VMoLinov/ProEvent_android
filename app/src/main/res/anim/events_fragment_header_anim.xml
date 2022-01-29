@@ -13,7 +13,7 @@
     <ConstraintSet android:id="@+id/start">
 
         <Constraint
-            android:id="@+id/title"
+            android:id="@+id/headerFilter"
             android:layout_width="wrap_content"
             android:layout_height="24dp"
             android:includeFontPadding="false"
@@ -35,18 +35,6 @@
             app:startIconTint="@null" />
 
         <Constraint
-            android:id="@+id/filter_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:scaleType="center"
-            android:src="@drawable/ic_expand"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@id/title"
-            app:layout_constraintStart_toEndOf="@id/title"
-            app:layout_constraintTop_toTopOf="@id/title" />
-
-        <Constraint
             android:id="@+id/add_event"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,23 +43,12 @@
             app:layout_constraintBottom_toBottomOf="@id/title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/title" />
-
-        <Constraint
-            android:id="@+id/filter_hit_area"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@id/title"
-            app:layout_constraintEnd_toEndOf="@id/filter_icon_hit_area"
-            app:layout_constraintStart_toStartOf="@id/title"
-            app:layout_constraintTop_toTopOf="@id/title" />
-
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">
 
         <Constraint
-            android:id="@+id/title"
+            android:id="@+id/headerFilter"
             android:layout_width="wrap_content"
             android:layout_height="24dp"
             android:includeFontPadding="false"
@@ -93,18 +70,6 @@
             app:startIconTint="@null" />
 
         <Constraint
-            android:id="@+id/filter_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:scaleType="center"
-            android:src="@drawable/ic_expand"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="@id/title"
-            app:layout_constraintStart_toEndOf="@id/title"
-            app:layout_constraintTop_toTopOf="@id/title" />
-
-        <Constraint
             android:id="@+id/add_event"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -112,16 +77,6 @@
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@id/title"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/title" />
-
-        <Constraint
-            android:id="@+id/filter_hit_area"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/title"
-            app:layout_constraintEnd_toEndOf="@id/filter_icon_hit_area"
-            app:layout_constraintStart_toStartOf="@id/title"
             app:layout_constraintTop_toTopOf="@id/title" />
     </ConstraintSet>
 

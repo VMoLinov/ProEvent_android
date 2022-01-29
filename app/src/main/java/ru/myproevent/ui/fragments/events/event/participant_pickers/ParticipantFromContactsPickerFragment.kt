@@ -311,6 +311,10 @@ class ParticipantFromContactsPickerFragment :
         parentFragmentManager.setFragmentResult(requestKey, result)
     }
 
+    override fun setProgressBarVisibility(visible: Boolean) = Unit
+    override fun hideNoContactsLayout() = Unit
+    override fun showNoContactsLayout(status: Contact.Status) = Unit
+
     override fun onStop() {
         super.onStop()
         (requireActivity()  as BottomNavigation).showBottomNavigation()

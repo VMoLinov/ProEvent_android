@@ -13,4 +13,6 @@
     <dimen name="auth_input_top_margin">16dp</dimen>
     <dimen name="bottom_nav_height">64dp</dimen>
     <dimen name="bottom_nav_icon_size">20dp</dimen>
+    <dimen name="progress_bar_height">100dp</dimen>
+    <dimen name="progress_bar_width">100dp</dimen>
 </resources>

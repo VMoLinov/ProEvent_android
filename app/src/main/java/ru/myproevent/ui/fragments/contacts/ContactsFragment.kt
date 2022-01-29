@@ -1,13 +1,10 @@
 package ru.myproevent.ui.fragments.contacts
 
 import android.animation.LayoutTransition
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.MotionEvent
 import android.view.View
-import android.view.View.*
-import android.widget.TextView
-import androidx.core.content.ContextCompat
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import androidx.recyclerview.widget.LinearLayoutManager
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
@@ -28,55 +25,6 @@ class ContactsFragment : BaseMvpFragment<FragmentContactsBinding>(FragmentContac
         fun newInstance() = ContactsFragment()
     }
 
-    private var isFilterOptionsExpanded = false
-
-    // TODO: копирует поле licenceTouchListener из RegistrationFragment
-    private val filterOptionTouchListener = View.OnTouchListener { v, event ->
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> with(v as TextView) {
-                setBackgroundColor(ProEventApp.instance.getColor(R.color.ProEvent_blue_600))
-                setTextColor(ProEventApp.instance.getColor(R.color.ProEvent_white))
-            }
-            MotionEvent.ACTION_UP -> with(v as TextView) {
-                setBackgroundColor(ProEventApp.instance.getColor(R.color.ProEvent_white))
-                setTextColor(ProEventApp.instance.getColor(R.color.ProEvent_blue_800))
-                performClick()
-            }
-        }
-        true
-    }
-
-    private fun selectFilterOption(option: TextView) {
-        with(binding) {
-            allContacts.setBackgroundColor(ProEventApp.instance.getColor(R.color.ProEvent_white))
-            allContacts.setTextColor(ProEventApp.instance.getColor(R.color.ProEvent_blue_800))
-            outgoingContacts.setBackgroundColor(ProEventApp.instance.getColor(R.color.ProEvent_white))
-            outgoingContacts.setTextColor(ProEventApp.instance.getColor(R.color.ProEvent_blue_800))
-            incomingContacts.setBackgroundColor(ProEventApp.instance.getColor(R.color.ProEvent_white))
-            incomingContacts.setTextColor(ProEventApp.instance.getColor(R.color.ProEvent_blue_800))
-
-            option.setBackgroundColor(ProEventApp.instance.getColor(R.color.ProEvent_blue_600))
-            option.setTextColor(ProEventApp.instance.getColor(R.color.ProEvent_white))
-
-            when (option.id) {
-                R.id.all_contacts -> {
-                    // TODO: Вынести в ресурсы
-                    title.text = "Контакты: Все"
-                    noContactsText.text = "У вас пока нет контактов"
-                }
-                R.id.outgoing_contacts -> {
-                    title.text = "Контакты: Исходящие"
-                    noContactsText.text = "У вас нет активных запросов"
-                }
-
-                R.id.incoming_contacts -> {
-                    title.text = "Контакты: Входящие"
-                    noContactsText.text = "У вас нет активных запросов"
-                }
-            }
-        }
-    }
-
     override val presenter by moxyPresenter {
         ContactsPresenter((parentFragment as RouterProvider).router).apply {
             ProEventApp.instance.appComponent.inject(this)
@@ -87,83 +35,33 @@ class ContactsFragment : BaseMvpFragment<FragmentContactsBinding>(FragmentContac
 
     private var confirmScreenCallBack: ((confirmed: Boolean) -> Unit)? = null
 
-    private fun showFilterOptions() {
-        isFilterOptionsExpanded = true
-        with(binding) {
-            filter.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.ProEvent_bright_orange_300
-                ), android.graphics.PorterDuff.Mode.SRC_IN
-            )
-            searchEdit.hideKeyBoard() // TODO: нужно вынести это в вызов предществующий данному, чтобы тень при скрытии клавиатуры отображалась корректно
-            searchInput.visibility = GONE
-            shadow.visibility = VISIBLE
-            allContacts.visibility = VISIBLE
-            outgoingContacts.visibility = VISIBLE
-            incomingContacts.visibility = VISIBLE
-        }
-    }
-
-    private fun hideFilterOptions() {
-        isFilterOptionsExpanded = false
-        with(binding) {
-            filter.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.ProEvent_blue_800
-                ), android.graphics.PorterDuff.Mode.SRC_IN
-            )
-            searchInput.visibility = VISIBLE
-            shadow.visibility = GONE
-            allContacts.visibility = GONE
-            outgoingContacts.visibility = GONE
-            incomingContacts.visibility = GONE
-        }
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
         super.onViewCreated(view, savedInstanceState)
-        allContacts.setOnTouchListener(filterOptionTouchListener)
-        allContacts.setOnClickListener {
-            selectFilterOption(allContacts)
-            presenter.loadData(Status.ALL)
-            hideFilterOptions()
-        }
-        outgoingContacts.setOnTouchListener(filterOptionTouchListener)
-        outgoingContacts.setOnClickListener {
-            selectFilterOption(outgoingContacts)
-            presenter.loadData(Status.PENDING)
-            hideFilterOptions()
-        }
-        incomingContacts.setOnTouchListener(filterOptionTouchListener)
-        incomingContacts.setOnClickListener {
-            selectFilterOption(incomingContacts)
-            presenter.loadData(Status.REQUESTED)
-            hideFilterOptions()
-        }
+        initHeaderFilter()
         addContact.setOnClickListener { presenter.addContact() }
-        addFirstContact.setOnClickListener { presenter.addContact() }
-        filter.setOnClickListener {
-            if (!isFilterOptionsExpanded) {
-                showFilterOptions()
-            } else {
-                hideFilterOptions()
-            }
-        }
-        filterHitArea.setOnClickListener { filter.performClick() }
-        shadow.setOnClickListener { hideFilterOptions() }
         btnYes.setOnClickListener { confirmScreenCallBack?.invoke(true) }
         btnNo.setOnClickListener { confirmScreenCallBack?.invoke(false) }
 
         // https://stackoverflow.com/questions/20103888/animatelayoutchanges-does-not-work-well-with-nested-layout
-        container.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        root.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+    }
+
+    private fun initHeaderFilter() = with(binding) {
+        headerFilter.setItems(R.array.contacts_filter_items, R.array.contacts_filter_titles)
+        headerFilter.setOnItemClickListener { i, _ ->
+            val status = when (i) {
+                0 -> Status.ALL
+                1 -> Status.PENDING
+                2 -> Status.REQUESTED
+                else -> Status.ALL
+            }
+            presenter.filterContacts(status)
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        presenter.init()
+        presenter.loadData()
     }
 
     override fun init() = with(binding) {
@@ -173,7 +71,6 @@ class ContactsFragment : BaseMvpFragment<FragmentContactsBinding>(FragmentContac
     }
 
     override fun hideConfirmationScreen() {
-        binding.container.visibility = VISIBLE
         binding.confirmScreen.visibility = GONE
     }
 
@@ -192,32 +89,28 @@ class ContactsFragment : BaseMvpFragment<FragmentContactsBinding>(FragmentContac
                 getString(R.string.delete_contact_question)
             else -> null
         }
-
         confirmScreenCallBack = callBack
-
-        binding.container.visibility = INVISIBLE
         binding.confirmScreen.visibility = VISIBLE
     }
 
     override fun updateContactsList() {
-        if (adapter != null) {
-            adapter!!.notifyDataSetChanged()
-            with(binding) {
-                if (adapter!!.itemCount == 0) {
-                    progressBar.visibility = GONE
-                    scroll.visibility = VISIBLE
-                    noContacts.visibility = VISIBLE
-                    noContactsText.visibility = VISIBLE
-                    addFirstContact.visibility = VISIBLE
-                } else if (adapter!!.itemCount > 0) {
-                    progressBar.visibility = GONE
-                    noContacts.visibility = GONE
-                    noContactsText.visibility = GONE
-                    addFirstContact.visibility = GONE
-                    scroll.visibility = VISIBLE
-                    rvContacts.visibility = VISIBLE
-                }
-            }
+        adapter?.notifyDataSetChanged()
+    }
+
+    override fun setProgressBarVisibility(visible: Boolean) {
+        binding.progressBar.visibility = if (visible) VISIBLE
+        else GONE
+    }
+
+    override fun hideNoContactsLayout() {
+        binding.noContactsLayout.visibility = GONE
+    }
+
+    override fun showNoContactsLayout(status: Status) {
+        binding.noContactsText.text = when (status) {
+            Status.ALL -> "У вас пока нет контактов"
+            else -> "У вас нет активных запросов"
         }
+        binding.noContactsLayout.visibility = VISIBLE
     }
 }
