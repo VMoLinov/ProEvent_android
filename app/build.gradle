@@ -64,10 +64,11 @@ dependencies {
     kapt "com.google.dagger:dagger-android-processor:2.37"
 
     // Moxy - lifecycle MVP presenter-a
-    implementation "com.github.moxy-community:moxy:2.1.2"
-    kapt "com.github.moxy-community:moxy-compiler:2.1.2"
-    implementation "com.github.moxy-community:moxy-ktx:2.1.2"
-    implementation "com.github.moxy-community:moxy-androidx:2.1.2"
+    /** Update dependencies because https://jitpack.io failed old paths */
+    implementation 'com.github.moxy-community.Moxy:moxy:2.1.2'
+    kapt 'com.github.moxy-community.Moxy:moxy-compiler:2.1.2'
+    implementation 'com.github.moxy-community.Moxy:moxy-ktx:2.1.2'
+    implementation 'com.github.moxy-community.Moxy:moxy-androidx:2.1.2'
 
     // Cicerone - навигация
     implementation 'com.github.terrakok:cicerone:6.6'
@@ -92,6 +93,6 @@ dependencies {
     // Glide - использование изображений из интернета
     implementation 'com.github.bumptech.glide:glide:4.12.0'
 
-    // Android image cropper
-    implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+    // Image cropper
+    implementation 'com.github.yalantis:ucrop:2.2.7'
 }

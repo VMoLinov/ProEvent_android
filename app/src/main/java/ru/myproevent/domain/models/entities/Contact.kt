@@ -1,7 +1,7 @@
 package ru.myproevent.domain.models.entities
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Contact(
@@ -15,7 +15,7 @@ data class Contact(
     var imgUri: String? = null,
     var description: String? = null
 ) : Parcelable {
-    enum class Action{ ADD, ACCEPT, CANCEL, DECLINE, DELETE }
+    enum class Action { ADD, ACCEPT, CANCEL, DECLINE, DELETE }
 
     enum class Status(val value: String) {
         ALL("ALL"),
@@ -23,6 +23,9 @@ data class Contact(
         DECLINED("DECLINED"),
         PENDING("PENDING"),
         REQUESTED("REQUESTED");
-        companion object { fun fromString(status: String) = valueOf(status) }
+
+        companion object {
+            fun fromString(status: String) = valueOf(status)
+        }
     }
 }

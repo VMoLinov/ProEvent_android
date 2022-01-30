@@ -1,20 +1,14 @@
 package ru.myproevent.ui.fragments.settings
 
-import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.telephony.PhoneNumberFormattingTextWatcher
 import android.text.SpannableStringBuilder
 import android.text.method.KeyListener
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -22,45 +16,31 @@ import androidx.fragment.app.FragmentTransaction
 import com.bumptech.glide.Glide
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.textfield.TextInputLayout.END_ICON_NONE
-import com.theartofdev.edmodo.cropper.CropImage
-import com.theartofdev.edmodo.cropper.CropImageView
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.R
 import ru.myproevent.databinding.FragmentAccountBinding
 import ru.myproevent.domain.models.ProfileDto
 import ru.myproevent.ui.fragments.BaseMvpFragment
+import ru.myproevent.ui.views.cropimage.CropImageHandler
+import ru.myproevent.ui.views.cropimage.CropImageView
 import ru.myproevent.ui.presenters.main.RouterProvider
 import ru.myproevent.ui.presenters.settings.account.AccountPresenter
 import ru.myproevent.ui.presenters.settings.account.AccountView
 import ru.myproevent.ui.views.KeyboardAwareTextInputEditText
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountBinding::inflate),
-    AccountView {
+    AccountView, CropImageView {
 
     val calendar: Calendar = Calendar.getInstance()
     var currYear: Int = calendar.get(Calendar.YEAR)
     var currMonth: Int = calendar.get(Calendar.MONTH)
     var currDay: Int = calendar.get(Calendar.DAY_OF_MONTH)
-    private lateinit var cropActivityResultLauncher: ActivityResultLauncher<Any?>
-    private val cropActivityResultContract = object : ActivityResultContract<Any?, Uri?>() {
-        override fun createIntent(context: Context, input: Any?): Intent {
-            return CropImage.activity()
-                .setAspectRatio(1, 1)
-                .setCropShape(CropImageView.CropShape.OVAL)
-                .getIntent(requireActivity())
-        }
 
-        override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
-            return CropImage.getActivityResult(intent)?.uri
-        }
-    }
-
-    private val DateEditClickListener = View.OnClickListener {
+    private val dateEditClickListener = View.OnClickListener {
         // TODO: отрефакторить
         // https://github.com/terrakok/Cicerone/issues/106
         val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
@@ -69,7 +49,6 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
             ft.remove(prev)
         }
         ft.addToBackStack(null)
-
         var pickerYear = currYear
         var pickerMonth = currMonth
         var pickerDay = currDay
@@ -112,8 +91,8 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
             ProEventApp.instance.appComponent.inject(this)
         }
     }
-
     private lateinit var defaultKeyListener: KeyListener
+
     private lateinit var phoneKeyListener: KeyListener
 
     private fun setEditListeners(
@@ -153,20 +132,26 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
         super.onViewCreated(view, savedInstanceState)
-        initCropImage()
+        // TODO Передавать фрагмент слишком жирно, нужно придумать что проще
+        CropImageHandler(
+            viewOnClick = editUserImage,
+            viewToLoad = userImageView,
+            resultCaller = this@AccountFragment,
+            isCircle = true
+        ).init()
         defaultKeyListener = nameEdit.keyListener
         setEditListeners(nameInput, nameEdit)
         phoneKeyListener = phoneEdit.keyListener
         setPhoneListeners(phoneInput, phoneEdit)
         dateOfBirthEdit.keyListener = null
-        dateOfBirthEdit.setOnFocusChangeListener { v, hasFocus ->
+        dateOfBirthEdit.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 dateOfBirthEdit.performClick()
             }
         }
         dateOfBirthInput.setEndIconOnClickListener {
             dateOfBirthEdit.requestFocus()
-            dateOfBirthEdit.setOnClickListener(DateEditClickListener)
+            dateOfBirthEdit.setOnClickListener(dateEditClickListener)
             dateOfBirthEdit.performClick()
             dateOfBirthInput.endIconMode = END_ICON_NONE
             save.visibility = VISIBLE
@@ -192,24 +177,10 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
                 }
             }
         }
-
         presenter.getProfile()
     }
 
-    private fun initCropImage() {
-        cropActivityResultLauncher = registerForActivityResult(cropActivityResultContract) {
-            it?.let { uri ->
-                Glide.with(this)
-                    .load(uri)
-                    .circleCrop()
-                    .into(binding.userImageView)
-                newPictureUri = uri
-            }
-        }
-        binding.editUserImage.setOnClickListener { cropActivityResultLauncher.launch(null) }
-    }
-
-    private var newPictureUri: Uri? = null
+    override var newPictureUri: Uri? = null
 
     override fun showProfile(profileDto: ProfileDto) {
         with(binding) {
@@ -220,7 +191,9 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
                 position?.let { positionEdit.text = SpannableStringBuilder(it) }
                 description?.let { roleEdit.text = SpannableStringBuilder(it) }
                 imgUri?.let {
-                    Glide.with(this@AccountFragment).load(presenter.getGlideUrl(it)).circleCrop()
+                    Glide.with(this@AccountFragment)
+                        .load(presenter.getGlideUrl(it))
+                        .circleCrop()
                         .into(binding.userImageView)
                 }
             }

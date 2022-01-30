@@ -1,7 +1,6 @@
 package ru.myproevent.domain.models.repositories.proevent_login
 
 import android.util.Base64
-import android.util.Log
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
 import ru.myproevent.domain.models.*

@@ -19,8 +19,7 @@ import javax.inject.Inject
 class ProEventProfilesRepository @Inject constructor(
     private val api: IProEventDataSource,
     private val imagesRepository: IImagesRepository
-) :
-    IProEventProfilesRepository {
+) : IProEventProfilesRepository {
 
     override fun getProfile(id: Long): Single<ProfileDto?> = Single.fromCallable {
         val response = api.getProfile(id).execute()
@@ -36,41 +35,42 @@ class ProEventProfilesRepository @Inject constructor(
             val newProfilePictureResponse = newProfilePictureUri?.let {
                 imagesRepository.saveImage(File(it.path.orEmpty())).execute()
             }
-
             val oldProfileResponse = api.getProfile(profile.userId).execute()
-            val newProfileResponse = if (oldProfileResponse.isSuccessful) { // TODO: это штука могла быть не Successful не только потому что профиля нет
-                val oldProfile = oldProfileResponse.body()!!
-                if (profile.email == null) {
-                    profile.email = oldProfile.email
-                }
-                if (profile.fullName == null) {
-                    profile.fullName = oldProfile.fullName
-                }
-                if (profile.nickName == null) {
-                    profile.nickName = oldProfile.nickName
-                }
-                if (profile.msisdn == null) {
-                    profile.msisdn = oldProfile.msisdn
-                }
-                if (profile.position == null) {
-                    profile.position = oldProfile.position
-                }
-                if (profile.birthdate == null) {
-                    profile.birthdate = oldProfile.birthdate
-                }
-                if (profile.description == null) {
-                    profile.description = oldProfile.description
-                }
-                if (profile.imgUri == null) {
-                    profile.imgUri = oldProfile.imgUri
-                }
-                if (newProfilePictureResponse != null) {
-                    if (newProfilePictureResponse.isSuccessful) {
-                        profile.imgUri = newProfilePictureResponse.body()!!.uuid
-                    } else {
-                        throw HttpException(newProfilePictureResponse)
+            val newProfileResponse =
+                if (oldProfileResponse.isSuccessful) {
+                    // TODO: это штука могла быть не Successful не только потому что профиля нет
+                    val oldProfile = oldProfileResponse.body()!!
+                    if (profile.email == null) {
+                        profile.email = oldProfile.email
                     }
-
+                    if (profile.fullName == null) {
+                        profile.fullName = oldProfile.fullName
+                    }
+                    if (profile.nickName == null) {
+                        profile.nickName = oldProfile.nickName
+                    }
+                    if (profile.msisdn == null) {
+                        profile.msisdn = oldProfile.msisdn
+                    }
+                    if (profile.position == null) {
+                        profile.position = oldProfile.position
+                    }
+                    if (profile.birthdate == null) {
+                        profile.birthdate = oldProfile.birthdate
+                    }
+                    if (profile.description == null) {
+                        profile.description = oldProfile.description
+                    }
+                    if (profile.imgUri == null) {
+                        profile.imgUri = oldProfile.imgUri
+                    }
+                    if (newProfilePictureResponse != null) {
+                        if (newProfilePictureResponse.isSuccessful) {
+                            profile.imgUri = newProfilePictureResponse.body()!!.uuid
+                        } else {
+                            throw HttpException(newProfilePictureResponse)
+                        }
+                    }
                     if (!oldProfile.imgUri.isNullOrBlank()) {
                         with(imagesRepository.deleteImage(oldProfile.imgUri!!).execute()) {
                             if (!isSuccessful) {
@@ -78,18 +78,17 @@ class ProEventProfilesRepository @Inject constructor(
                             }
                         }
                     }
-                }
-                api.editProfile(profile).execute()
-            } else {
-                if (newProfilePictureResponse != null) {
-                    if (newProfilePictureResponse.isSuccessful) {
-                        profile.imgUri = newProfilePictureResponse.body()!!.uuid
-                    } else {
-                        throw HttpException(newProfilePictureResponse)
+                    api.editProfile(profile).execute()
+                } else {
+                    if (newProfilePictureResponse != null) {
+                        if (newProfilePictureResponse.isSuccessful) {
+                            profile.imgUri = newProfilePictureResponse.body()!!.uuid
+                        } else {
+                            throw HttpException(newProfilePictureResponse)
+                        }
                     }
+                    api.createProfile(profile).execute()
                 }
-                api.createProfile(profile).execute()
-            }
             if (!newProfileResponse.isSuccessful) {
                 throw HttpException(newProfileResponse)
             }
@@ -106,5 +105,4 @@ class ProEventProfilesRepository @Inject constructor(
             throw HttpException(response)
         }.subscribeOn(Schedulers.io())
     }
-
 }

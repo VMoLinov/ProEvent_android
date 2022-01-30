@@ -1,5 +1,8 @@
 package ru.myproevent.ui.presenters.settings.account
 
+import android.net.Uri
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
 import com.github.terrakok.cicerone.Router
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableSingleObserver
@@ -9,14 +12,7 @@ import ru.myproevent.domain.models.repositories.internet_access_info.IInternetAc
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
-import java.io.File
 import javax.inject.Inject
-
-import android.net.Uri
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.model.LazyHeaders
-import ru.myproevent.domain.models.UUIDBody
-
 
 class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(localRouter) {
     private inner class ProfileEditObserver : DisposableCompletableObserver() {
