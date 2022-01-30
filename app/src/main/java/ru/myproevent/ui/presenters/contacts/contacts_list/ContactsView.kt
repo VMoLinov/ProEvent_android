@@ -10,4 +10,7 @@ interface ContactsView : BaseMvpView {
     fun hideConfirmationScreen()
     fun showConfirmationScreen(action: Contact.Action, callBack: ((confirmed: Boolean) -> Unit)?)
     fun updateContactsList()
+    fun setProgressBarVisibility(visible: Boolean)
+    fun hideNoContactsLayout()
+    fun showNoContactsLayout(status: Contact.Status = Contact.Status.ALL)
 }

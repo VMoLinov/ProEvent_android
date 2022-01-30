@@ -73,7 +73,6 @@ class ContactsPresenter(localRouter: Router) : BaseMvpPresenter<ContactsView>(lo
                 } else {
                     view.setDescription("id пользователя: $userId")
                 }
-                //imgUri?.let { view.loadImg(it) }
                 status?.let { view.setStatus(it) }
             }
         }
@@ -124,7 +123,8 @@ class ContactsPresenter(localRouter: Router) : BaseMvpPresenter<ContactsView>(lo
             .disposeOnDestroy()
     }
 
-    fun init() {
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
         viewState.init()
         loadData()
     }
@@ -134,13 +134,22 @@ class ContactsPresenter(localRouter: Router) : BaseMvpPresenter<ContactsView>(lo
     }
 
     fun loadData(status: Status = Status.ALL) {
+        viewState.setProgressBarVisibility(true)
         contactsRepository.getContacts(1, Int.MAX_VALUE, status)
             .observeOn(uiScheduler)
             .subscribe({ data ->
-                contactsListPresenter.setData(data.content, data.totalElements.toInt())
+                viewState.setProgressBarVisibility(false)
+                val size = data.totalElements.toInt()
+                contactsListPresenter.setData(data.content, size)
+                if (size == 0) viewState.showNoContactsLayout(status)
+                    else viewState.hideNoContactsLayout()
             }, {
+                viewState.setProgressBarVisibility(false)
                 viewState.showMessage("ПРОИЗОШЛА ОШИБКА: ${it.message}")
             }).disposeOnDestroy()
     }
 
+    fun filterContacts(status: Status) {
+        loadData(status)
+    }
 }

@@ -1,216 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/ProEvent_white">
+    android:animateLayoutChanges="true"
+    android:background="@color/ProEvent_white"
+    android:fitsSystemWindows="false">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/container"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:animateLayoutChanges="true"
-        android:background="@color/ProEvent_white">
+        android:layout_height="wrap_content"
+        android:background="@color/ProEvent_white"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:elevation="0dp">
 
-        <ProgressBar
-
-            android:id="@+id/progress_bar"
-            android:layout_width="100dp"
-            android:layout_height="0dp"
-            android:layout_gravity="center"
-            android:indeterminateTint="@color/ProEvent_bright_orange_300"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/contacts_bar" />
-
-        <ScrollView
-            android:id="@+id/scroll"
+        <FrameLayout
+            android:id="@+id/headerLayout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginHorizontal="20dp"
-            android:paddingTop="30dp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/contacts_bar">
+            android:layout_height="wrap_content">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <ru.myproevent.ui.views.HeaderFilter
+                android:id="@+id/headerFilter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:maxWidth="360dp">
-
-                <ImageView
-                    android:id="@+id/no_contacts"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
-                    android:src="@drawable/ic_contacts_big"
-                    android:visibility="gone"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/no_contacts_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/no_contacts"
-                    android:textColor="@color/ProEvent_blue_600"
-                    android:textSize="16sp"
-                    android:visibility="gone"
-                    app:layout_constraintLeft_toLeftOf="@id/no_contacts"
-                    app:layout_constraintRight_toRightOf="@id/no_contacts"
-                    app:layout_constraintTop_toBottomOf="@id/no_contacts" />
-
-                <ru.myproevent.ui.views.ProEventConfirmButton
-                    android:id="@+id/add_first_contact"
-                    style="@style/ProEventConfirmButton"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_marginTop="44dp"
-                    android:text="@string/add_contact"
-                    android:visibility="gone"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/no_contacts_text" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_contacts"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </ScrollView>
-
-        <View
-            android:id="@+id/shadow"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/ProEvent_blue_800_opacity_20"
-            android:visibility="gone" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/contacts_bar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@color/ProEvent_white"
-            android:paddingTop="40dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_max="360dp">
-
-            <TextView
-                android:id="@+id/title"
-                fontPath="@string/default_font_bold_path"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:includeFontPadding="false"
-                android:text="Контакты: Все"
-                android:textColor="@color/ProEvent_blue_800"
-                android:textSize="20sp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="12dp"
-                android:src="@drawable/ic_expand"
-                app:layout_constraintBottom_toBottomOf="@id/title"
-                app:layout_constraintLeft_toRightOf="@id/title"
-                app:layout_constraintTop_toTopOf="@id/title" />
-
-            <View
-                android:id="@+id/filter_icon_hit_area"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                app:layout_constraintBottom_toBottomOf="@id/filter"
-                app:layout_constraintLeft_toLeftOf="@id/filter"
-                app:layout_constraintRight_toRightOf="@id/filter"
-                app:layout_constraintTop_toTopOf="@id/filter" />
-
-            <View
-                android:id="@+id/filter_hit_area"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                app:layout_constraintBottom_toBottomOf="@id/filter"
-                app:layout_constraintLeft_toLeftOf="@id/title"
-                app:layout_constraintRight_toRightOf="@id/filter_icon_hit_area"
-                app:layout_constraintTop_toTopOf="@id/filter" />
+                android:layout_marginTop="48dp"
+                app:buttonSrc="@drawable/ic_expand"
+                app:itemPaddingHorizontal="13dp"
+                app:itemPaddingVertical="14dp"
+                app:itemTextSize="16sp"
+                app:shadowView="@id/contacts_shadow"
+                app:titleFontPath="@string/default_font_bold_path"
+                app:titleTextSize="20sp" />
 
             <ImageView
                 android:id="@+id/add_contact"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="7dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="2dp"
+                android:elevation="2dp"
                 android:scaleType="center"
-                android:src="@drawable/ic_add"
-                app:layout_constraintBottom_toBottomOf="@id/title"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="@id/title" />
-
-            <TextView
-                android:id="@+id/all_contacts"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@color/ProEvent_blue_600"
-                android:includeFontPadding="false"
-                android:paddingHorizontal="13dp"
-                android:paddingVertical="14dp"
-                android:text="@string/all_contacts"
-                android:textColor="@color/ProEvent_white"
-                android:textSize="16sp"
-                android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@+id/title" />
-
-            <TextView
-                android:id="@+id/outgoing_contacts"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:includeFontPadding="false"
-                android:paddingHorizontal="13dp"
-                android:paddingVertical="14dp"
-                android:text="@string/outgoing_contacts"
-                android:textColor="@color/ProEvent_blue_800"
-                android:textSize="16sp"
-                android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@+id/all_contacts" />
-
-            <TextView
-                android:id="@+id/incoming_contacts"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:includeFontPadding="false"
-                android:paddingHorizontal="13dp"
-                android:paddingVertical="14dp"
-                android:text="@string/incoming_contacts"
-                android:textColor="@color/ProEvent_blue_800"
-                android:textSize="16sp"
-                android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@+id/outgoing_contacts" />
+                android:src="@drawable/ic_add" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/search_input"
                 style="@style/ProEventTextInputLayoutStyle"
-                android:layout_width="0dp"
                 android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="25dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/title"
+                android:layout_marginTop="100dp"
+                android:layout_marginBottom="16dp"
                 app:startIconDrawable="@drawable/ic_search"
                 app:startIconTint="@null">
 
@@ -219,29 +59,83 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:hint="@string/search_edit_hint"
-                    android:inputType="textEmailAddress"
-                    android:maxLength="320"
                     android:textColorHint="@color/ProEvent_blue_600"
                     android:textSize="@dimen/fixed_input_text_size" />
             </com.google.android.material.textfield.TextInputLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </FrameLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_contacts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:visibility="visible"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <FrameLayout
+        android:id="@+id/no_contacts_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="34dp"
+            android:src="@drawable/ic_contacts_big" />
+
+        <TextView
+            android:id="@+id/no_contacts_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="154dp"
+            android:text="@string/no_contacts"
+            android:textColor="@color/ProEvent_blue_600"
+            android:textSize="16sp" />
+
+        <ru.myproevent.ui.views.ProEventConfirmButton
+            android:id="@+id/add_first_contact"
+            style="@style/ProEventConfirmButton"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="218dp"
+            android:text="@string/add_contact" />
+    </FrameLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="@dimen/progress_bar_width"
+        android:layout_height="@dimen/progress_bar_height"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/ProEvent_bright_orange_300"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/confirm_screen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/ProEvent_white"
+        android:clickable="true"
+        android:focusable="true"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone">
 
-        <com.google.android.material.button.MaterialButton
+        <TextView
             android:id="@+id/tv_confirm_msg"
-            style="@style/ProEventSettingsButtonItem"
+            fontPath="@string/default_font_bold_path"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:icon="@null"
+            android:textColor="@color/ProEvent_blue_800"
+            android:textSize="@dimen/fixed_title_text_size"
             tools:text="Отменить заявку?" />
 
         <ru.myproevent.ui.views.ProEventConfirmButton
@@ -249,7 +143,7 @@
             style="@style/ProEventConfirmButton"
             android:layout_width="152dp"
             android:layout_height="56dp"
-            android:layout_marginTop="26dp"
+            android:layout_marginTop="44dp"
             android:elevation="4dp"
             android:text="@string/yes_text" />
 
@@ -262,8 +156,18 @@
             android:backgroundTint="@color/ProEvent_white"
             android:elevation="4dp"
             android:text="@string/no_text"
+            android:textColor="@color/ProEvent_blue_800"
             app:strokeColor="@color/ProEvent_blue_800"
             app:strokeWidth="2dp" />
 
     </LinearLayout>
-</FrameLayout>
+
+    <View
+        android:id="@+id/contacts_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/ProEvent_blue_800_opacity_20"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

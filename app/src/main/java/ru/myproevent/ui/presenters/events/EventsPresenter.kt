@@ -93,12 +93,15 @@ class EventsPresenter(localRouter: Router) : BaseMvpPresenter<EventsView>(localR
     }
 
     fun loadData() {
+        viewState.setProgressBarVisibility(true)
         eventsRepository.getEvents()
             .observeOn(uiScheduler)
             .subscribe({ data ->
-                viewState.setNoEventsLayoutVisibility(data.isEmpty())
+                viewState.setProgressBarVisibility(false)
                 eventsListPresenter.setData(data)
+                viewState.setNoEventsLayoutVisibility(data.isEmpty())
             }, {
+                viewState.setProgressBarVisibility(false)
                 viewState.showMessage("ПРОИЗОШЛА ОШИБКА: ${it.message}")
             }).disposeOnDestroy()
     }
@@ -108,10 +111,6 @@ class EventsPresenter(localRouter: Router) : BaseMvpPresenter<EventsView>(localR
     }
 
     fun onFilterChosen(status: Event.Status) {
-        viewState.hideFilterOptions()
-        viewState.selectFilterOption(status)
-
         eventsListPresenter.filter(status)
     }
-
 }
