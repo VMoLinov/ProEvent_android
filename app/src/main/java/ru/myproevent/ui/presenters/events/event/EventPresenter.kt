@@ -1,12 +1,10 @@
 package ru.myproevent.ui.presenters.events.event
 
 import android.util.Log
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
 import com.github.terrakok.cicerone.Router
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import ru.myproevent.domain.models.ProfileDto
-import ru.myproevent.domain.models.UUIDBody
 import ru.myproevent.domain.models.entities.Address
 import ru.myproevent.domain.models.entities.Event
 import ru.myproevent.domain.models.repositories.events.IProEventEventsRepository
@@ -40,6 +38,7 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
         endDate: Date,
         address: Address?,
         description: String,
+        uuid: String?,
         callback: ((Event?) -> Unit)? = null
     ) {
         eventsRepository
@@ -57,7 +56,7 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
                     address = address,
                     mapsFileIds = null,
                     pointsPointIds = null,
-                    imageFile = null
+                    imageFile = uuid
                 )
             )
             .observeOn(uiScheduler)
@@ -87,9 +86,24 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
             }).disposeOnDestroy()
     }
 
+    fun saveImage(file: File, callback: ((String?) -> Unit)? = null) {
+        imagesRepository
+            .saveImage(file)
+            .observeOn(uiScheduler)
+            .subscribe({
+                callback?.invoke(it.uuid)
+            }, {
+                callback?.invoke(null)
+                Log.e("Save image:", "${it.message}")
+            }).disposeOnDestroy()
+    }
+
+    fun deleteImage(uuid: String) {
+        imagesRepository.deleteImage(getGlideUrl(uuid).toString())
+    }
+
     fun finishEvent(event: Event) =
         localRouter.navigateTo(screens.eventActionConfirmation(event, Event.Status.COMPLETED))
-
 
     fun cancelEvent(event: Event) =
         localRouter.navigateTo(screens.eventActionConfirmation(event, Event.Status.CANCELLED))
@@ -215,10 +229,6 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
         )
     }
 
-    fun saveImage(file: File): String {
-        return imagesRepository.saveImage(file)
-    }
-
     fun hideAbsoluteBar() {
         viewState.hideAbsoluteBar()
     }
@@ -244,4 +254,11 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
     fun showEditOptions() {
         viewState.showEditOptions()
     }
+
+    fun getGlideUrl(uuid: String) = GlideUrl(
+        "http://178.249.69.107:8762/api/v1/storage/$uuid",
+        LazyHeaders.Builder()
+            .addHeader("Authorization", "Bearer ${loginRepository.getLocalToken()}")
+            .build()
+    )
 }

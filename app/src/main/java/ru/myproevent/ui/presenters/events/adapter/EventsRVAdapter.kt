@@ -3,8 +3,9 @@ package ru.myproevent.ui.presenters.events.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.model.GlideUrl
 import ru.myproevent.databinding.ItemEventBinding
-import ru.myproevent.domain.utils.load
 import ru.myproevent.ui.presenters.events.IEventItemView
 
 
@@ -35,8 +36,11 @@ class EventsRVAdapter(val presenter: IEventsListPresenter) :
             vb.tvTime.text = time
         }
 
-        override fun loadImg(url: String) {
-            vb.ivImg.load(url)
+        override fun loadImg(url: GlideUrl) {
+            Glide.with(itemView)
+                .load(url)
+                .circleCrop()
+                .into(vb.ivImg)
         }
 
         override var pos = -1

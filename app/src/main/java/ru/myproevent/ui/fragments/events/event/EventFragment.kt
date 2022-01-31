@@ -13,7 +13,6 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.method.KeyListener
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.GONE
@@ -32,6 +31,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.bumptech.glide.Glide
 import com.google.android.material.textfield.TextInputLayout
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
@@ -364,7 +364,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
         } else {
             noParticipants.isVisible = true
             presenter.clearParticipants()
-            setViewValues(event!!, layoutInflater)
+            setViewValues(event!!)
             lockDescriptionEdit()
         }
     }
@@ -486,10 +486,16 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
         }
     }
 
-    private fun setViewValues(event: Event, inflater: LayoutInflater) = with(binding) {
+    private fun setViewValues(event: Event) = with(binding) {
         with(event) {
             nameEdit.text = SpannableStringBuilder(name)
             dateEdit.text = SpannableStringBuilder(startDate.toString())
+            this.imageFile?.let {
+                Glide.with(this@EventFragment)
+                    .load(presenter.getGlideUrl(it))
+                    .circleCrop()
+                    .into(eventImageView)
+            }
             address?.let { locationEdit.text = SpannableStringBuilder(it.addressLine) }
                 ?: this@EventFragment.address?.let {
                     locationEdit.text = SpannableStringBuilder(it.addressLine)
@@ -585,6 +591,17 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
         view.text = span
     }
 
+    private fun saveImageCallback(uuid: String?) {
+        if (event != null) {
+            event?.let {
+                it.imageFile = uuid
+                presenter.editEvent(it)
+            }
+        } else {
+            addEvent(uuid.orEmpty())
+        }
+    }
+
     private fun saveCallback(successEvent: Event?) {
         isSaveAvailable = true
         binding.save.setTextColor(resources.getColor(R.color.ProEvent_bright_orange_500))
@@ -618,8 +635,21 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
         ).init()
     }
 
+    private fun addEvent(uuid: String?) {
+        presenter.addEvent(
+            binding.nameEdit.text.toString(),
+            Calendar.getInstance().time,
+            Calendar.getInstance().time,
+            address,
+            binding.descriptionText.text.toString(),
+            uuid,
+            ::saveCallback
+        )
+    }
+
     override fun newPictureUri(uri: Uri) {
-        event?.imageFile = presenter.saveImage(File(uri.path.orEmpty()))
+        event?.imageFile?.let { presenter.deleteImage(it) }
+        presenter.saveImage(File(uri.path.orEmpty()), ::saveImageCallback)
     }
 
     override fun onViewCreated(view: View, saved: Bundle?) {
@@ -763,21 +793,12 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
                     it.endDate = Calendar.getInstance().time
                     it.description = descriptionText.text.toString()
                     presenter.editEvent(it, ::saveCallback)
-                } ?: run {
-                    presenter.addEvent(
-                        nameEdit.text.toString(),
-                        Calendar.getInstance().time,
-                        Calendar.getInstance().time,
-                        address,
-                        descriptionText.text.toString(),
-                        ::saveCallback
-                    )
-                }
+                } ?: run { addEvent(null) }
             }
             saveHitArea.setOnClickListener { save.performClick() }
             defaultKeyListener = nameEdit.keyListener
             if (event != null) {
-                setViewValues(event!!, layoutInflater)
+                setViewValues(event!!)
                 lockEdit(nameInput, nameEdit)
                 nameInput.setEndIconOnClickListener {
                     presenter.unlockNameEdit()
