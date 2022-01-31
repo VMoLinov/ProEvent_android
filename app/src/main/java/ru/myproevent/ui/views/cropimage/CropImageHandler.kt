@@ -76,7 +76,7 @@ class CropImageHandler(
                     .load(uri)
                     .circleCrop()
                     .into(viewToLoad)
-                resultCaller.newPictureUri = uri
+                resultCaller.newPictureUri(uri)
             }
         }
         viewOnClick.setOnClickListener { pickImageActivityResultLauncher.launch(null) }

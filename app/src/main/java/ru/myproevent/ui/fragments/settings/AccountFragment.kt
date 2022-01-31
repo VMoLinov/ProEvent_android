@@ -22,12 +22,12 @@ import ru.myproevent.R
 import ru.myproevent.databinding.FragmentAccountBinding
 import ru.myproevent.domain.models.ProfileDto
 import ru.myproevent.ui.fragments.BaseMvpFragment
-import ru.myproevent.ui.views.cropimage.CropImageHandler
-import ru.myproevent.ui.views.cropimage.CropImageView
 import ru.myproevent.ui.presenters.main.RouterProvider
 import ru.myproevent.ui.presenters.settings.account.AccountPresenter
 import ru.myproevent.ui.presenters.settings.account.AccountView
 import ru.myproevent.ui.views.KeyboardAwareTextInputEditText
+import ru.myproevent.ui.views.cropimage.CropImageHandler
+import ru.myproevent.ui.views.cropimage.CropImageView
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -180,7 +180,11 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
         presenter.getProfile()
     }
 
-    override var newPictureUri: Uri? = null
+    override fun newPictureUri(uri: Uri) {
+        newPictureUri = uri
+    }
+
+    private var newPictureUri: Uri? = null
 
     override fun showProfile(profileDto: ProfileDto) {
         with(binding) {

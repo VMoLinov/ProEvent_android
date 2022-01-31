@@ -2,13 +2,19 @@ package ru.myproevent.ui.presenters.events.event
 
 import android.util.Log
 import com.github.terrakok.cicerone.Router
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import ru.myproevent.domain.models.ProfileDto
+import ru.myproevent.domain.models.UUIDBody
 import ru.myproevent.domain.models.entities.Address
 import ru.myproevent.domain.models.entities.Event
 import ru.myproevent.domain.models.repositories.events.IProEventEventsRepository
+import ru.myproevent.domain.models.repositories.images.IImagesRepository
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
+import java.io.File
 import java.util.*
 import javax.inject.Inject
 
@@ -24,6 +30,9 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
 
     @Inject
     lateinit var profilesRepository: IProEventProfilesRepository
+
+    @Inject
+    lateinit var imagesRepository: IImagesRepository
 
     fun addEvent(
         name: String,
@@ -206,6 +215,10 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
         )
     }
 
+    fun saveImage(file: File): String {
+        return imagesRepository.saveImage(file)
+    }
+
     fun hideAbsoluteBar() {
         viewState.hideAbsoluteBar()
     }
@@ -228,7 +241,7 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
         pickedParticipantsIds.remove(id)
     }
 
-    fun showEditOptions(){
+    fun showEditOptions() {
         viewState.showEditOptions()
     }
 }

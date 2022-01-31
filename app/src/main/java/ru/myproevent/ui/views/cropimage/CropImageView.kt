@@ -4,5 +4,5 @@ import android.net.Uri
 import androidx.activity.result.ActivityResultCaller
 
 interface CropImageView : ActivityResultCaller {
-    var newPictureUri: Uri?
+    fun newPictureUri(uri: Uri)
 }
