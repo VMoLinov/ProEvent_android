@@ -1,6 +1,6 @@
 package ru.myproevent.ui.presenters.contacts.contacts_list
 
-import ru.myproevent.domain.models.entities.Contact.Status
+import ru.myproevent.domain.models.entities.contact.Status
 import ru.myproevent.ui.presenters.IItemView
 
 interface IContactItemView : IItemView {

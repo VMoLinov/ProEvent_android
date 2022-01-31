@@ -5,8 +5,7 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import ru.myproevent.domain.models.ContactDto
 import ru.myproevent.domain.models.ProfileDto
-import ru.myproevent.domain.models.entities.Contact
-import java.io.File
+import ru.myproevent.domain.models.entities.contact.Contact
 
 interface IProEventProfilesRepository {
     fun saveProfile(profile: ProfileDto, newProfilePictureUri: Uri?) : Completable

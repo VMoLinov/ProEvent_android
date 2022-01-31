@@ -5,7 +5,7 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import ru.myproevent.domain.models.IProEventDataSource
 import ru.myproevent.domain.models.Page
-import ru.myproevent.domain.models.entities.Contact.Status
+import ru.myproevent.domain.models.entities.contact.Status
 import javax.inject.Inject
 
 class ProEventContactsRepository @Inject constructor(private val api: IProEventDataSource) :

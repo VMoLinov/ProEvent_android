@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.util.Log
 import com.github.terrakok.cicerone.Router
 import ru.myproevent.domain.models.ContactDto
-import ru.myproevent.domain.models.entities.Contact
+import ru.myproevent.domain.models.entities.contact.Action
+import ru.myproevent.domain.models.entities.contact.Contact
+import ru.myproevent.domain.models.entities.contact.Status
 import ru.myproevent.domain.models.repositories.contacts.IProEventContactsRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
 import ru.myproevent.domain.utils.PARTICIPANTS_PICKER_RESULT_KEY
@@ -66,7 +68,7 @@ class ParticipantFromContactsPickerPresenter(
                             contactDto.id,
                             fullName = "Заглушка",
                             description = "Профиля нет, или не загрузился",
-                            status = Contact.Status.fromString(contactDto.status)
+                            status = Status.fromString(contactDto.status)
                         )
                         fillItemView(view, contacts[pos]!!)
                     }).disposeOnDestroy()
@@ -164,9 +166,9 @@ class ParticipantFromContactsPickerPresenter(
             viewState.updateContactsList()
         }, { contact ->
             val action = when (contact.status) {
-                Contact.Status.DECLINED -> Contact.Action.DELETE
-                Contact.Status.PENDING -> Contact.Action.CANCEL
-                Contact.Status.REQUESTED -> Contact.Action.ACCEPT
+                Status.DECLINED -> Action.DELETE
+                Status.PENDING -> Action.CANCEL
+                Status.REQUESTED -> Action.ACCEPT
                 else -> return@ContactListPresenter
             }
 
@@ -190,11 +192,11 @@ class ParticipantFromContactsPickerPresenter(
         }
     }
 
-    private fun performActionOnContact(contact: Contact, action: Contact.Action) {
+    private fun performActionOnContact(contact: Contact, action: Action) {
         when (action) {
-            Contact.Action.ACCEPT -> contactsRepository.acceptContact(contact.userId)
-            Contact.Action.CANCEL, Contact.Action.DELETE -> contactsRepository.deleteContact(contact.userId)
-            Contact.Action.DECLINE -> contactsRepository.declineContact(contact.userId)
+            Action.ACCEPT -> contactsRepository.acceptContact(contact.userId)
+            Action.CANCEL, Action.DELETE -> contactsRepository.deleteContact(contact.userId)
+            Action.DECLINE -> contactsRepository.declineContact(contact.userId)
             else -> return
         }.observeOn(uiScheduler)
             .subscribe({ loadData() }, { viewState.showToast("Не удалось выполнить действие") })
@@ -206,7 +208,7 @@ class ParticipantFromContactsPickerPresenter(
         loadData()
     }
 
-    fun loadData(status: Contact.Status = Contact.Status.ALL) {
+    fun loadData(status: Status = Status.ALL) {
         contactsRepository.getContacts(1, Int.MAX_VALUE, status)
             .observeOn(uiScheduler)
             .subscribe({ data ->

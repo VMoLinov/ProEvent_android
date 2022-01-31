@@ -10,8 +10,8 @@ import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.R
 import ru.myproevent.databinding.FragmentContactsBinding
-import ru.myproevent.domain.models.entities.Contact
-import ru.myproevent.domain.models.entities.Contact.Status
+import ru.myproevent.domain.models.entities.contact.Action
+import ru.myproevent.domain.models.entities.contact.Status
 import ru.myproevent.ui.fragments.BaseMvpFragment
 import ru.myproevent.ui.presenters.contacts.contacts_list.ContactsPresenter
 import ru.myproevent.ui.presenters.contacts.contacts_list.ContactsView
@@ -75,17 +75,17 @@ class ContactsFragment : BaseMvpFragment<FragmentContactsBinding>(FragmentContac
     }
 
     override fun showConfirmationScreen(
-        action: Contact.Action,
+        action: Action,
         callBack: ((confirmed: Boolean) -> Unit)?
     ) {
         binding.tvConfirmMsg.text = when (action) {
-            Contact.Action.ACCEPT ->
+            Action.ACCEPT ->
                 getString(R.string.accept_contact_request_question)
-            Contact.Action.CANCEL ->
+            Action.CANCEL ->
                 getString(R.string.cancel_request_question)
-            Contact.Action.DECLINE ->
+            Action.DECLINE ->
                 getString(R.string.decline_contact_request_question)
-            Contact.Action.DELETE ->
+            Action.DELETE ->
                 getString(R.string.delete_contact_question)
             else -> null
         }

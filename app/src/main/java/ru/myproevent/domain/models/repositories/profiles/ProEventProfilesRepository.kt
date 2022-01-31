@@ -8,12 +8,11 @@ import retrofit2.HttpException
 import ru.myproevent.domain.models.ContactDto
 import ru.myproevent.domain.models.IProEventDataSource
 import ru.myproevent.domain.models.ProfileDto
-import ru.myproevent.domain.models.entities.Contact
-import ru.myproevent.domain.models.entities.Contact.Status
+import ru.myproevent.domain.models.entities.contact.Contact
+import ru.myproevent.domain.models.entities.contact.Status
 import ru.myproevent.domain.models.repositories.images.IImagesRepository
 import ru.myproevent.domain.utils.toContact
 import java.io.File
-import java.util.*
 import javax.inject.Inject
 
 class ProEventProfilesRepository @Inject constructor(

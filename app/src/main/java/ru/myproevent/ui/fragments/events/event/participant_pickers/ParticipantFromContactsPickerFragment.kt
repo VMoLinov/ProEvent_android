@@ -15,7 +15,8 @@ import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.R
 import ru.myproevent.databinding.FragmentParticipantPickerFromContactsBinding
-import ru.myproevent.domain.models.entities.Contact
+import ru.myproevent.domain.models.entities.contact.Action
+import ru.myproevent.domain.models.entities.contact.Status
 import ru.myproevent.ui.fragments.BaseMvpFragment
 import ru.myproevent.ui.presenters.events.event.participant_pickers.participant_from_contacts_picker.ParticipantFromContactsPickerPresenter
 import ru.myproevent.ui.presenters.events.event.participant_pickers.participant_from_contacts_picker.ParticipantFromContactsPickerView
@@ -170,19 +171,19 @@ class ParticipantFromContactsPickerFragment :
             allContacts.setOnTouchListener(filterOptionTouchListener)
             allContacts.setOnClickListener {
                 selectFilterOption(allContacts)
-                presenter.loadData(Contact.Status.ALL)
+                presenter.loadData(Status.ALL)
                 hideFilterOptions()
             }
             outgoingContacts.setOnTouchListener(filterOptionTouchListener)
             outgoingContacts.setOnClickListener {
                 selectFilterOption(outgoingContacts)
-                presenter.loadData(Contact.Status.PENDING)
+                presenter.loadData(Status.PENDING)
                 hideFilterOptions()
             }
             incomingContacts.setOnTouchListener(filterOptionTouchListener)
             incomingContacts.setOnClickListener {
                 selectFilterOption(incomingContacts)
-                presenter.loadData(Contact.Status.REQUESTED)
+                presenter.loadData(Status.REQUESTED)
                 hideFilterOptions()
             }
             filter.setOnClickListener {
@@ -235,17 +236,17 @@ class ParticipantFromContactsPickerFragment :
     }
 
     override fun showConfirmationScreen(
-        action: Contact.Action,
+        action: Action,
         callBack: ((confirmed: Boolean) -> Unit)?
     ) {
         binding.tvConfirmMsg.text = when (action) {
-            Contact.Action.ACCEPT ->
+            Action.ACCEPT ->
                 getString(R.string.accept_contact_request_question)
-            Contact.Action.CANCEL ->
+            Action.CANCEL ->
                 getString(R.string.cancel_request_question)
-            Contact.Action.DECLINE ->
+            Action.DECLINE ->
                 getString(R.string.decline_contact_request_question)
-            Contact.Action.DELETE ->
+            Action.DELETE ->
                 getString(R.string.delete_contact_question)
             else -> null
         }
@@ -313,7 +314,7 @@ class ParticipantFromContactsPickerFragment :
 
     override fun setProgressBarVisibility(visible: Boolean) = Unit
     override fun hideNoContactsLayout() = Unit
-    override fun showNoContactsLayout(status: Contact.Status) = Unit
+    override fun showNoContactsLayout(status: Status) = Unit
 
     override fun onStop() {
         super.onStop()

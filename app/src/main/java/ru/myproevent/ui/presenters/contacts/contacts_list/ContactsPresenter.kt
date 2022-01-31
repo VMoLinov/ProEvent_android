@@ -3,8 +3,9 @@ package ru.myproevent.ui.presenters.contacts.contacts_list
 import android.util.Log
 import com.github.terrakok.cicerone.Router
 import ru.myproevent.domain.models.ContactDto
-import ru.myproevent.domain.models.entities.Contact
-import ru.myproevent.domain.models.entities.Contact.Status
+import ru.myproevent.domain.models.entities.contact.Action
+import ru.myproevent.domain.models.entities.contact.Contact
+import ru.myproevent.domain.models.entities.contact.Status
 import ru.myproevent.domain.models.repositories.contacts.IProEventContactsRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
@@ -99,9 +100,9 @@ class ContactsPresenter(localRouter: Router) : BaseMvpPresenter<ContactsView>(lo
         localRouter.navigateTo(screens.contact(contact))
     }, { contact ->
         val action = when (contact.status) {
-            Status.DECLINED -> Contact.Action.DELETE
-            Status.PENDING -> Contact.Action.CANCEL
-            Status.REQUESTED -> Contact.Action.ACCEPT
+            Status.DECLINED -> Action.DELETE
+            Status.PENDING -> Action.CANCEL
+            Status.REQUESTED -> Action.ACCEPT
             else -> return@ContactsListPresenter
         }
 
@@ -112,11 +113,11 @@ class ContactsPresenter(localRouter: Router) : BaseMvpPresenter<ContactsView>(lo
         }
     })
 
-    private fun performActionOnContact(contact: Contact, action: Contact.Action) {
+    private fun performActionOnContact(contact: Contact, action: Action) {
         when (action) {
-            Contact.Action.ACCEPT -> contactsRepository.acceptContact(contact.userId)
-            Contact.Action.CANCEL, Contact.Action.DELETE -> contactsRepository.deleteContact(contact.userId)
-            Contact.Action.DECLINE -> contactsRepository.declineContact(contact.userId)
+            Action.ACCEPT -> contactsRepository.acceptContact(contact.userId)
+            Action.CANCEL, Action.DELETE -> contactsRepository.deleteContact(contact.userId)
+            Action.DECLINE -> contactsRepository.declineContact(contact.userId)
             else -> return
         }.observeOn(uiScheduler)
             .subscribe({ loadData() }, { viewState.showMessage("Не удалось выполнить действие") })

@@ -7,8 +7,8 @@ import com.bumptech.glide.Glide
 import ru.myproevent.domain.models.EventDto
 import ru.myproevent.domain.models.ProfileDto
 import ru.myproevent.domain.models.entities.Address
-import ru.myproevent.domain.models.entities.Contact
-import ru.myproevent.domain.models.entities.Contact.Status
+import ru.myproevent.domain.models.entities.contact.Contact
+import ru.myproevent.domain.models.entities.contact.Status
 import ru.myproevent.domain.models.entities.Event
 import java.text.SimpleDateFormat
 import java.util.*

@@ -6,7 +6,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
 import ru.myproevent.R
 import ru.myproevent.databinding.ItemContactBinding
-import ru.myproevent.domain.models.entities.Contact.Status
+import ru.myproevent.domain.models.entities.contact.Status
 import ru.myproevent.ui.presenters.contacts.contacts_list.IContactItemView
 import ru.myproevent.domain.utils.load
 

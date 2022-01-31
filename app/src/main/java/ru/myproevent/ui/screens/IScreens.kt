@@ -3,7 +3,7 @@ package ru.myproevent.ui.screens
 import com.github.terrakok.cicerone.Screen
 import ru.myproevent.domain.models.ProfileDto
 import ru.myproevent.domain.models.entities.Address
-import ru.myproevent.domain.models.entities.Contact
+import ru.myproevent.domain.models.entities.contact.Contact
 import ru.myproevent.domain.models.entities.Event
 
 interface IScreens {
