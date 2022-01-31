@@ -76,13 +76,15 @@
                 android:id="@+id/email_input"
                 style="@style/ProEventTextInputLayoutStyle">
 
-                <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
+                <ru.myproevent.ui.views.KeyboardAwareAutoCompleteTextView
                     android:id="@+id/email_edit"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:hint="Введите ваш e-mail"
+                    android:hint="@string/e_mail_hint"
                     android:inputType="textEmailAddress"
                     android:maxLength="320"
+                    android:paddingLeft="@dimen/email_padding_left"
+                    android:completionThreshold="1"
                     android:textColorHint="@color/ProEvent_blue_600"
                     android:textSize="@dimen/fixed_input_text_size" />
             </com.google.android.material.textfield.TextInputLayout>

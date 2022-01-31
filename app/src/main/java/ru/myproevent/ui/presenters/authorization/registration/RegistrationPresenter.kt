@@ -1,6 +1,8 @@
 package ru.myproevent.ui.presenters.authorization.registration
 
+import android.annotation.SuppressLint
 import com.github.terrakok.cicerone.Router
+import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableCompletableObserver
 import ru.myproevent.domain.models.repositories.internet_access_info.IInternetAccessInfoRepository
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
@@ -93,7 +95,14 @@ class RegistrationPresenter(localRouter: Router) : BaseMvpPresenter<Registration
         viewState.showPasswordErrorMessage(null)
     }
 
-    fun passwordConfirmEdited(){
+    fun passwordConfirmEdited() {
         viewState.showPasswordConfirmErrorMessage(null)
+    }
+
+    fun typedEmail(partEmail: String) {
+        loginRepository.getEmailHint(partEmail)
+            .observeOn(uiScheduler)
+            .subscribe { it -> viewState.setEmailHint(it) }
+            .disposeOnDestroy()
     }
 }
