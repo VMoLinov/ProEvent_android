@@ -22,16 +22,22 @@ import ru.myproevent.ProEventApp
 import ru.myproevent.R
 import ru.myproevent.databinding.DialogLicenseBinding
 import ru.myproevent.databinding.FragmentRegistrationBinding
+import ru.myproevent.domain.models.Suggestion
 import ru.myproevent.domain.utils.pxValue
 import ru.myproevent.ui.fragments.BaseMvpFragment
 import ru.myproevent.ui.presenters.authorization.registration.RegistrationPresenter
 import ru.myproevent.ui.presenters.authorization.registration.RegistrationView
 import ru.myproevent.ui.presenters.main.RouterProvider
 import java.lang.reflect.Field
+import android.widget.ArrayAdapter
+import com.jakewharton.rxbinding2.widget.RxTextView
+import java.util.concurrent.TimeUnit
 
 class RegistrationFragment :
     BaseMvpFragment<FragmentRegistrationBinding>(FragmentRegistrationBinding::inflate),
     RegistrationView {
+
+    var adapter: ArrayAdapter<String>? = null
 
     // TODO: вынести в кастомную вьюху
     private val licenceTouchListener = View.OnTouchListener { v, event ->
@@ -90,6 +96,17 @@ class RegistrationFragment :
         emailEdit.doAfterTextChanged {
             presenter.emailEdited()
         }
+        adapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, arrayOf())
+        binding.emailEdit.setAdapter(adapter)
+
+        RxTextView.textChangeEvents(emailEdit)
+            .debounce(500, TimeUnit.MILLISECONDS)
+            .subscribe {
+                presenter.typedEmail(it.text().toString())
+            }
+
+
         passwordEdit.doAfterTextChanged {
             presenter.passwordEdited()
         }
@@ -217,4 +234,10 @@ class RegistrationFragment :
             binding.passwordConfirmErrorMessage,
             binding.passwordConfirmInputContainerBottomSeparator
         )
+
+    override fun setEmailHint(emailSuggestion: List<Suggestion>) {
+        adapter?.clear()
+        adapter?.addAll(emailSuggestion.map { it.value })
+        adapter?.filter?.filter(binding.emailEdit.text, null);
+    }
 }

@@ -116,4 +116,5 @@
     <string name="new_password_confirm_hint">Подтвердите новый пароль</string>
     <string name="you_have_no_contacts">У вас пока нет контактов</string>
     <string name="you_have_no_active_requests">У вас нет активных запросов</string>
+    <string name="e_mail_hint">Введите ваш e-mail</string>
 </resources>

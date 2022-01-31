@@ -2,6 +2,7 @@ package ru.myproevent.domain.models.repositories.proevent_login
 
 import android.util.Base64
 import io.reactivex.Completable
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import ru.myproevent.domain.models.*
 import ru.myproevent.domain.models.repositories.local_proevent_user_token.ITokenLocalRepository
@@ -124,5 +125,10 @@ class ProEventLoginRepository @Inject constructor(private val api: IProEventData
     private fun decodeJWT(str: String): String {
         val decodedBytes: ByteArray = Base64.decode(str, Base64.URL_SAFE)
         return String(decodedBytes, Charsets.UTF_8)
+    }
+
+    override fun getEmailHint(part_email: String): Single<List<Suggestion>> {
+        return api.getEmailHint(HintRequest(part_email)).map { it.suggestions }
+            .subscribeOn(Schedulers.io())
     }
 }
