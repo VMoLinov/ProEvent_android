@@ -136,13 +136,7 @@ class CodeFragment : BaseMvpFragment<FragmentCodeBinding>(FragmentCodeBinding::i
         codeExplanation.text =
             String.format(getString(R.string.code_explanation_text), presenter.getEmail())
         continueRegistration.setOnClickListener {
-            getVerificationCode()?.let { code -> presenter.continueRegistration(code) } ?: run {
-                Toast.makeText(
-                    ProEventApp.instance.applicationContext,
-                    "Код не может быть пустым или содержать не числовые символы",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
+            presenter.continueRegistration(getVerificationCode())
         }
         refreshCode.setOnClickListener{presenter.refreshCode()}
         authorize.setOnClickListener { presenter.authorize() }
