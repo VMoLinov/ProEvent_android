@@ -5,7 +5,7 @@ import com.github.terrakok.cicerone.Router
 import io.reactivex.observers.DisposableCompletableObserver
 import ru.myproevent.ProEventApp
 import ru.myproevent.domain.models.ProfileDto
-import ru.myproevent.domain.models.repositories.internet_access_info.IInternetAccessInfoRepository
+import ru.myproevent.domain.models.providers.internet_access_info.IInternetAccessInfoProvider
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
@@ -28,7 +28,7 @@ class LoginPresenter(localRouter: Router) : BaseMvpPresenter<LoginView>(localRou
 
         override fun onError(error: Throwable) {
             error.printStackTrace()
-            interAccessInfoRepository
+            interAccessInfoProvider
                 .hasInternetConnection()
                 .observeOn(uiScheduler)
                 .subscribeWith(InterAccessInfoObserver(error.message))
@@ -43,7 +43,7 @@ class LoginPresenter(localRouter: Router) : BaseMvpPresenter<LoginView>(localRou
 
         override fun onError(error: Throwable) {
             error.printStackTrace()
-            interAccessInfoRepository
+            interAccessInfoProvider
                 .hasInternetConnection()
                 .observeOn(uiScheduler)
                 .subscribeWith(InterAccessInfoObserver(error.message))
@@ -52,7 +52,7 @@ class LoginPresenter(localRouter: Router) : BaseMvpPresenter<LoginView>(localRou
     }
 
     @Inject
-    lateinit var interAccessInfoRepository: IInternetAccessInfoRepository
+    lateinit var interAccessInfoProvider: IInternetAccessInfoProvider
 
     @Inject
     lateinit var loginRepository: IProEventLoginRepository

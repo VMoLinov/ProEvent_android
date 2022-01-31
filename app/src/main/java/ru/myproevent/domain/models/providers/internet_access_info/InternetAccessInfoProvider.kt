@@ -1,4 +1,4 @@
-package ru.myproevent.domain.models.repositories.internet_access_info
+package ru.myproevent.domain.models.providers.internet_access_info
 
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -8,7 +8,7 @@ import java.net.InetSocketAddress
 import java.net.Socket
 import javax.inject.Inject
 
-class InternetAccessInfoRepository @Inject constructor() : IInternetAccessInfoRepository {
+class InternetAccessInfoProvider @Inject constructor() : IInternetAccessInfoProvider {
     override fun hasInternetConnection(): Single<Boolean> {
         return Single.fromCallable {
             try {

@@ -3,7 +3,7 @@ package ru.myproevent.ui.presenters.contacts.contact_add
 import com.github.terrakok.cicerone.Router
 import io.reactivex.observers.DisposableCompletableObserver
 import ru.myproevent.domain.models.repositories.contacts.IProEventContactsRepository
-import ru.myproevent.domain.models.repositories.internet_access_info.IInternetAccessInfoRepository
+import ru.myproevent.domain.models.providers.internet_access_info.IInternetAccessInfoProvider
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
 import javax.inject.Inject
@@ -16,7 +16,7 @@ class ContactAddPresenter(localRouter: Router) : BaseMvpPresenter<ContactAddView
 
         override fun onError(error: Throwable) {
             error.printStackTrace()
-            interAccessInfoRepository
+            interAccessInfoProvider
                 .hasInternetConnection()
                 .observeOn(uiScheduler)
                 .subscribeWith(InterAccessInfoObserver(error.message))
@@ -31,7 +31,7 @@ class ContactAddPresenter(localRouter: Router) : BaseMvpPresenter<ContactAddView
     lateinit var profilesRepository: IProEventProfilesRepository
 
     @Inject
-    lateinit var interAccessInfoRepository: IInternetAccessInfoRepository
+    lateinit var interAccessInfoProvider: IInternetAccessInfoProvider
 
     private var isSearchMode = true
 

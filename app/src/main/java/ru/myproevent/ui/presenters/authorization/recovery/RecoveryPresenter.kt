@@ -2,7 +2,7 @@ package ru.myproevent.ui.presenters.authorization.recovery
 
 import com.github.terrakok.cicerone.Router
 import io.reactivex.observers.DisposableCompletableObserver
-import ru.myproevent.domain.models.repositories.internet_access_info.IInternetAccessInfoRepository
+import ru.myproevent.domain.models.providers.internet_access_info.IInternetAccessInfoProvider
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
 import javax.inject.Inject
@@ -12,7 +12,7 @@ class RecoveryPresenter(localRouter: Router) : BaseMvpPresenter<RecoveryView>(lo
     lateinit var loginRepository: IProEventLoginRepository
 
     @Inject
-    lateinit var interAccessInfoRepository: IInternetAccessInfoRepository
+    lateinit var interAccessInfoProvider: IInternetAccessInfoProvider
 
     private inner class PasswordResetObserver(val email: String) : DisposableCompletableObserver() {
         override fun onComplete() {
@@ -35,7 +35,7 @@ class RecoveryPresenter(localRouter: Router) : BaseMvpPresenter<RecoveryView>(lo
                 viewState.showMessage("Произошла ошибка: $error")
                 return
             }
-            interAccessInfoRepository
+            interAccessInfoProvider
                 .hasInternetConnection()
                 .observeOn(uiScheduler)
                 .subscribeWith(InterAccessInfoObserver(error.message))

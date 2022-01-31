@@ -8,7 +8,7 @@ import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableSingleObserver
 import ru.myproevent.domain.models.ProfileDto
 import ru.myproevent.domain.models.repositories.images.IImagesRepository
-import ru.myproevent.domain.models.repositories.internet_access_info.IInternetAccessInfoRepository
+import ru.myproevent.domain.models.providers.internet_access_info.IInternetAccessInfoProvider
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
@@ -22,7 +22,7 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
 
         override fun onError(error: Throwable) {
             error.printStackTrace()
-            interAccessInfoRepository
+            interAccessInfoProvider
                 .hasInternetConnection()
                 .observeOn(uiScheduler)
                 .subscribeWith(InterAccessInfoObserver("Этого не должно было произойти(ProfileEditObserver):\n${error}"))
@@ -43,7 +43,7 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
                 }
                 return
             }
-            interAccessInfoRepository
+            interAccessInfoProvider
                 .hasInternetConnection()
                 .observeOn(uiScheduler)
                 .subscribeWith(InterAccessInfoObserver("Этого не должно было произойти (ProfileGetObserver):\n${error}"))
@@ -58,7 +58,7 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
     lateinit var profilesRepository: IProEventProfilesRepository
 
     @Inject
-    lateinit var interAccessInfoRepository: IInternetAccessInfoRepository
+    lateinit var interAccessInfoProvider: IInternetAccessInfoProvider
 
     @Inject
     lateinit var imagesRepository: IImagesRepository
