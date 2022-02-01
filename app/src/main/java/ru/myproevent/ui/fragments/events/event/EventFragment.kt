@@ -49,9 +49,8 @@ import ru.myproevent.ui.presenters.events.event.EventPresenter
 import ru.myproevent.ui.presenters.events.event.EventView
 import ru.myproevent.ui.presenters.main.RouterProvider
 import ru.myproevent.ui.views.CenteredImageSpan
+import ru.myproevent.ui.views.CropImageHandler
 import ru.myproevent.ui.views.KeyboardAwareTextInputEditText
-import ru.myproevent.ui.views.cropimage.CropImageHandler
-import ru.myproevent.ui.views.cropimage.CropImageView
 import java.io.File
 import java.util.*
 import kotlin.properties.Delegates
@@ -59,7 +58,7 @@ import kotlin.properties.Delegates
 
 // TODO: отрефакторить - разбить этот божественный класс на кастомные вьющки и утилиты
 class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding::inflate),
-    EventView, BackButtonListener, CropImageView {
+    EventView, BackButtonListener {
     private var isFilterOptionsExpanded = false
     private var event: Event? = null
     private var address: Address? = null
@@ -490,7 +489,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             nameEdit.text = SpannableStringBuilder(name)
             dateEdit.text = SpannableStringBuilder(startDate.toString())
             this.imageFile?.let {
-                imageLoader.loadCircle(requireContext(), eventImageView, it)
+                imageLoader.loadCircle(eventImageView, it)
             }
             address?.let { locationEdit.text = SpannableStringBuilder(it.addressLine) }
                 ?: this@EventFragment.address?.let {
@@ -625,8 +624,19 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
     private fun initImageCrop() {
         CropImageHandler(
             viewOnClick = binding.editEventImage,
-            viewToLoad = binding.eventImageView,
-            resultCaller = this@EventFragment,
+            pickImageCallback = { pickImageActivityContract, cropActivityResultLauncher ->
+                registerForActivityResult(pickImageActivityContract) {
+                    it.let { uri -> cropActivityResultLauncher.launch(uri) }
+                }
+            },
+            cropCallback = { cropActivityContract ->
+                registerForActivityResult(cropActivityContract) {
+                    it?.let { uri ->
+                        imageLoader.loadCircle(binding.eventImageView, uri)
+                        newPictureUri(uri)
+                    }
+                }
+            },
             isCircle = true
         ).init()
     }
@@ -643,7 +653,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
         )
     }
 
-    override fun newPictureUri(uri: Uri) {
+    private fun newPictureUri(uri: Uri) {
         event?.imageFile?.let { presenter.deleteImage(it) }
         presenter.saveImage(File(uri.path.orEmpty()), ::saveImageCallback)
     }

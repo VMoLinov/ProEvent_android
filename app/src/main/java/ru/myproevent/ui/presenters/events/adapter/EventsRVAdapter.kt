@@ -40,7 +40,7 @@ class EventsRVAdapter(val presenter: IEventsListPresenter) :
         }
 
         override fun loadImg(uuid: String) {
-            imageLoader.loadCircle(itemView.context, vb.ivImg, uuid)
+            imageLoader.loadCircle(vb.ivImg, uuid)
         }
 
         override var pos = -1

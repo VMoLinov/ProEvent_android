@@ -1,22 +1,21 @@
-package ru.myproevent.ui.views.cropimage
+package ru.myproevent.ui.views
 
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.view.View
-import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import com.yalantis.ucrop.UCrop
-import ru.myproevent.ProEventApp
-import ru.myproevent.domain.utils.GlideLoader
 import java.io.File
 
 class CropImageHandler(
     private val viewOnClick: View,
-    private val viewToLoad: ImageView,
-    private val resultCaller: CropImageView,
+    private val pickImageCallback:
+        (pickImageActivityContract: ActivityResultContract<Any?, Uri?>, cropActivityResultLauncher: ActivityResultLauncher<Uri>)
+    -> ActivityResultLauncher<Any?>,
+    private val cropCallback: (cropActivityContract: ActivityResultContract<Uri, Uri?>) -> ActivityResultLauncher<Uri>,
     private val isCircle: Boolean
 ) {
     private lateinit var pickImageActivityResultLauncher: ActivityResultLauncher<Any?>
@@ -43,7 +42,6 @@ class CropImageHandler(
             return intent?.let { UCrop.getOutput(it) }
         }
     }
-    private val imageLoader = GlideLoader().apply { ProEventApp.instance.appComponent.inject(this) }
 
     private fun buildCrop(input: Uri, destinationName: Uri, context: Context): Intent {
         return if (isCircle) {
@@ -68,16 +66,9 @@ class CropImageHandler(
     }
 
     fun init() {
+        cropActivityResultLauncher = cropCallback(cropActivityContract)
         pickImageActivityResultLauncher =
-            resultCaller.registerForActivityResult(pickImageActivityContract) {
-                it?.let { uri -> cropActivityResultLauncher.launch(uri) }
-            }
-        cropActivityResultLauncher = resultCaller.registerForActivityResult(cropActivityContract) {
-            it?.let { uri ->
-                imageLoader.loadCircle(viewToLoad.context, viewToLoad, uri)
-                resultCaller.newPictureUri(uri)
-            }
-        }
+            pickImageCallback(pickImageActivityContract, cropActivityResultLauncher)
         viewOnClick.setOnClickListener { pickImageActivityResultLauncher.launch(null) }
     }
 

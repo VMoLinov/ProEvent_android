@@ -25,16 +25,14 @@ import ru.myproevent.ui.fragments.BaseMvpFragment
 import ru.myproevent.ui.presenters.main.RouterProvider
 import ru.myproevent.ui.presenters.settings.account.AccountPresenter
 import ru.myproevent.ui.presenters.settings.account.AccountView
+import ru.myproevent.ui.views.CropImageHandler
 import ru.myproevent.ui.views.KeyboardAwareTextInputEditText
-import ru.myproevent.ui.views.cropimage.CropImageHandler
-import ru.myproevent.ui.views.cropimage.CropImageView
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountBinding::inflate),
-    AccountView, CropImageView {
+    AccountView {
 
     private val calendar: Calendar = Calendar.getInstance()
     private var newPictureUUID: String? = null
@@ -166,8 +164,19 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
     private fun initCrop() {
         CropImageHandler(
             viewOnClick = binding.editUserImage,
-            viewToLoad = binding.userImageView,
-            resultCaller = this@AccountFragment,
+            pickImageCallback = { pickImageActivityContract, cropActivityResultLauncher ->
+                registerForActivityResult(pickImageActivityContract) {
+                    it.let { uri -> cropActivityResultLauncher.launch(uri) }
+                }
+            },
+            cropCallback = { cropActivityContract ->
+                registerForActivityResult(cropActivityContract) {
+                    it?.let { uri ->
+                        imageLoader.loadCircle(binding.userImageView, uri)
+                        newPictureUri(uri)
+                    }
+                }
+            },
             isCircle = true
         ).init()
     }
@@ -189,7 +198,7 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
         saveProfile(newPictureUUID)
     }
 
-    override fun newPictureUri(uri: Uri) {
+    private fun newPictureUri(uri: Uri) {
         presenter.saveImage(File(uri.path.orEmpty()), ::saveCallBack)
     }
 
@@ -203,7 +212,7 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
                 description?.let { roleEdit.text = SpannableStringBuilder(it) }
                 imgUri?.let {
                     newPictureUUID = it
-                    imageLoader.loadCircle(requireContext(), binding.userImageView, it)
+                    imageLoader.loadCircle(binding.userImageView, it)
                 }
             }
         }

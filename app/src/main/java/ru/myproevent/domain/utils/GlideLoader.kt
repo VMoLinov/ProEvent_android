@@ -14,15 +14,15 @@ class GlideLoader {
     @Inject
     lateinit var loginRepository: IProEventLoginRepository
 
-    fun loadCircle(context: Context, imageView: ImageView, uri: Uri) {
-        Glide.with(context)
+    fun loadCircle(imageView: ImageView, uri: Uri) {
+        Glide.with(imageView.context)
             .load(uri)
             .circleCrop()
             .into(imageView)
     }
 
-    fun loadCircle(context: Context, imageView: ImageView, uuid: String) {
-        Glide.with(context)
+    fun loadCircle(imageView: ImageView, uuid: String) {
+        Glide.with(imageView.context)
             .load(getGlideUrl(uuid))
             .circleCrop()
             .into(imageView)
