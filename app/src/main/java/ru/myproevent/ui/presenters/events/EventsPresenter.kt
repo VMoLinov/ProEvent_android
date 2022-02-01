@@ -33,9 +33,7 @@ class EventsPresenter(localRouter: Router) : BaseMvpPresenter<EventsView>(localR
             val event = events[view.pos]
             view.setName(event.name)
             view.setTime(formatDate(event.startDate, event.endDate))
-             event.imageFile?.let {
-                view.loadImg(it)
-            }
+            view.loadImg(event.imageFile)
         }
 
         override fun onEditButtonClick(view: IEventItemView) {

@@ -166,7 +166,7 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
             viewOnClick = binding.editUserImage,
             pickImageCallback = { pickImageActivityContract, cropActivityResultLauncher ->
                 registerForActivityResult(pickImageActivityContract) {
-                    it.let { uri -> cropActivityResultLauncher.launch(uri) }
+                    it?.let { uri -> cropActivityResultLauncher.launch(uri) }
                 }
             },
             cropCallback = { cropActivityContract ->

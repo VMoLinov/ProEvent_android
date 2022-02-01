@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.myproevent.ProEventApp
+import ru.myproevent.R
 import ru.myproevent.databinding.ItemEventBinding
 import ru.myproevent.domain.utils.GlideLoader
 import ru.myproevent.ui.presenters.events.IEventItemView
-
 
 class EventsRVAdapter(val presenter: IEventsListPresenter) :
     RecyclerView.Adapter<EventsRVAdapter.ViewHolder>() {
@@ -39,12 +39,16 @@ class EventsRVAdapter(val presenter: IEventsListPresenter) :
             vb.tvTime.text = time
         }
 
-        override fun loadImg(uuid: String) {
+        override fun loadImg(uuid: String?) {
             /** TODO исправить причину
             в моём случае метод вызывается с position = 4, 6, 7, снова 4, 6, 7
             ожидаемый результат: картинки отображаются только на 5, 7 и 8 элементе списка
             получаемый результат: картинки отображаются на  2, 4, 5, 7 и 8 элементе списка */
-            imageLoader.loadCircle(vb.ivImg, uuid)
+            if (uuid.isNullOrEmpty()) {
+                vb.ivImg.setImageResource(R.drawable.ic_events_small)
+            } else {
+                imageLoader.loadCircle(vb.ivImg, uuid)
+            }
         }
 
         override var pos = -1
