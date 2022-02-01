@@ -141,4 +141,5 @@
     <string name="event_back">Back</string>
     <string name="event_cancel_event">Отменить мероприятие</string>
     <string name="event_delete_event">Удалить мероприятие</string>
+    <string name="event_item_edit_event">Edit event</string>
 </resources>

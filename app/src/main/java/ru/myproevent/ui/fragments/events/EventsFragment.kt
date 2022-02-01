@@ -1,6 +1,7 @@
 package ru.myproevent.ui.fragments.events
 
 import android.animation.LayoutTransition
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
@@ -65,6 +66,7 @@ class EventsFragment : BaseMvpFragment<FragmentEventsBinding>(FragmentEventsBind
         rvEvents.adapter = adapter
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun updateList() {
         adapter?.notifyDataSetChanged()
     }

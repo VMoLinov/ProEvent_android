@@ -12,6 +12,9 @@ import ru.myproevent.ui.presenters.events.IEventItemView
 class EventsRVAdapter(val presenter: IEventsListPresenter) :
     RecyclerView.Adapter<EventsRVAdapter.ViewHolder>() {
 
+    private val imageLoader =
+        GlideLoader().apply { ProEventApp.instance.appComponent.inject(this) }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ViewHolder(ItemEventBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
@@ -22,9 +25,6 @@ class EventsRVAdapter(val presenter: IEventsListPresenter) :
 
     inner class ViewHolder(private val vb: ItemEventBinding) : RecyclerView.ViewHolder(vb.root),
         IEventItemView {
-
-        private val imageLoader =
-            GlideLoader().apply { ProEventApp.instance.appComponent.inject(this) }
 
         init {
             itemView.setOnClickListener { presenter.onItemClick(this) }
@@ -40,6 +40,10 @@ class EventsRVAdapter(val presenter: IEventsListPresenter) :
         }
 
         override fun loadImg(uuid: String) {
+            /** TODO исправить причину
+            в моём случае метод вызывается с position = 4, 6, 7, снова 4, 6, 7
+            ожидаемый результат: картинки отображаются только на 5, 7 и 8 элементе списка
+            получаемый результат: картинки отображаются на  2, 4, 5, 7 и 8 элементе списка */
             imageLoader.loadCircle(vb.ivImg, uuid)
         }
 
