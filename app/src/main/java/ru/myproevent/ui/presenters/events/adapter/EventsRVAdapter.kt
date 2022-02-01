@@ -9,6 +9,7 @@ import ru.myproevent.databinding.ItemEventBinding
 import ru.myproevent.domain.utils.GlideLoader
 import ru.myproevent.ui.presenters.events.IEventItemView
 
+
 class EventsRVAdapter(val presenter: IEventsListPresenter) :
     RecyclerView.Adapter<EventsRVAdapter.ViewHolder>() {
 
@@ -40,10 +41,6 @@ class EventsRVAdapter(val presenter: IEventsListPresenter) :
         }
 
         override fun loadImg(uuid: String?) {
-            /** TODO исправить причину
-            в моём случае метод вызывается с position = 4, 6, 7, снова 4, 6, 7
-            ожидаемый результат: картинки отображаются только на 5, 7 и 8 элементе списка
-            получаемый результат: картинки отображаются на  2, 4, 5, 7 и 8 элементе списка */
             if (uuid.isNullOrEmpty()) {
                 vb.ivImg.setImageResource(R.drawable.ic_events_small)
             } else {
