@@ -94,12 +94,11 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
                 callback?.invoke(it.uuid)
             }, {
                 callback?.invoke(null)
-                Log.e("Save image:", "${it.message}")
             }).disposeOnDestroy()
     }
 
     fun deleteImage(uuid: String) {
-        imagesRepository.deleteImage(getGlideUrl(uuid).toString())
+        imagesRepository.deleteImage(uuid).subscribe().disposeOnDestroy()
     }
 
     fun finishEvent(event: Event) =
@@ -254,11 +253,4 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
     fun showEditOptions() {
         viewState.showEditOptions()
     }
-
-    fun getGlideUrl(uuid: String) = GlideUrl(
-        "http://178.249.69.107:8762/api/v1/storage/$uuid",
-        LazyHeaders.Builder()
-            .addHeader("Authorization", "Bearer ${loginRepository.getLocalToken()}")
-            .build()
-    )
 }

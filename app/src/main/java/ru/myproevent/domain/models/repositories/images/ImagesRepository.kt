@@ -22,6 +22,6 @@ class ImagesRepository @Inject constructor(private val api: IProEventDataSource)
     }
 
     override fun deleteImage(uuid: String): Completable {
-        return api.deleteImage(uuid)
+        return api.deleteImage(uuid).subscribeOn(Schedulers.io())
     }
 }

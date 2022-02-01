@@ -31,7 +31,6 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import com.bumptech.glide.Glide
 import com.google.android.material.textfield.TextInputLayout
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
@@ -62,9 +61,9 @@ import kotlin.properties.Delegates
 class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding::inflate),
     EventView, BackButtonListener, CropImageView {
     private var isFilterOptionsExpanded = false
-
     private var event: Event? = null
     private var address: Address? = null
+    private val imageLoader = GlideLoader().apply { ProEventApp.instance.appComponent.inject(this) }
 
     // TODO: копирует поле licenceTouchListener из RegistrationFragment
     private val filterOptionTouchListener = View.OnTouchListener { v, event ->
@@ -491,10 +490,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             nameEdit.text = SpannableStringBuilder(name)
             dateEdit.text = SpannableStringBuilder(startDate.toString())
             this.imageFile?.let {
-                Glide.with(this@EventFragment)
-                    .load(presenter.getGlideUrl(it))
-                    .circleCrop()
-                    .into(eventImageView)
+                imageLoader.loadCircle(requireContext(), eventImageView, it)
             }
             address?.let { locationEdit.text = SpannableStringBuilder(it.addressLine) }
                 ?: this@EventFragment.address?.let {

@@ -8,8 +8,9 @@ import android.view.View
 import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
-import com.bumptech.glide.Glide
 import com.yalantis.ucrop.UCrop
+import ru.myproevent.ProEventApp
+import ru.myproevent.domain.utils.GlideLoader
 import java.io.File
 
 class CropImageHandler(
@@ -42,6 +43,7 @@ class CropImageHandler(
             return intent?.let { UCrop.getOutput(it) }
         }
     }
+    private val imageLoader = GlideLoader().apply { ProEventApp.instance.appComponent.inject(this) }
 
     private fun buildCrop(input: Uri, destinationName: Uri, context: Context): Intent {
         return if (isCircle) {
@@ -72,10 +74,7 @@ class CropImageHandler(
             }
         cropActivityResultLauncher = resultCaller.registerForActivityResult(cropActivityContract) {
             it?.let { uri ->
-                Glide.with(viewToLoad)
-                    .load(uri)
-                    .circleCrop()
-                    .into(viewToLoad)
+                imageLoader.loadCircle(viewToLoad.context, viewToLoad, uri)
                 resultCaller.newPictureUri(uri)
             }
         }

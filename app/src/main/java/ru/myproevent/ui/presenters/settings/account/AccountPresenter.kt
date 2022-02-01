@@ -101,7 +101,7 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
     }
 
     fun deleteImage(uuid: String) {
-        imagesRepository.deleteImage(getGlideUrl(uuid).toString())
+        imagesRepository.deleteImage(uuid).subscribe().disposeOnDestroy()
     }
 
     fun getProfile() {
@@ -111,12 +111,4 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
             .subscribeWith(ProfileGetObserver())
             .disposeOnDestroy()
     }
-
-    // TODO: вынести URL в ресурсы или константы
-    fun getGlideUrl(uuid: String) = GlideUrl(
-        "http://178.249.69.107:8762/api/v1/storage/$uuid",
-        LazyHeaders.Builder()
-            .addHeader("Authorization", "Bearer ${loginRepository.getLocalToken()}")
-            .build()
-    )
 }
