@@ -3,7 +3,6 @@ package ru.myproevent.ui.fragments.settings
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.telephony.PhoneNumberFormattingTextWatcher
 import android.text.SpannableStringBuilder
 import android.text.method.KeyListener
 import android.view.View
@@ -21,13 +20,14 @@ import ru.myproevent.ProEventApp
 import ru.myproevent.R
 import ru.myproevent.databinding.FragmentAccountBinding
 import ru.myproevent.domain.models.ProfileDto
+import ru.myproevent.domain.utils.PhoneTextWatcher
 import ru.myproevent.ui.fragments.BaseMvpFragment
-import ru.myproevent.ui.views.cropimage.CropImageHandler
-import ru.myproevent.ui.views.cropimage.CropImageView
 import ru.myproevent.ui.presenters.main.RouterProvider
 import ru.myproevent.ui.presenters.settings.account.AccountPresenter
 import ru.myproevent.ui.presenters.settings.account.AccountView
 import ru.myproevent.ui.views.KeyboardAwareTextInputEditText
+import ru.myproevent.ui.views.cropimage.CropImageHandler
+import ru.myproevent.ui.views.cropimage.CropImageView
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -114,8 +114,10 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
         textInput: TextInputLayout,
         textEdit: KeyboardAwareTextInputEditText
     ) {
+        textEdit.isFocusableInTouchMode = false
         textEdit.keyListener = null
         textInput.setEndIconOnClickListener {
+            textEdit.isFocusableInTouchMode = true
             textEdit.keyListener = phoneKeyListener
             textEdit.requestFocus()
             showKeyBoard(textEdit)
@@ -161,7 +163,7 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
         save.setOnClickListener {
             presenter.saveProfile(
                 nameEdit.text.toString(),
-                phoneEdit.text.toString(),
+                "+7 ${phoneEdit.text.toString()}",
                 dateOfBirthEdit.text.toString(),
                 positionEdit.text.toString(),
                 roleEdit.text.toString(),
@@ -169,14 +171,7 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
             )
         }
         titleButton.setOnClickListener { presenter.onBackPressed() }
-        phoneEdit.addTextChangedListener(PhoneNumberFormattingTextWatcher())
-        phoneEdit.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                if (phoneEdit.text.isNullOrEmpty()) {
-                    phoneEdit.text = SpannableStringBuilder("+7")
-                }
-            }
-        }
+        phoneEdit.addTextChangedListener(PhoneTextWatcher())
         presenter.getProfile()
     }
 
@@ -186,7 +181,7 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
         with(binding) {
             with(profileDto) {
                 fullName?.let { nameEdit.text = SpannableStringBuilder(it) }
-                msisdn?.let { phoneEdit.text = SpannableStringBuilder(it) }
+                msisdn?.let { phoneEdit.setText(it.subSequence(3, it.length)) }
                 birthdate?.let { dateOfBirthEdit.text = SpannableStringBuilder(it) }
                 position?.let { positionEdit.text = SpannableStringBuilder(it) }
                 description?.let { roleEdit.text = SpannableStringBuilder(it) }

@@ -105,7 +105,9 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/phone_input"
-                    style="@style/ProEventRWTextInputLayoutStyle">
+                    style="@style/ProEventRWTextInputLayoutStyle"
+                    app:prefixText="+7 "
+                    app:prefixTextAppearance="@style/PhoneTextAppearance">
 
                     <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
                         android:id="@+id/phone_edit"
@@ -113,7 +115,6 @@
                         android:layout_height="match_parent"
                         android:hint="@string/phone_edit_hint"
                         android:inputType="phone"
-                        android:maxLength="16"
                         android:textColorHint="@color/ProEvent_blue_600" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
