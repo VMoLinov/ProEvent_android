@@ -1,10 +1,12 @@
 package ru.myproevent.ui.presenters.events.event
 
-import android.util.Log
+import android.widget.Toast
 import com.github.terrakok.cicerone.Router
+import ru.myproevent.ProEventApp
 import ru.myproevent.domain.models.ProfileDto
 import ru.myproevent.domain.models.entities.Address
 import ru.myproevent.domain.models.entities.Event
+import ru.myproevent.domain.models.entities.TimeInterval
 import ru.myproevent.domain.models.repositories.events.IProEventEventsRepository
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
@@ -15,6 +17,9 @@ import javax.inject.Inject
 class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRouter) {
     private val pickedParticipantsIds = mutableListOf<Long>()
     private var isParticipantsProfilesInitialized = false
+
+    val pickedDates = mutableListOf<TimeInterval>()
+    private var isDatesInitialized = false
 
     @Inject
     lateinit var eventsRepository: IProEventEventsRepository
@@ -65,7 +70,6 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
 
     fun editEvent(event: Event, callback: ((Event?) -> Unit)? = null) {
         event.participantsUserIds = pickedParticipantsIds.toLongArray()
-        Log.d("[REMOVE]", "presenter.editEvent(): $event")
         eventsRepository
             .editEvent(event)
             .observeOn(uiScheduler)
@@ -105,13 +109,31 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
         localRouter.navigateTo(screens.participantPickerTypeSelection(pickedParticipantsIds))
     }
 
+    fun pickDates() {
+        Toast.makeText(ProEventApp.instance, "EventPresenter::pickDates call", Toast.LENGTH_LONG)
+            .show()
+    }
+
     fun openParticipant(profileDto: ProfileDto) {
         localRouter.navigateTo(screens.eventParticipant(profileDto))
+    }
+
+    fun openDateEditOptions(timeInterval: TimeInterval) {
+        viewState.showDateEditOptions(pickedDates.indexOf(timeInterval))
     }
 
     private fun addParticipantItemView(profileDto: ProfileDto) {
         viewState.addParticipantItemView(profileDto)
         pickedParticipantsIds.add(profileDto.userId)
+    }
+
+    private fun addDateItemView(timeInterval: TimeInterval) {
+        var datePosition = pickedDates.indexOfLast { currTimeInterval -> return@indexOfLast currTimeInterval.start <= timeInterval.start } + 1
+        viewState.addDateItemView(
+            timeInterval,
+            datePosition
+        )
+        pickedDates.add(datePosition, timeInterval)
     }
 
     fun initParticipantsProfiles(participantsIds: LongArray) {
@@ -125,7 +147,6 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
                 .subscribe({ profileDto ->
                     addParticipantItemView(profileDto!!)
                 }, {
-                    Log.d("[FUCK]", "error: $it")
                     val profileDto = ProfileDto(
                         userId = id,
                         fullName = "Заглушка",
@@ -136,10 +157,30 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
         }
     }
 
+    fun initDates(dates: List<TimeInterval>) {
+        if (isDatesInitialized) {
+            return
+        }
+        isDatesInitialized = true
+        for (date in dates) {
+            addDateItemView(date)
+        }
+    }
+
     fun addParticipantsProfiles(participants: Array<ProfileDto>) {
         for (participant in participants) {
             addParticipantItemView(participant)
         }
+    }
+
+    fun addEventDate(timeInterval: TimeInterval) {
+        addDateItemView(timeInterval)
+    }
+
+    fun clearDates() {
+        viewState.clearDates()
+        pickedDates.clear()
+        isDatesInitialized = false
     }
 
     fun clearParticipants() {
@@ -170,6 +211,10 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
 
     fun expandParticipants() {
         viewState.expandParticipants()
+    }
+
+    fun expandDates() {
+        viewState.expandDates()
     }
 
     fun cancelEdit() {
@@ -214,10 +259,6 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
         viewState.unlockNameEdit()
     }
 
-    fun unlockDateEdit() {
-        viewState.unlockDateEdit()
-    }
-
     fun unlockLocationEdit() {
         viewState.unlockLocationEdit()
     }
@@ -228,7 +269,26 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
         pickedParticipantsIds.remove(id)
     }
 
-    fun showEditOptions(){
+    fun removeDate(timeInterval: TimeInterval) {
+        viewState.removeDate(timeInterval, pickedDates.toList())
+        pickedDates.remove(timeInterval)
+    }
+
+    fun removeDate(position: Int){
+        viewState.removeDate(pickedDates[position], pickedDates.toList())
+        pickedDates.removeAt(position)
+    }
+
+    fun editDate(position: Int){
+        Toast.makeText(ProEventApp.instance, "EventPresenter::editDate call;\npickedDates[position]: ${pickedDates[position]};", Toast.LENGTH_LONG)
+            .show()
+    }
+
+    fun showEditOptions() {
         viewState.showEditOptions()
+    }
+
+    fun hideDateEditOptions(){
+        viewState.hideDateEditOptions()
     }
 }
