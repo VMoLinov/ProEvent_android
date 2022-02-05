@@ -25,8 +25,9 @@ class ProEventContactsRepository @Inject constructor(
         }.flatMap { data ->
             val contactDtos = data.content
             profilesRepository.getMiniProfiles(contactDtos.map { it.id }).map { profiles ->
-                profiles.mapIndexed { i, profile ->
-                    profile.toContact(Status.fromString(contactDtos[i].status))
+                profiles.map { profile ->
+                    val status = Status.fromString(contactDtos.find { it.id == profile.id }!!.status)
+                    profile.toContact(status)
                 }
             }
         }.subscribeOn(Schedulers.io())
