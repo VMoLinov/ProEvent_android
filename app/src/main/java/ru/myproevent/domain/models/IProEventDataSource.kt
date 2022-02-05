@@ -1,15 +1,12 @@
 package ru.myproevent.domain.models
 
-import android.os.Parcelable
 import io.reactivex.Completable
 import io.reactivex.Single
-import kotlinx.parcelize.Parcelize
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
 import ru.myproevent.BuildConfig
-import java.io.File
 
 interface IProEventDataSource {
     @POST("auth/login")
@@ -32,6 +29,9 @@ interface IProEventDataSource {
 
     @GET("profiles/user/{userId}")
     fun getProfile(@Path("userId") userId: Long): Call<ProfileDto>
+
+    @POST("profiles/list")
+    fun getMiniProfiles(@Body ids: ProfileIdListDto): Call<List<ProfileMiniDto>>
 
     @GET("contacts")
     fun getContacts(
@@ -117,7 +117,6 @@ data class NewPasswordBody(val code: Int, val email: String, val password: Strin
 
 data class UUIDBody(val uuid: String)
 
-@Parcelize
 data class ProfileDto(
     var userId: Long,
     var email: String? = null,
@@ -128,7 +127,14 @@ data class ProfileDto(
     var birthdate: String? = null,
     var imgUri: String? = null,
     var description: String? = null
-) : Parcelable
+)
+
+data class ProfileMiniDto(
+    var userId: Long,
+    var fullName: String? = null,
+    var nickName: String? = null,
+    var imgUri: String? = null
+)
 
 data class ContactDto(val id: Long, val status: String)
 
@@ -173,6 +179,7 @@ data class EventDto(
     val imageFile: String?,
 )
 
+data class ProfileIdListDto(val profileIds: List<Long>)
 data class HintRequest(val query: String)
 data class HintResponse(val suggestions: List<Suggestion>)
 data class Suggestion(val value: String)

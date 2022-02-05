@@ -9,7 +9,7 @@ data class Event(
     var id: Long?,
     var name: String,
     var ownerUserId: Long,
-    var eventStatus: Status,
+    var status: Status,
     var startDate: Date,
     var endDate: Date,
     var description: String?,
@@ -21,11 +21,10 @@ data class Event(
     var imageFile: String?,
 ) : Parcelable {
     @Parcelize
-    enum class Status(val value: String) : Parcelable {
-        ALL("ALL"),
-        ACTUAL("ACTUAL"),
-        COMPLETED("COMPLETED"),
-        CANCELLED("CANCELLED");
+    enum class Status : Parcelable {
+        ALL, ACTUAL, COMPLETED, CANCELLED;
+
+        override fun toString() = name
 
         companion object {
             fun fromString(status: String) = valueOf(status)

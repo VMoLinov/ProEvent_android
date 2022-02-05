@@ -19,7 +19,7 @@ import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.R
 import ru.myproevent.databinding.FragmentAccountBinding
-import ru.myproevent.domain.models.ProfileDto
+import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.utils.PhoneTextWatcher
 import ru.myproevent.ui.fragments.BaseMvpFragment
 import ru.myproevent.ui.presenters.main.RouterProvider
@@ -177,11 +177,11 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
 
     override var newPictureUri: Uri? = null
 
-    override fun showProfile(profileDto: ProfileDto) {
+    override fun showProfile(profile: Profile) {
         with(binding) {
-            with(profileDto) {
+            with(profile) {
                 fullName?.let { nameEdit.text = SpannableStringBuilder(it) }
-                msisdn?.let { phoneEdit.setText(it.subSequence(3, it.length)) }
+                phone?.let { phoneEdit.setText(it.subSequence(3, it.length)) }
                 birthdate?.let { dateOfBirthEdit.text = SpannableStringBuilder(it) }
                 position?.let { positionEdit.text = SpannableStringBuilder(it) }
                 description?.let { roleEdit.text = SpannableStringBuilder(it) }

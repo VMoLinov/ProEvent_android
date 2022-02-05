@@ -2,8 +2,8 @@ package ru.myproevent.ui.presenters.events.event
 
 import android.widget.Toast
 import com.github.terrakok.cicerone.Router
+import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.ProEventApp
-import ru.myproevent.domain.models.ProfileDto
 import ru.myproevent.domain.models.entities.Address
 import ru.myproevent.domain.models.entities.Event
 import ru.myproevent.domain.models.entities.TimeInterval
@@ -44,7 +44,7 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
                     id = null,
                     name = name,
                     ownerUserId = loginRepository.getLocalId()!!,
-                    eventStatus = Event.Status.ACTUAL,
+                    status = Event.Status.ACTUAL,
                     startDate = startDate,
                     endDate = endDate,
                     description = description,
@@ -94,7 +94,7 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
 
     fun copyEvent(event: Event) {
         event.ownerUserId = loginRepository.getLocalId()!!
-        event.eventStatus = Event.Status.ACTUAL
+        event.status = Event.Status.ACTUAL
         eventsRepository
             .saveEvent(event)
             .observeOn(uiScheduler)
@@ -114,17 +114,17 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
             .show()
     }
 
-    fun openParticipant(profileDto: ProfileDto) {
-        localRouter.navigateTo(screens.eventParticipant(profileDto))
+    fun openParticipant(profile: Profile) {
+        localRouter.navigateTo(screens.eventParticipant(profile))
     }
 
     fun openDateEditOptions(timeInterval: TimeInterval) {
         viewState.showDateEditOptions(pickedDates.indexOf(timeInterval))
     }
 
-    private fun addParticipantItemView(profileDto: ProfileDto) {
-        viewState.addParticipantItemView(profileDto)
-        pickedParticipantsIds.add(profileDto.userId)
+    private fun addParticipantItemView(profile: Profile) {
+        viewState.addParticipantItemView(profile)
+        pickedParticipantsIds.add(profile.id)
     }
 
     private fun addDateItemView(timeInterval: TimeInterval) {
@@ -147,12 +147,12 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
                 .subscribe({ profileDto ->
                     addParticipantItemView(profileDto!!)
                 }, {
-                    val profileDto = ProfileDto(
-                        userId = id,
+                    val profile = Profile(
+                        id = id,
                         fullName = "Заглушка",
                         description = "Профиля нет, или не загрузился",
                     )
-                    addParticipantItemView(profileDto)
+                    addParticipantItemView(profile)
                 }).disposeOnDestroy()
         }
     }
@@ -167,7 +167,7 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
         }
     }
 
-    fun addParticipantsProfiles(participants: Array<ProfileDto>) {
+    fun addParticipantsProfiles(participants: Array<Profile>) {
         for (participant in participants) {
             addParticipantItemView(participant)
         }

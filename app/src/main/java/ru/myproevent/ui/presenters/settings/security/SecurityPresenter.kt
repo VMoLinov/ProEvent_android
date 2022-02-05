@@ -5,7 +5,7 @@ import com.github.terrakok.cicerone.Router
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableSingleObserver
 import ru.myproevent.ProEventApp
-import ru.myproevent.domain.models.ProfileDto
+import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.repositories.internet_access_info.IInternetAccessInfoRepository
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
@@ -30,12 +30,12 @@ class SecurityPresenter(localRouter: Router) : BaseMvpPresenter<SecurityView>(lo
         }
     }
 
-    private var userProfile: ProfileDto? = null
+    private var userProfile: Profile? = null
 
-    private inner class ProfileGetObserver : DisposableSingleObserver<ProfileDto>() {
-        override fun onSuccess(profileDto: ProfileDto) {
-            userProfile = profileDto
-            viewState.showProfile(profileDto)
+    private inner class ProfileGetObserver : DisposableSingleObserver<Profile>() {
+        override fun onSuccess(profile: Profile) {
+            userProfile = profile
+            viewState.showProfile(profile)
         }
 
         override fun onError(error: Throwable) {

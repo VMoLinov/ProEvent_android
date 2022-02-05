@@ -6,7 +6,7 @@ import android.widget.Toast
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.databinding.FragmentEventParticipantBinding
-import ru.myproevent.domain.models.ProfileDto
+import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.ui.fragments.BaseMvpFragment
 import ru.myproevent.ui.presenters.events.event.participant.EventParticipantPresenter
 import ru.myproevent.ui.presenters.events.event.participant.EventParticipantView
@@ -18,7 +18,7 @@ class EventParticipantFragment :
     BaseMvpFragment<FragmentEventParticipantBinding>(FragmentEventParticipantBinding::inflate),
     EventParticipantView {
 
-    private val profileDto: ProfileDto by lazy {
+    private val profile: Profile by lazy {
         requireArguments().getParcelable(PROFILE_ARG)!!
     }
 
@@ -30,20 +30,20 @@ class EventParticipantFragment :
 
     companion object {
         val PROFILE_ARG = "PROFILE"
-        fun newInstance(profileDto: ProfileDto) = EventParticipantFragment().apply {
-            arguments = Bundle().apply { putParcelable(PROFILE_ARG, profileDto) }
+        fun newInstance(profile: Profile) = EventParticipantFragment().apply {
+            arguments = Bundle().apply { putParcelable(PROFILE_ARG, profile) }
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
         super.onViewCreated(view, savedInstanceState)
-        with(profileDto){
-            title.text = fullName ?: nickName ?: "[#$userId]"
+        with(profile){
+            title.text = fullName ?: nickName ?: "[#$id]"
             pointEdit.setText("[ДАННОЕ ПОЛЕ ПОКА НЕ РЕАЛИЗОВАНО НА СЕРВЕРЕ]")
             positionEdit.setText(position)
-            toChat.setOnClickListener { presenter.openChat(profileDto.userId) }
-            toProfile.setOnClickListener { presenter.openProfile(profileDto) }
-            removeParticipant.setOnClickListener { presenter.removeParticipant(profileDto.userId) }
+            toChat.setOnClickListener { presenter.openChat(profile.id) }
+            toProfile.setOnClickListener { presenter.openProfile(profile) }
+            removeParticipant.setOnClickListener { presenter.removeParticipant(profile.id) }
         }
     }
 

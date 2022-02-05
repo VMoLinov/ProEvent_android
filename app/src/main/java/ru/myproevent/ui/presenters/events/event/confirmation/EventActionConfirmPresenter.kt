@@ -12,8 +12,8 @@ class EventActionConfirmPresenter(localRouter: Router) :
     lateinit var eventsRepository: IProEventEventsRepository
 
     fun editStatus(event: Event, status: Event.Status) {
-        val originalStatus = event.eventStatus
-        event.eventStatus = status
+        val originalStatus = event.status
+        event.status = status
         eventsRepository
             .editEvent(event)
             .observeOn(uiScheduler)
@@ -22,12 +22,12 @@ class EventActionConfirmPresenter(localRouter: Router) :
                     Event.Status.COMPLETED -> viewState.showMessage("Мероприятие завершено")
                     Event.Status.CANCELLED -> viewState.showMessage("Мероприятие отменено")
                 }
-                event.eventStatus = status
+                event.status = status
                 onBackPressed()
             }, {
                 viewState.showMessage("ПРОИЗОШЛА ОШИБКА: ${it.message}")
             }).disposeOnDestroy()
-        event.eventStatus = originalStatus
+        event.status = originalStatus
     }
 
     fun deleteEvent(event: Event) {
