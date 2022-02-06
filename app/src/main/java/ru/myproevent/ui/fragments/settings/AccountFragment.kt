@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.method.KeyListener
+import android.util.Log
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
@@ -179,7 +180,7 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
     private fun saveProfile(uuid: String?) = with(binding) {
         presenter.saveProfile(
             nameEdit.text.toString(),
-            "+7 ${phoneEdit.text.toString()}",
+            if(phoneEdit.text.toString().isNotBlank()) "+7 ${phoneEdit.text.toString()}" else "",
             dateOfBirthEdit.text.toString(),
             positionEdit.text.toString(),
             roleEdit.text.toString(),
@@ -201,7 +202,9 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
         with(binding) {
             with(profile) {
                 fullName?.let { nameEdit.text = SpannableStringBuilder(it) }
-                phone?.let { phoneEdit.setText(it.subSequence(3, it.length)) }
+                if (!phone.isNullOrBlank()) {
+                    phoneEdit.setText(phone!!.subSequence(3, phone!!.length))
+                }
                 birthdate?.let { dateOfBirthEdit.text = SpannableStringBuilder(it) }
                 position?.let { positionEdit.text = SpannableStringBuilder(it) }
                 description?.let { roleEdit.text = SpannableStringBuilder(it) }
