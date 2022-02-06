@@ -4,16 +4,20 @@ import moxy.viewstate.strategy.alias.AddToEnd
 import moxy.viewstate.strategy.alias.OneExecution
 import ru.myproevent.domain.models.ProfileDto
 import ru.myproevent.domain.models.entities.Event
+import ru.myproevent.domain.models.entities.TimeInterval
 import ru.myproevent.ui.presenters.BaseMvpView
 
 @AddToEnd
 interface EventView : BaseMvpView {
     fun addParticipantItemView(profileDto: ProfileDto)
+    fun addDateItemView(timeInterval: TimeInterval, position: Int)
     fun enableDescriptionEdit()
     fun expandDescription()
     fun expandMaps()
     fun expandPoints()
     fun expandParticipants()
+    fun expandDates()
+    fun clearDates()
     fun clearParticipants()
     fun showAbsoluteBar(
         title: String,
@@ -25,13 +29,15 @@ interface EventView : BaseMvpView {
     )
     fun hideAbsoluteBar()
     fun unlockNameEdit()
-    fun unlockDateEdit()
     fun unlockLocationEdit()
     @OneExecution
     fun cancelEdit()
     fun showEditOptions()
     fun hideEditOptions()
     fun showActionOptions()
+    fun showDateEditOptions(position: Int)
+    fun hideDateEditOptions()
     fun lockEdit()
     fun removeParticipant(id: Long, pickedParticipantsIds: List<Long>)
+    fun removeDate(date: TimeInterval, pickedDates: List<TimeInterval>)
 }

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_gravity="right"
+        android:id="@+id/date_edit_options"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:background="@drawable/background_rounded"
+        android:elevation="10dp"
+        android:orientation="vertical">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/edit_date"
+            fontPath="@string/default_font_bold_path"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="60dp"
+            android:text="Изменить"
+            android:textColor="@color/ProEvent_blue_800"
+            android:textSize="20dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/remove_date"
+            fontPath="@string/default_font_bold_path"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            android:paddingHorizontal="20dp"
+            android:text="Удалить"
+            android:textColor="@color/ProEvent_blue_800"
+            android:textSize="20dp" />
+    </LinearLayout>
+</FrameLayout>

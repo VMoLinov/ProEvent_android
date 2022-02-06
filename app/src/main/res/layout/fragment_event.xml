@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/root_container"
     android:background="@color/ProEvent_white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -172,6 +173,79 @@
                     android:layout_height="wrap_content">
 
                     <TextView
+                        android:id="@+id/dates_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@color/ProEvent_blue_300"
+                        android:gravity="center"
+                        android:text="Даты мероприятия"
+                        android:textColor="@color/ProEvent_blue_800"
+                        android:textSize="20sp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <View
+                        android:id="@+id/dates_bar_hit_area"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        app:layout_constraintBottom_toBottomOf="@id/dates_bar"
+                        app:layout_constraintLeft_toLeftOf="@id/dates_bar"
+                        app:layout_constraintRight_toRightOf="@id/dates_bar"
+                        app:layout_constraintTop_toTopOf="@id/dates_bar" />
+
+                    <ImageView
+                        android:id="@+id/add_date"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="7dp"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_add"
+                        app:layout_constraintBottom_toBottomOf="@id/dates_bar"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/dates_bar" />
+
+                    <ImageView
+                        android:id="@+id/expand_dates"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="7dp"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_expand"
+                        app:layout_constraintBottom_toBottomOf="@id/dates_bar"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/dates_bar"
+                        app:tint="@color/ProEvent_blue_800" />
+
+                    <LinearLayout
+                        android:id="@+id/dates_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/dates_bar">
+
+                        <TextView
+                            android:id="@+id/no_dates"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="60dp"
+                            android:backgroundTint="@color/ProEvent_blue_600"
+                            android:gravity="center"
+                            android:paddingTop="30dp"
+                            android:paddingBottom="10dp"
+                            android:text="Отсутствует.\nНажмите + чтобы добавить."
+                            android:textColor="@color/ProEvent_blue_800"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </LinearLayout>
+
+                    <TextView
                         android:id="@+id/description_bar"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
@@ -183,7 +257,7 @@
                         android:textSize="20sp"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toBottomOf="@id/dates_container" />
 
                     <View
                         android:id="@+id/description_bar_hit_area"
