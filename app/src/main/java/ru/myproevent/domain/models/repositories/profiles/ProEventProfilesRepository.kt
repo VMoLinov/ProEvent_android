@@ -39,79 +39,40 @@ class ProEventProfilesRepository @Inject constructor(
     }.subscribeOn(Schedulers.io())
 
     // TODO: ошибки здесь обрабатывабтся не правильно
-//<<<<<<< proev-285_refactoring
-//    override fun saveProfile(profile: Profile, newProfilePictureUri: Uri?): Completable =
-//        Completable.fromCallable {
-//            val newProfilePictureResponse = newProfilePictureUri?.let {
-//                imagesRepository.saveImage(File(it.path.orEmpty())).execute()
-//            }
-//            val profileDto = profile.toProfileDto()
-//            val oldProfileResponse = api.getProfile(profileDto.userId).execute()
-
-    override fun saveProfile(profile: ProfileDto): Completable =
+    override fun saveProfile(profile: Profile): Completable =
         Completable.fromCallable {
-            val oldProfileResponse = api.getProfile(profile.userId).execute()
+            val oldProfileResponse = api.getProfile(profile.id).execute()
             val newProfileResponse =
                 if (oldProfileResponse.isSuccessful) {
                     // TODO: это штука могла быть не Successful не только потому что профиля нет
                     val oldProfile = oldProfileResponse.body()!!
-                    if (profileDto.email == null) {
-                        profileDto.email = oldProfile.email
+                    if (profile.email == null) {
+                        profile.email = oldProfile.email
                     }
-                    if (profileDto.fullName == null) {
-                        profileDto.fullName = oldProfile.fullName
+                    if (profile.fullName == null) {
+                        profile.fullName = oldProfile.fullName
                     }
-                    if (profileDto.nickName == null) {
-                        profileDto.nickName = oldProfile.nickName
+                    if (profile.nickName == null) {
+                        profile.nickName = oldProfile.nickName
                     }
-                    if (profileDto.msisdn == null) {
-                        profileDto.msisdn = oldProfile.msisdn
+                    if (profile.phone == null) {
+                        profile.phone = oldProfile.phone
                     }
-                    if (profileDto.position == null) {
-                        profileDto.position = oldProfile.position
+                    if (profile.position == null) {
+                        profile.position = oldProfile.position
                     }
-                    if (profileDto.birthdate == null) {
-                        profileDto.birthdate = oldProfile.birthdate
+                    if (profile.birthdate == null) {
+                        profile.birthdate = oldProfile.birthdate
                     }
-                    if (profileDto.description == null) {
-                        profileDto.description = oldProfile.description
+                    if (profile.description == null) {
+                        profile.description = oldProfile.description
                     }
-//<<<<<<< proev-285_refactoring
-                    if (profileDto.imgUri == null) {
-                        profileDto.imgUri = oldProfile.imgUri
+                    if (profile.imgUri.isNullOrEmpty()) {
+                        profile.imgUri = oldProfile.imgUri
                     }
-                    if (newProfilePictureResponse != null) {
-                        if (newProfilePictureResponse.isSuccessful) {
-                            profileDto.imgUri = newProfilePictureResponse.body()!!.uuid
-                        } else {
-                            throw HttpException(newProfilePictureResponse)
-                        }
-                    }
-                    if (!oldProfile.imgUri.isNullOrBlank()) {
-                        with(imagesRepository.deleteImage(oldProfile.imgUri!!).execute()) {
-                            if (!isSuccessful) {
-                                throw HttpException(this)
-                            }
-                        }
-                    }
-                    api.editProfile(profileDto).execute()
+                    api.editProfile(profile).execute()
                 } else {
-                    if (newProfilePictureResponse != null) {
-                        if (newProfilePictureResponse.isSuccessful) {
-                            profileDto.imgUri = newProfilePictureResponse.body()!!.uuid
-                        } else {
-                            throw HttpException(newProfilePictureResponse)
-                        }
-                    }
-                    api.createProfile(profileDto).execute()
-// =======
-//                    if (profile.imgUri.isNullOrEmpty()) {
-//                        profile.imgUri = oldProfile.imgUri
-//                    }
-//                    api.editProfile(profile).execute()
-//                } else {
-//                    api.createProfile(profile).execute()
-// >>>>>>> master
+                    api.createProfile(profile).execute()
                 }
             if (!newProfileResponse.isSuccessful) {
                 throw HttpException(newProfileResponse)

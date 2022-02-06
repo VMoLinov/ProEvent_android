@@ -7,10 +7,8 @@ import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.entities.Contact
 
 interface IProEventProfilesRepository {
-    fun saveProfile(profile: Profile, newProfilePictureUri: Uri?) : Completable
-    fun getProfile(id: Long) : Single<Profile?>
     fun getMiniProfiles(ids: List<Long>) : Single<List<Profile>>
-    fun saveProfile(profile: ProfileDto): Completable
-    fun getProfile(id: Long): Single<ProfileDto?>
+    fun saveProfile(profile: Profile): Completable
+    fun getProfile(id: Long) : Single<Profile?>
     fun getContact(contactDto: ContactDto): Single<Contact>
 }

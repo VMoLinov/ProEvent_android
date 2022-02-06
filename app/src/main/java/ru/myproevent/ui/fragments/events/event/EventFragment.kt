@@ -17,6 +17,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.Window
 import android.view.inputmethod.InputMethodManager
@@ -53,15 +54,10 @@ import ru.myproevent.ui.views.KeyboardAwareTextInputEditText
 import java.io.File
 import java.util.*
 import kotlin.properties.Delegates
-import android.view.MotionEvent
-
-import android.os.SystemClock
 import android.widget.*
-
 import ru.myproevent.databinding.DialogDateEditOptionsBinding
 import ru.myproevent.databinding.ItemEventDateBinding
 import ru.myproevent.domain.models.entities.TimeInterval
-import ru.myproevent.domain.utils.*
 import java.text.SimpleDateFormat
 
 

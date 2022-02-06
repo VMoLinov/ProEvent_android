@@ -20,7 +20,6 @@ import ru.myproevent.R
 import ru.myproevent.databinding.FragmentAccountBinding
 import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.utils.PhoneTextWatcher
-import ru.myproevent.domain.models.ProfileDto
 import ru.myproevent.domain.utils.GlideLoader
 import ru.myproevent.ui.fragments.BaseMvpFragment
 import ru.myproevent.ui.presenters.main.RouterProvider
@@ -28,8 +27,6 @@ import ru.myproevent.ui.presenters.settings.account.AccountPresenter
 import ru.myproevent.ui.presenters.settings.account.AccountView
 import ru.myproevent.ui.views.CropImageHandler
 import ru.myproevent.ui.views.KeyboardAwareTextInputEditText
-import ru.myproevent.ui.views.cropimage.CropImageHandler
-import ru.myproevent.ui.views.cropimage.CropImageView
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -153,16 +150,6 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
         }
         setEditListeners(positionInput, positionEdit)
         setEditListeners(roleInput, roleEdit)
-        save.setOnClickListener {
-            presenter.saveProfile(
-                nameEdit.text.toString(),
-                "+7 ${phoneEdit.text.toString()}",
-                dateOfBirthEdit.text.toString(),
-                positionEdit.text.toString(),
-                roleEdit.text.toString(),
-                newPictureUri
-            )
-        }
         save.setOnClickListener { saveProfile(newPictureUUID) }
         titleButton.setOnClickListener { presenter.onBackPressed() }
         phoneEdit.addTextChangedListener(PhoneTextWatcher())
@@ -192,7 +179,7 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
     private fun saveProfile(uuid: String?) = with(binding) {
         presenter.saveProfile(
             nameEdit.text.toString(),
-            phoneEdit.text.toString(),
+            "+7 ${phoneEdit.text.toString()}",
             dateOfBirthEdit.text.toString(),
             positionEdit.text.toString(),
             roleEdit.text.toString(),

@@ -18,7 +18,6 @@ import ru.myproevent.ui.presenters.events.event.EventPresenter
 import ru.myproevent.ui.presenters.contacts.contact_add.ContactAddPresenter
 import ru.myproevent.ui.presenters.contacts.contacts_list.ContactsPresenter
 import ru.myproevent.ui.presenters.events.EventsPresenter
-import ru.myproevent.ui.presenters.events.event.EventPresenter
 import ru.myproevent.ui.presenters.events.event.addEventPlace.AddEventPlacePresenter
 import ru.myproevent.ui.presenters.events.event.confirmation.EventActionConfirmPresenter
 import ru.myproevent.ui.presenters.events.event.participant.EventParticipantPresenter

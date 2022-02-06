@@ -6,6 +6,7 @@ import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*
 import ru.myproevent.BuildConfig
+import ru.myproevent.domain.models.entities.Profile
 
 interface IProEventDataSource {
     @POST("auth/login")
@@ -21,13 +22,13 @@ interface IProEventDataSource {
     fun refreshCheckCode(@Body refreshBody: RefreshBody): Completable
 
     @POST("profiles")
-    fun createProfile(@Body profile: ProfileDto): Call<ProfileDto>
+    fun createProfile(@Body profile: Profile): Call<Profile>
 
     @PUT("profiles")
-    fun editProfile(@Body profile: ProfileDto): Call<ProfileDto>
+    fun editProfile(@Body profile: Profile): Call<Profile>
 
     @GET("profiles/user/{userId}")
-    fun getProfile(@Path("userId") userId: Long): Call<ProfileDto>
+    fun getProfile(@Path("userId") userId: Long): Call<Profile>
 
     @POST("profiles/list")
     fun getMiniProfiles(@Body ids: ProfileIdListDto): Call<List<ProfileMiniDto>>
@@ -116,17 +117,17 @@ data class NewPasswordBody(val code: Int, val email: String, val password: Strin
 
 data class UUIDBody(val uuid: String)
 
-data class ProfileDto(
-    var userId: Long,
-    var email: String? = null,
-    var fullName: String? = null,
-    var nickName: String? = null,
-    var msisdn: String? = null,
-    var position: String? = null,
-    var birthdate: String? = null,
-    var imgUri: String? = null,
-    var description: String? = null
-)
+//data class ProfileDto(
+//    var userId: Long,
+//    var email: String? = null,
+//    var fullName: String? = null,
+//    var nickName: String? = null,
+//    var msisdn: String? = null,
+//    var position: String? = null,
+//    var birthdate: String? = null,
+//    var imgUri: String? = null,
+//    var description: String? = null
+//)
 
 data class ProfileMiniDto(
     var userId: Long,

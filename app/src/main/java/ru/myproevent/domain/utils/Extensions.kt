@@ -6,7 +6,6 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import ru.myproevent.domain.models.ContactDto
 import ru.myproevent.domain.models.EventDto
-import ru.myproevent.domain.models.ProfileDto
 import ru.myproevent.domain.models.ProfileMiniDto
 import ru.myproevent.domain.models.entities.Address
 import ru.myproevent.domain.models.entities.Contact
@@ -20,17 +19,14 @@ fun ImageView.load(url: String) {
     Glide.with(context).load(url).into(this)
 }
 
-fun ProfileDto.toProfile() =
-    Profile(userId, email, fullName, nickName, msisdn, position, birthdate, imgUri, description)
+fun Profile.toProfile() =
+    Profile(id, email, fullName, nickName, phone, position, birthdate, imgUri, description)
 
 fun ProfileMiniDto.toProfile() =
     Profile(userId, null, fullName, nickName, null, null, null, imgUri, null)
 
 fun Profile.toProfileDto() =
-    ProfileDto(id, email, fullName, nickName, phone, position, birthdate, imgUri, description)
-
-fun ProfileDto.toContact(status: Status?) =
-    Contact(userId, status, email, fullName, nickName, msisdn, position, birthdate, imgUri, description)
+    Profile(id, email, fullName, nickName, phone, position, birthdate, imgUri, description)
 
 fun Profile.toContact(status: Status?) =
     Contact(id, status, email, fullName, nickName, phone, position, birthdate, imgUri, description)
