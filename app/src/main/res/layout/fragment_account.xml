@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/ProEvent_white"
@@ -10,7 +9,6 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/title_button"
         style="@style/ProEventSettingsButtonItem"
-        fontPath="@string/default_font_bold_path"
         android:layout_marginTop="25dp"
         android:text="@string/account_text"
         android:textAlignment="center"
@@ -34,6 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="3dp"
+                android:contentDescription="@string/profile_image"
                 android:src="@drawable/ic_profile_picture_placeholder_big" />
 
             <TextView
@@ -61,7 +60,7 @@
                     android:id="@+id/name_input_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
                     android:layout_marginBottom="4dp"
                     android:text="@string/name_input_title"
                     android:textColor="@color/ProEvent_bright_orange_500"
@@ -70,7 +69,8 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/name_input"
                     style="@style/ProEventRWTextInputLayoutStyle"
-                    android:clickable="true">
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
                         android:id="@+id/name_edit"
@@ -97,7 +97,7 @@
                     android:id="@+id/phone_input_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
                     android:layout_marginBottom="4dp"
                     android:text="@string/phone_input_title"
                     android:textColor="@color/ProEvent_bright_orange_500"
@@ -132,7 +132,7 @@
                     android:id="@+id/date_of_birth_input_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
                     android:layout_marginBottom="4dp"
                     android:text="@string/date_of_birth_input_title"
                     android:textColor="@color/ProEvent_bright_orange_500"
@@ -166,7 +166,7 @@
                     android:id="@+id/position_input_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
                     android:layout_marginBottom="4dp"
                     android:text="@string/position_input_title"
                     android:textColor="@color/ProEvent_bright_orange_500"
@@ -200,7 +200,7 @@
                     android:id="@+id/role_input_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
                     android:layout_marginBottom="4dp"
                     android:text="@string/role_input_title"
                     android:textColor="@color/ProEvent_bright_orange_500"

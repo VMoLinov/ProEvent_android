@@ -74,7 +74,7 @@ class SecurityPresenter(localRouter: Router) : BaseMvpPresenter<SecurityView>(lo
             this.nickName = login
         }
         profilesRepository
-            .saveProfile(userProfile!!, null)
+            .saveProfile(userProfile!!)
             .observeOn(uiScheduler)
             .subscribeWith(ProfileEditObserver())
             .disposeOnDestroy()

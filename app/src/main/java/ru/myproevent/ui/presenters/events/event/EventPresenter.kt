@@ -1,5 +1,8 @@
 package ru.myproevent.ui.presenters.events.event
 
+import android.util.Log
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
 import android.widget.Toast
 import com.github.terrakok.cicerone.Router
 import ru.myproevent.domain.models.entities.Profile
@@ -8,9 +11,11 @@ import ru.myproevent.domain.models.entities.Address
 import ru.myproevent.domain.models.entities.Event
 import ru.myproevent.domain.models.entities.TimeInterval
 import ru.myproevent.domain.models.repositories.events.IProEventEventsRepository
+import ru.myproevent.domain.models.repositories.images.IImagesRepository
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
+import java.io.File
 import java.util.*
 import javax.inject.Inject
 
@@ -30,12 +35,16 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
     @Inject
     lateinit var profilesRepository: IProEventProfilesRepository
 
+    @Inject
+    lateinit var imagesRepository: IImagesRepository
+
     fun addEvent(
         name: String,
         startDate: Date,
         endDate: Date,
         address: Address?,
         description: String,
+        uuid: String?,
         callback: ((Event?) -> Unit)? = null
     ) {
         eventsRepository
@@ -53,7 +62,7 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
                     address = address,
                     mapsFileIds = null,
                     pointsPointIds = null,
-                    imageFile = null
+                    imageFile = uuid
                 )
             )
             .observeOn(uiScheduler)
@@ -82,9 +91,23 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
             }).disposeOnDestroy()
     }
 
+    fun saveImage(file: File, callback: ((String?) -> Unit)? = null) {
+        imagesRepository
+            .saveImage(file)
+            .observeOn(uiScheduler)
+            .subscribe({
+                callback?.invoke(it.uuid)
+            }, {
+                callback?.invoke(null)
+            }).disposeOnDestroy()
+    }
+
+    fun deleteImage(uuid: String) {
+        imagesRepository.deleteImage(uuid).subscribe().disposeOnDestroy()
+    }
+
     fun finishEvent(event: Event) =
         localRouter.navigateTo(screens.eventActionConfirmation(event, Event.Status.COMPLETED))
-
 
     fun cancelEvent(event: Event) =
         localRouter.navigateTo(screens.eventActionConfirmation(event, Event.Status.CANCELLED))

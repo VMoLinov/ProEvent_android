@@ -1,6 +1,5 @@
 package ru.myproevent.domain.models.repositories.profiles
 
-import android.net.Uri
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -40,13 +39,18 @@ class ProEventProfilesRepository @Inject constructor(
     }.subscribeOn(Schedulers.io())
 
     // TODO: ошибки здесь обрабатывабтся не правильно
-    override fun saveProfile(profile: Profile, newProfilePictureUri: Uri?): Completable =
+//<<<<<<< proev-285_refactoring
+//    override fun saveProfile(profile: Profile, newProfilePictureUri: Uri?): Completable =
+//        Completable.fromCallable {
+//            val newProfilePictureResponse = newProfilePictureUri?.let {
+//                imagesRepository.saveImage(File(it.path.orEmpty())).execute()
+//            }
+//            val profileDto = profile.toProfileDto()
+//            val oldProfileResponse = api.getProfile(profileDto.userId).execute()
+
+    override fun saveProfile(profile: ProfileDto): Completable =
         Completable.fromCallable {
-            val newProfilePictureResponse = newProfilePictureUri?.let {
-                imagesRepository.saveImage(File(it.path.orEmpty())).execute()
-            }
-            val profileDto = profile.toProfileDto()
-            val oldProfileResponse = api.getProfile(profileDto.userId).execute()
+            val oldProfileResponse = api.getProfile(profile.userId).execute()
             val newProfileResponse =
                 if (oldProfileResponse.isSuccessful) {
                     // TODO: это штука могла быть не Successful не только потому что профиля нет
@@ -72,6 +76,7 @@ class ProEventProfilesRepository @Inject constructor(
                     if (profileDto.description == null) {
                         profileDto.description = oldProfile.description
                     }
+//<<<<<<< proev-285_refactoring
                     if (profileDto.imgUri == null) {
                         profileDto.imgUri = oldProfile.imgUri
                     }
@@ -99,6 +104,14 @@ class ProEventProfilesRepository @Inject constructor(
                         }
                     }
                     api.createProfile(profileDto).execute()
+// =======
+//                    if (profile.imgUri.isNullOrEmpty()) {
+//                        profile.imgUri = oldProfile.imgUri
+//                    }
+//                    api.editProfile(profile).execute()
+//                } else {
+//                    api.createProfile(profile).execute()
+// >>>>>>> master
                 }
             if (!newProfileResponse.isSuccessful) {
                 throw HttpException(newProfileResponse)

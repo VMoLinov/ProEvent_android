@@ -16,6 +16,7 @@ import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRep
 import ru.myproevent.domain.models.repositories.proevent_login.ProEventLoginRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
 import ru.myproevent.domain.models.repositories.profiles.ProEventProfilesRepository
+import ru.myproevent.domain.utils.GlideLoader
 import javax.inject.Singleton
 
 @Module

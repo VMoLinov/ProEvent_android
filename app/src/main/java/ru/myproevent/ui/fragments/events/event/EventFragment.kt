@@ -3,19 +3,26 @@ package ru.myproevent.ui.fragments.events.event
 import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.method.KeyListener
 import android.util.Log
-import android.view.*
+import android.view.MotionEvent
+import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.view.Window
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -33,6 +40,7 @@ import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.entities.Address
 import ru.myproevent.domain.models.entities.Contact
 import ru.myproevent.domain.models.entities.Event
+import ru.myproevent.domain.utils.*
 import ru.myproevent.ui.BackButtonListener
 import ru.myproevent.ui.fragments.BaseMvpFragment
 import ru.myproevent.ui.fragments.ProEventMessageDialog
@@ -40,7 +48,9 @@ import ru.myproevent.ui.presenters.events.event.EventPresenter
 import ru.myproevent.ui.presenters.events.event.EventView
 import ru.myproevent.ui.presenters.main.RouterProvider
 import ru.myproevent.ui.views.CenteredImageSpan
+import ru.myproevent.ui.views.CropImageHandler
 import ru.myproevent.ui.views.KeyboardAwareTextInputEditText
+import java.io.File
 import java.util.*
 import kotlin.properties.Delegates
 import android.view.MotionEvent
@@ -59,9 +69,9 @@ import java.text.SimpleDateFormat
 class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding::inflate),
     EventView, BackButtonListener {
     private var isFilterOptionsExpanded = false
-
     private var event: Event? = null
     private var address: Address? = null
+    private val imageLoader = GlideLoader().apply { ProEventApp.instance.appComponent.inject(this) }
 
     // TODO: копирует поле licenceTouchListener из RegistrationFragment
     private val filterOptionTouchListener = View.OnTouchListener { v, event ->
@@ -234,7 +244,6 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
         ) {
             presenter.addEventPlace(event?.address ?: address)
         }
-
         nameInput.setEndIconOnClickListener {
             presenter.unlockNameEdit()
             nameEdit.requestFocus()
@@ -342,7 +351,6 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
 
     private lateinit var defaultKeyListener: KeyListener
 
-
     private fun showKeyBoard(view: View) {
         val imm: InputMethodManager =
             requireContext().getSystemService(InputMethodManager::class.java)
@@ -432,7 +440,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             noParticipants.isVisible = true
             presenter.clearDates()
             presenter.clearParticipants()
-            setViewValues(event!!, layoutInflater)
+            setViewValues(event!!)
             lockDescriptionEdit()
         }
     }
@@ -575,9 +583,12 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
         }
     }
 
-    private fun setViewValues(event: Event, inflater: LayoutInflater) = with(binding) {
+    private fun setViewValues(event: Event) = with(binding) {
         with(event) {
             nameEdit.text = SpannableStringBuilder(name)
+            this.imageFile?.let {
+                imageLoader.loadCircle(eventImageView, it)
+            }
             address?.let { locationEdit.text = SpannableStringBuilder(it.addressLine) }
                 ?: this@EventFragment.address?.let {
                     locationEdit.text = SpannableStringBuilder(it.addressLine)
@@ -741,6 +752,17 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
         view.text = span
     }
 
+    private fun saveImageCallback(uuid: String?) {
+        if (event != null) {
+            event?.let {
+                it.imageFile = uuid
+                presenter.editEvent(it)
+            }
+        } else {
+            addEvent(uuid.orEmpty())
+        }
+    }
+
     private fun saveCallback(successEvent: Event?) {
         isSaveAvailable = true
         binding.save.setTextColor(resources.getColor(R.color.ProEvent_bright_orange_500))
@@ -766,11 +788,48 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
         descriptionContainer.visibility = VISIBLE
     }
 
+    private fun initImageCrop() {
+        CropImageHandler(
+            viewOnClick = binding.editEventImage,
+            pickImageCallback = { pickImageActivityContract, cropActivityResultLauncher ->
+                registerForActivityResult(pickImageActivityContract) {
+                    it.let { uri -> cropActivityResultLauncher.launch(uri) }
+                }
+            },
+            cropCallback = { cropActivityContract ->
+                registerForActivityResult(cropActivityContract) {
+                    it?.let { uri ->
+                        imageLoader.loadCircle(binding.eventImageView, uri)
+                        newPictureUri(uri)
+                    }
+                }
+            },
+            isCircle = true
+        ).init()
+    }
+
+    private fun addEvent(uuid: String?) {
+        presenter.addEvent(
+            binding.nameEdit.text.toString(),
+            Calendar.getInstance().time,
+            Calendar.getInstance().time,
+            address,
+            binding.descriptionText.text.toString(),
+            uuid,
+            ::saveCallback
+        )
+    }
+
+    private fun newPictureUri(uri: Uri) {
+        event?.imageFile?.let { presenter.deleteImage(it) }
+        presenter.saveImage(File(uri.path.orEmpty()), ::saveImageCallback)
+    }
+
     override fun onViewCreated(view: View, saved: Bundle?) {
         Log.d("[EventFragment]", "onViewCreated")
         super.onViewCreated(view, saved)
         statusBarHeight = extractStatusBarHeight()
-
+        initImageCrop()
         with(binding) {
             event?.let { title.text = it.name }
             title.setOnClickListener {
@@ -928,21 +987,12 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
                     it.endDate = Calendar.getInstance().time
                     it.description = descriptionText.text.toString()
                     presenter.editEvent(it, ::saveCallback)
-                } ?: run {
-                    presenter.addEvent(
-                        nameEdit.text.toString(),
-                        Calendar.getInstance().time,
-                        Calendar.getInstance().time,
-                        address,
-                        descriptionText.text.toString(),
-                        ::saveCallback
-                    )
-                }
+                } ?: run { addEvent(null) }
             }
             saveHitArea.setOnClickListener { save.performClick() }
             defaultKeyListener = nameEdit.keyListener
             if (event != null) {
-                setViewValues(event!!, layoutInflater)
+                setViewValues(event!!)
                 lockEdit(nameInput, nameEdit)
                 nameInput.setEndIconOnClickListener {
                     presenter.unlockNameEdit()

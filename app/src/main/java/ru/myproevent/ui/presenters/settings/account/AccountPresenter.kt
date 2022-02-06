@@ -1,6 +1,5 @@
 package ru.myproevent.ui.presenters.settings.account
 
-import android.net.Uri
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.github.terrakok.cicerone.Router
@@ -12,6 +11,7 @@ import ru.myproevent.domain.models.repositories.internet_access_info.IInternetAc
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
+import java.io.File
 import javax.inject.Inject
 
 class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(localRouter) {
@@ -69,7 +69,7 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
         dateOfBirth: String,
         position: String,
         role: String,
-        newProfilePictureUri: Uri?
+        uuid: String?
     ) {
         profilesRepository
             .saveProfile(
@@ -79,13 +79,29 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
                     phone = phone,
                     position = position,
                     birthdate = dateOfBirth,
-                    description = role
-                ),
-                newProfilePictureUri
+                    description = role,
+                    imgUri = uuid
+                )
             )
             .observeOn(uiScheduler)
             .subscribeWith(ProfileEditObserver())
             .disposeOnDestroy()
+    }
+
+    fun saveImage(file: File, callback: ((String?) -> Unit)? = null) {
+        imagesRepository
+            .saveImage(file)
+            .observeOn(uiScheduler)
+            .subscribe({
+                callback?.invoke(it.uuid)
+            }, {
+                callback?.invoke(null)
+            })
+            .disposeOnDestroy()
+    }
+
+    fun deleteImage(uuid: String) {
+        imagesRepository.deleteImage(uuid).subscribe().disposeOnDestroy()
     }
 
     fun getProfile() {
@@ -95,12 +111,4 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
             .subscribeWith(ProfileGetObserver())
             .disposeOnDestroy()
     }
-
-    // TODO: вынести URL в ресурсы или константы
-    fun getGlideUrl(uuid: String) = GlideUrl(
-        "http://178.249.69.107:8762/api/v1/storage/$uuid",
-        LazyHeaders.Builder()
-            .addHeader("Authorization", "Bearer ${loginRepository.getLocalToken()}")
-            .build()
-    )
 }
