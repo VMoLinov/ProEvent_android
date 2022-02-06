@@ -5,11 +5,9 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import kotlinx.parcelize.Parcelize
 import okhttp3.MultipartBody
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
 import ru.myproevent.BuildConfig
-import java.io.File
 
 interface IProEventDataSource {
     @POST("auth/login")
@@ -84,10 +82,10 @@ interface IProEventDataSource {
     fun saveImage(
         @Part("file") name: String,
         @Part image: MultipartBody.Part
-    ): Call<UUIDBody>
+    ): Single<UUIDBody>
 
     @DELETE("storage/{uuid}")
-    fun deleteImage(@Path("uuid") uuid: String): Call<ResponseBody>
+    fun deleteImage(@Path("uuid") uuid: String): Completable
 
     @POST
     @Headers(

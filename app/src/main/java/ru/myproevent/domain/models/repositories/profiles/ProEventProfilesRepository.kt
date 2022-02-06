@@ -1,6 +1,5 @@
 package ru.myproevent.domain.models.repositories.profiles
 
-import android.net.Uri
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -12,8 +11,6 @@ import ru.myproevent.domain.models.entities.Contact
 import ru.myproevent.domain.models.entities.Contact.Status
 import ru.myproevent.domain.models.repositories.images.IImagesRepository
 import ru.myproevent.domain.utils.toContact
-import java.io.File
-import java.util.*
 import javax.inject.Inject
 
 class ProEventProfilesRepository @Inject constructor(
@@ -30,11 +27,8 @@ class ProEventProfilesRepository @Inject constructor(
     }.subscribeOn(Schedulers.io())
 
     // TODO: ошибки здесь обрабатывабтся не правильно
-    override fun saveProfile(profile: ProfileDto, newProfilePictureUri: Uri?): Completable =
+    override fun saveProfile(profile: ProfileDto): Completable =
         Completable.fromCallable {
-            val newProfilePictureResponse = newProfilePictureUri?.let {
-                imagesRepository.saveImage(File(it.path.orEmpty())).execute()
-            }
             val oldProfileResponse = api.getProfile(profile.userId).execute()
             val newProfileResponse =
                 if (oldProfileResponse.isSuccessful) {
@@ -61,32 +55,11 @@ class ProEventProfilesRepository @Inject constructor(
                     if (profile.description == null) {
                         profile.description = oldProfile.description
                     }
-                    if (profile.imgUri == null) {
+                    if (profile.imgUri.isNullOrEmpty()) {
                         profile.imgUri = oldProfile.imgUri
-                    }
-                    if (newProfilePictureResponse != null) {
-                        if (newProfilePictureResponse.isSuccessful) {
-                            profile.imgUri = newProfilePictureResponse.body()!!.uuid
-                        } else {
-                            throw HttpException(newProfilePictureResponse)
-                        }
-                    }
-                    if (!oldProfile.imgUri.isNullOrBlank()) {
-                        with(imagesRepository.deleteImage(oldProfile.imgUri!!).execute()) {
-                            if (!isSuccessful) {
-                                throw HttpException(this)
-                            }
-                        }
                     }
                     api.editProfile(profile).execute()
                 } else {
-                    if (newProfilePictureResponse != null) {
-                        if (newProfilePictureResponse.isSuccessful) {
-                            profile.imgUri = newProfilePictureResponse.body()!!.uuid
-                        } else {
-                            throw HttpException(newProfilePictureResponse)
-                        }
-                    }
                     api.createProfile(profile).execute()
                 }
             if (!newProfileResponse.isSuccessful) {

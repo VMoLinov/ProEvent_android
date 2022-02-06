@@ -19,7 +19,7 @@ class LoginPresenter(localRouter: Router) : BaseMvpPresenter<LoginView>(localRou
                     ProfileDto(
                         userId = loginRepository.getLocalId()!!,
                         nickName = login
-                    ), null
+                    )
                 )
                 .observeOn(uiScheduler)
                 .subscribeWith(LoginSaveObserver())

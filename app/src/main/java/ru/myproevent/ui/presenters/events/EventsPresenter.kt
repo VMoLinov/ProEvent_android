@@ -3,6 +3,7 @@ package ru.myproevent.ui.presenters.events
 import com.github.terrakok.cicerone.Router
 import ru.myproevent.domain.models.entities.Event
 import ru.myproevent.domain.models.repositories.events.IProEventEventsRepository
+import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
 import ru.myproevent.ui.presenters.events.adapter.IEventsListPresenter
 import java.text.SimpleDateFormat
@@ -13,6 +14,9 @@ class EventsPresenter(localRouter: Router) : BaseMvpPresenter<EventsView>(localR
 
     @Inject
     lateinit var eventsRepository: IProEventEventsRepository
+
+    @Inject
+    lateinit var loginRepository: IProEventLoginRepository
 
     inner class EventsListPresenter(
         private val itemClickListener: ((Event) -> Unit)? = null,
@@ -29,6 +33,7 @@ class EventsPresenter(localRouter: Router) : BaseMvpPresenter<EventsView>(localR
             val event = events[view.pos]
             view.setName(event.name)
             view.setTime(formatDate(event.startDate, event.endDate))
+            view.loadImg(event.imageFile)
         }
 
         override fun onEditButtonClick(view: IEventItemView) {
