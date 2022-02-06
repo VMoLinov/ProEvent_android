@@ -2,7 +2,7 @@ package ru.myproevent.ui.screens
 
 import com.github.terrakok.cicerone.Screen
 import com.github.terrakok.cicerone.androidx.FragmentScreen
-import ru.myproevent.domain.models.ProfileDto
+import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.entities.Address
 import ru.myproevent.domain.models.entities.Contact
 import ru.myproevent.domain.models.entities.Event
@@ -37,7 +37,7 @@ class Screens : IScreens {
     override fun account() = FragmentScreen { AccountFragment.newInstance() }
     override fun security() = FragmentScreen { SecurityFragment.newInstance() }
     override fun contacts() = FragmentScreen { ContactsFragment.newInstance() }
-    override fun contact(contact: Contact): Screen = FragmentScreen { ContactFragment.newInstance(contact) }
+    override fun contact(profileId: Long): Screen = FragmentScreen { ContactFragment.newInstance(profileId) }
     override fun contactAdd(): Screen = FragmentScreen { ContactAddFragment.newInstance() }
     override fun chat() = FragmentScreen { ChatFragment.newInstance() }
     override fun chat1() = FragmentScreen { Chat1Fragment.newInstance() }
@@ -51,6 +51,6 @@ class Screens : IScreens {
     override fun participantFromContactsPicker(participantsIds: List<Long>) = FragmentScreen { ParticipantFromContactsPickerFragment.newInstance(participantsIds) }
     override fun participantByEmailPicker() = FragmentScreen { ParticipantByEmailPickerFragment.newInstance() }
     override fun addEventPlace(address: Address?): Screen = FragmentScreen { AddEventPlaceFragment.newInstance(address)}
-    override fun eventParticipant(profileDto: ProfileDto) = FragmentScreen { EventParticipantFragment.newInstance(profileDto) }
+    override fun eventParticipant(profile: Profile) = FragmentScreen { EventParticipantFragment.newInstance(profile) }
     override fun newPassword(email: String) = FragmentScreen { NewPasswordFragment.newInstance(email) }
 }

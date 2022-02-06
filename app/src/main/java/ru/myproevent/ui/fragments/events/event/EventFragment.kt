@@ -36,7 +36,7 @@ import ru.myproevent.ProEventApp
 import ru.myproevent.R
 import ru.myproevent.databinding.FragmentEventBinding
 import ru.myproevent.databinding.ItemContactBinding
-import ru.myproevent.domain.models.ProfileDto
+import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.entities.Address
 import ru.myproevent.domain.models.entities.Contact
 import ru.myproevent.domain.models.entities.Event
@@ -90,14 +90,14 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
     }
 
     private fun showFilterOptions() {
-        Log.d("[MYLOG]", "eventStatus: ${event!!.eventStatus}")
+        Log.d("[MYLOG]", "eventStatus: ${event!!.status}")
         isFilterOptionsExpanded = true
         with(binding) {
             //searchEdit.hideKeyBoard() // TODO: нужно вынести это в вызов предществующий данному, чтобы тень при скрытии клавиатуры отображалась корректно
             shadow.visibility = VISIBLE
             copyEvent.visibility = VISIBLE
             if (event!!.ownerUserId == presenter.loginRepository.getLocalId()) {
-                if (event!!.eventStatus != Event.Status.CANCELLED && event!!.eventStatus != Event.Status.COMPLETED) {
+                if (event!!.status != Event.Status.CANCELLED && event!!.status != Event.Status.COMPLETED) {
                     // TODO: появляется только если прошла последняя дата проведения, данные об этом получать с сервера
                     // finishEvent.visibility = VISIBLE
                     cancelEvent.visibility = VISIBLE
@@ -673,8 +673,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             presenter.showEditOptions()
             binding.participantsContainer.isVisible = true
             val participantsContacts = bundle.getParcelableArray(CONTACTS_KEY)!! as Array<Contact>
-            presenter.addParticipantsProfiles(participantsContacts.map { it.toProfileDto() }
-                .toTypedArray())
+            presenter.addParticipantsProfiles(participantsContacts.map { it }.toTypedArray())
         }
 
         parentFragmentManager.setFragmentResultListener(
@@ -702,19 +701,19 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
 
     private var isSaveAvailable = true
 
-    override fun addParticipantItemView(profileDto: ProfileDto) {
-        Log.d("[REMOVE]", "addParticipantItemView profileDto id(${profileDto.userId})")
+    override fun addParticipantItemView(profile: Profile) {
+        Log.d("[REMOVE]", "addParticipantItemView profileDto id(${profile.id})")
         val view = ItemContactBinding.inflate(layoutInflater)
-        profileDto.fullName?.let {
-            view.tvName.text = "#${profileDto.userId} $it"
-        } ?: profileDto.nickName?.let {
-            view.tvName.text = "#${profileDto.userId} $it"
+        profile.fullName?.let {
+            view.tvName.text = "#${profile.id} $it"
+        } ?: profile.nickName?.let {
+            view.tvName.text = "#${profile.id} $it"
         } ?: run {
-            view.tvName.text = "#${profileDto.userId}"
+            view.tvName.text = "#${profile.id}"
         }
-        view.tvDescription.text = profileDto.description
+        view.tvDescription.text = profile.description
         view.root.setOnClickListener {
-            presenter.openParticipant(profileDto)
+            presenter.openParticipant(profile)
         }
         binding.participantsContainer.addView(view.root)
         binding.noParticipants.isVisible = false

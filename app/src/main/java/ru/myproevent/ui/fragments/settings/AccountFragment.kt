@@ -3,7 +3,6 @@ package ru.myproevent.ui.fragments.settings
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.telephony.PhoneNumberFormattingTextWatcher
 import android.text.SpannableStringBuilder
 import android.text.method.KeyListener
 import android.view.View
@@ -19,6 +18,8 @@ import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.R
 import ru.myproevent.databinding.FragmentAccountBinding
+import ru.myproevent.domain.models.entities.Profile
+import ru.myproevent.domain.utils.PhoneTextWatcher
 import ru.myproevent.domain.models.ProfileDto
 import ru.myproevent.domain.utils.GlideLoader
 import ru.myproevent.ui.fragments.BaseMvpFragment
@@ -27,6 +28,8 @@ import ru.myproevent.ui.presenters.settings.account.AccountPresenter
 import ru.myproevent.ui.presenters.settings.account.AccountView
 import ru.myproevent.ui.views.CropImageHandler
 import ru.myproevent.ui.views.KeyboardAwareTextInputEditText
+import ru.myproevent.ui.views.cropimage.CropImageHandler
+import ru.myproevent.ui.views.cropimage.CropImageView
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -113,8 +116,10 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
         textInput: TextInputLayout,
         textEdit: KeyboardAwareTextInputEditText
     ) {
+        textEdit.isFocusableInTouchMode = false
         textEdit.keyListener = null
         textInput.setEndIconOnClickListener {
+            textEdit.isFocusableInTouchMode = true
             textEdit.keyListener = phoneKeyListener
             textEdit.requestFocus()
             showKeyBoard(textEdit)
@@ -148,16 +153,19 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
         }
         setEditListeners(positionInput, positionEdit)
         setEditListeners(roleInput, roleEdit)
+        save.setOnClickListener {
+            presenter.saveProfile(
+                nameEdit.text.toString(),
+                "+7 ${phoneEdit.text.toString()}",
+                dateOfBirthEdit.text.toString(),
+                positionEdit.text.toString(),
+                roleEdit.text.toString(),
+                newPictureUri
+            )
+        }
         save.setOnClickListener { saveProfile(newPictureUUID) }
         titleButton.setOnClickListener { presenter.onBackPressed() }
-        phoneEdit.addTextChangedListener(PhoneNumberFormattingTextWatcher())
-        phoneEdit.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                if (phoneEdit.text.isNullOrEmpty()) {
-                    phoneEdit.text = SpannableStringBuilder("+7")
-                }
-            }
-        }
+        phoneEdit.addTextChangedListener(PhoneTextWatcher())
         presenter.getProfile()
     }
 
@@ -202,11 +210,11 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
         presenter.saveImage(File(uri.path.orEmpty()), ::saveCallBack)
     }
 
-    override fun showProfile(profileDto: ProfileDto) {
+    override fun showProfile(profile: Profile) {
         with(binding) {
-            with(profileDto) {
+            with(profile) {
                 fullName?.let { nameEdit.text = SpannableStringBuilder(it) }
-                msisdn?.let { phoneEdit.text = SpannableStringBuilder(it) }
+                phone?.let { phoneEdit.setText(it.subSequence(3, it.length)) }
                 birthdate?.let { dateOfBirthEdit.text = SpannableStringBuilder(it) }
                 position?.let { positionEdit.text = SpannableStringBuilder(it) }
                 description?.let { roleEdit.text = SpannableStringBuilder(it) }

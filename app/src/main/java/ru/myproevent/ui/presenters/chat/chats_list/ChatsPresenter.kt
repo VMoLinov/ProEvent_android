@@ -47,7 +47,7 @@ class ChatsPresenter(localRouter: Router) : BaseMvpPresenter<ChatsView>(localRou
         fun filter(status: Event.Status) {
             eventFilter = status
             events = if (status == Event.Status.ALL) allEvents
-            else allEvents.filter { it.eventStatus == status }
+            else allEvents.filter { it.status == status }
             viewState.updateList()
         }
 

@@ -5,7 +5,7 @@ import com.bumptech.glide.load.model.LazyHeaders
 import com.github.terrakok.cicerone.Router
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableSingleObserver
-import ru.myproevent.domain.models.ProfileDto
+import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.repositories.images.IImagesRepository
 import ru.myproevent.domain.models.repositories.internet_access_info.IInternetAccessInfoRepository
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
@@ -30,9 +30,9 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
         }
     }
 
-    private inner class ProfileGetObserver : DisposableSingleObserver<ProfileDto>() {
-        override fun onSuccess(profileDto: ProfileDto) {
-            viewState.showProfile(profileDto)
+    private inner class ProfileGetObserver : DisposableSingleObserver<Profile>() {
+        override fun onSuccess(profile: Profile) {
+            viewState.showProfile(profile)
         }
 
         override fun onError(error: Throwable) {
@@ -73,10 +73,10 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
     ) {
         profilesRepository
             .saveProfile(
-                ProfileDto(
-                    userId = loginRepository.getLocalId()!!,
+                Profile(
+                    id = loginRepository.getLocalId()!!,
                     fullName = name,
-                    msisdn = phone,
+                    phone = phone,
                     position = position,
                     birthdate = dateOfBirth,
                     description = role,

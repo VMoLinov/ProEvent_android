@@ -13,7 +13,7 @@ import com.google.android.material.textfield.TextInputLayout
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.databinding.FragmentSecurityBinding
-import ru.myproevent.domain.models.ProfileDto
+import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.ui.fragments.BaseMvpFragment
 import ru.myproevent.ui.presenters.main.RouterProvider
 import ru.myproevent.ui.presenters.settings.security.SecurityPresenter
@@ -85,9 +85,9 @@ class SecurityFragment : BaseMvpFragment<FragmentSecurityBinding>(FragmentSecuri
         presenter.getProfile()
     }
 
-    override fun showProfile(profileDto: ProfileDto) {
+    override fun showProfile(profile: Profile) {
         with(binding) {
-            with(profileDto) {
+            with(profile) {
                 email?.let { emailEdit.text = SpannableStringBuilder(it) }
                 nickName?.let { loginEdit.text = SpannableStringBuilder(it) }
             }

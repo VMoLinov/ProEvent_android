@@ -2,14 +2,14 @@ package ru.myproevent.ui.presenters.events.event
 
 import moxy.viewstate.strategy.alias.AddToEnd
 import moxy.viewstate.strategy.alias.OneExecution
-import ru.myproevent.domain.models.ProfileDto
+import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.entities.Event
 import ru.myproevent.domain.models.entities.TimeInterval
 import ru.myproevent.ui.presenters.BaseMvpView
 
 @AddToEnd
 interface EventView : BaseMvpView {
-    fun addParticipantItemView(profileDto: ProfileDto)
+    fun addParticipantItemView(profile: Profile)
     fun addDateItemView(timeInterval: TimeInterval, position: Int)
     fun enableDescriptionEdit()
     fun expandDescription()
