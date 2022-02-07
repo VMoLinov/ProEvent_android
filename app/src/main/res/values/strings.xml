@@ -168,4 +168,6 @@
         <item>Раз в месяц</item>
         <item>Раз в год</item>
     </string-array>
+    <string name="cancel">Отмена</string>
+    <string name="save">Сохранить</string>
 </resources>
