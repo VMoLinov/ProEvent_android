@@ -142,4 +142,6 @@
     <string name="event_cancel_event">Отменить мероприятие</string>
     <string name="event_delete_event">Удалить мероприятие</string>
     <string name="event_item_edit_event">Edit event</string>
+    <string name="cancel">Отмена</string>
+    <string name="save">Сохранить</string>
 </resources>

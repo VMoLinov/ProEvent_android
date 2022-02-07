@@ -15,8 +15,13 @@ import java.io.File
 import javax.inject.Inject
 
 class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(localRouter) {
-    private inner class ProfileEditObserver : DisposableCompletableObserver() {
+    private var curProfile: Profile? = null
+
+    private inner class ProfileEditObserver(private var profile: Profile) :
+        DisposableCompletableObserver() {
         override fun onComplete() {
+            curProfile = profile
+            viewState.showProfile(profile)
             viewState.showMessage("Изменения сохранены")
         }
 
@@ -31,8 +36,9 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
     }
 
     private inner class ProfileGetObserver : DisposableSingleObserver<Profile>() {
-        override fun onSuccess(profile: Profile) {
-            viewState.showProfile(profile)
+        override fun onSuccess(profileDto: Profile) {
+            curProfile = profileDto
+            viewState.showProfile(profileDto)
         }
 
         override fun onError(error: Throwable) {
@@ -71,20 +77,19 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
         role: String,
         uuid: String?
     ) {
+        val profile = Profile(
+            id = loginRepository.getLocalId()!!,
+            fullName = name,
+            phone = phone,
+            position = position,
+            birthdate = dateOfBirth,
+            description = role,
+            imgUri = uuid
+        )
         profilesRepository
-            .saveProfile(
-                Profile(
-                    id = loginRepository.getLocalId()!!,
-                    fullName = name,
-                    phone = phone,
-                    position = position,
-                    birthdate = dateOfBirth,
-                    description = role,
-                    imgUri = uuid
-                )
-            )
+            .saveProfile(profile)
             .observeOn(uiScheduler)
-            .subscribeWith(ProfileEditObserver())
+            .subscribeWith(ProfileEditObserver(profile))
             .disposeOnDestroy()
     }
 
@@ -111,4 +116,14 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
             .subscribeWith(ProfileGetObserver())
             .disposeOnDestroy()
     }
+
+    // TODO: вынести URL в ресурсы или константы
+    fun getGlideUrl(uuid: String) = GlideUrl(
+        "http://178.249.69.107:8762/api/v1/storage/$uuid",
+        LazyHeaders.Builder()
+            .addHeader("Authorization", "Bearer ${loginRepository.getLocalToken()}")
+            .build()
+    )
+
+    fun cancelEdit() = curProfile?.let { viewState.showProfile(it) }
 }

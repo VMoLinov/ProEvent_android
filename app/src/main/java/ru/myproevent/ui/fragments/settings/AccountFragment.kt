@@ -1,5 +1,6 @@
 package ru.myproevent.ui.fragments.settings
 
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -7,13 +8,17 @@ import android.text.SpannableStringBuilder
 import android.text.method.KeyListener
 import android.util.Log
 import android.view.View
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.textfield.TextInputLayout.END_ICON_CUSTOM
 import com.google.android.material.textfield.TextInputLayout.END_ICON_NONE
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
@@ -70,6 +75,7 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
                     val gregorianCalendar = GregorianCalendar(
                         year, month, dayOfMonth
                     )
+                    binding.dateOfBirthInput.endIconMode = END_ICON_NONE
                     this@AccountFragment.binding.dateOfBirthEdit.text = SpannableStringBuilder(
                         // TODO: для вывода сделать local date format
                         SimpleDateFormat(getString(R.string.dateFormat)).apply {
@@ -99,6 +105,7 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
         textInput: TextInputLayout,
         textEdit: KeyboardAwareTextInputEditText
     ) {
+        setEditIcon(textInput)
         textEdit.keyListener = null
         textInput.setEndIconOnClickListener {
             textEdit.keyListener = defaultKeyListener
@@ -106,14 +113,20 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
             showKeyBoard(textEdit)
             textEdit.text?.let { it1 -> textEdit.setSelection(it1.length) }
             textInput.endIconMode = END_ICON_NONE
-            binding.save.visibility = VISIBLE
+            binding.groupEdit.visibility = VISIBLE
         }
+    }
+
+    private fun setEditIcon(textInput: TextInputLayout) {
+        textInput.endIconMode = END_ICON_CUSTOM
+        textInput.endIconDrawable = requireContext().getDrawable(R.drawable.ic_edit)
     }
 
     private fun setPhoneListeners(
         textInput: TextInputLayout,
         textEdit: KeyboardAwareTextInputEditText
     ) {
+        setEditIcon(textInput)
         textEdit.isFocusableInTouchMode = false
         textEdit.keyListener = null
         textInput.setEndIconOnClickListener {
@@ -123,7 +136,7 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
             showKeyBoard(textEdit)
             textEdit.text?.let { it1 -> textEdit.setSelection(it1.length) }
             textInput.endIconMode = END_ICON_NONE
-            binding.save.visibility = VISIBLE
+            binding.groupEdit.visibility = VISIBLE
         }
     }
 
@@ -133,28 +146,18 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
         // TODO Передавать фрагмент слишком жирно, нужно придумать что проще
         initCrop()
         defaultKeyListener = nameEdit.keyListener
-        setEditListeners(nameInput, nameEdit)
         phoneKeyListener = phoneEdit.keyListener
-        setPhoneListeners(phoneInput, phoneEdit)
         dateOfBirthEdit.keyListener = null
         dateOfBirthEdit.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 dateOfBirthEdit.performClick()
             }
         }
-        dateOfBirthInput.setEndIconOnClickListener {
-            dateOfBirthEdit.requestFocus()
-            dateOfBirthEdit.setOnClickListener(dateEditClickListener)
-            dateOfBirthEdit.performClick()
-            dateOfBirthInput.endIconMode = END_ICON_NONE
-            save.visibility = VISIBLE
-        }
-        setEditListeners(positionInput, positionEdit)
-        setEditListeners(roleInput, roleEdit)
         save.setOnClickListener { saveProfile(newPictureUUID) }
         titleButton.setOnClickListener { presenter.onBackPressed() }
         phoneEdit.addTextChangedListener(PhoneTextWatcher())
         presenter.getProfile()
+        cancel.setOnClickListener { presenter.cancelEdit() }
     }
 
     private fun initCrop() {
@@ -212,6 +215,28 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
                     newPictureUUID = it
                     imageLoader.loadCircle(binding.userImageView, it)
                 }
+                groupEdit.visibility = GONE
+
+                initEditListeners()
+            }
+        }
+    }
+
+    private fun initEditListeners() {
+        with(binding) {
+            setEditListeners(nameInput, nameEdit)
+            setPhoneListeners(phoneInput, phoneEdit)
+            setEditListeners(positionInput, positionEdit)
+            setEditListeners(roleInput, roleEdit)
+
+            dateOfBirthEdit.keyListener = null
+            setEditIcon(dateOfBirthInput)
+            dateOfBirthInput.setEndIconOnClickListener {
+                dateOfBirthEdit.isFocusableInTouchMode = false
+                dateOfBirthEdit.requestFocus()
+                dateOfBirthEdit.setOnClickListener(dateEditClickListener)
+                dateOfBirthEdit.performClick()
+                groupEdit.visibility = VISIBLE
             }
         }
     }
@@ -223,5 +248,9 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
 
     companion object {
         fun newInstance() = AccountFragment()
+    }
+
+    override fun showMessage(message: String) {
+        Toast.makeText(ProEventApp.instance, message, Toast.LENGTH_LONG).show()
     }
 }
