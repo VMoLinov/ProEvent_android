@@ -126,9 +126,4 @@ class ProEventLoginRepository @Inject constructor(private val api: IProEventData
         val decodedBytes: ByteArray = Base64.decode(str, Base64.URL_SAFE)
         return String(decodedBytes, Charsets.UTF_8)
     }
-
-    override fun getEmailHint(part_email: String): Single<List<Suggestion>> {
-        return api.getEmailHint(HintRequest(part_email)).map { it.suggestions }
-            .subscribeOn(Schedulers.io())
-    }
 }
