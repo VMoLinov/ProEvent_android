@@ -2,14 +2,14 @@ package ru.myproevent.ui.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.AutoCompleteTextView
-import android.widget.TextView.OnEditorActionListener
+import android.widget.ArrayAdapter
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
-import com.google.android.material.textfield.TextInputEditText
+import com.jakewharton.rxbinding2.widget.RxTextView
+import ru.myproevent.domain.models.Suggestion
+import java.util.concurrent.TimeUnit
 
 
 // В отличии от TextInputEditText теряет фокус когда клавиатура скрыта
@@ -19,6 +19,8 @@ class KeyboardAwareAutoCompleteTextView : AppCompatAutoCompleteTextView {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+
+    var adapter: ArrayAdapter<String>? = null
 
     override fun onEditorAction(actionCode: Int) {
         super.onEditorAction(actionCode)
@@ -56,5 +58,21 @@ class KeyboardAwareAutoCompleteTextView : AppCompatAutoCompleteTextView {
     override fun onSelectionChanged(selStart: Int, selEnd: Int) {
         super.onSelectionChanged(selStart, selEnd)
         selectionChangedListener?.let { it(selStart, selEnd) }
+    }
+
+    fun initHints(searchHints: (String) -> Unit) {
+        adapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, arrayOf())
+        setAdapter(adapter)
+        RxTextView.textChangeEvents(this)
+            .debounce(500, TimeUnit.MILLISECONDS)
+            .subscribe {
+                searchHints(it.text().toString())
+            }
+    }
+
+    fun setEmailHint(emailSuggestion: List<Suggestion>) {
+        adapter?.clear()
+        adapter?.addAll(emailSuggestion.map { it.value })
+        adapter?.filter?.filter("", null);
     }
 }

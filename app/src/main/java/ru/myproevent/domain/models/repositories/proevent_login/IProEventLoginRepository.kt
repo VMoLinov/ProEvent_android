@@ -17,5 +17,5 @@ interface IProEventLoginRepository {
     fun refreshCheckCode(email: String): Completable
     fun resetPassword(email: String): Completable
     fun setNewPassword(code: Int, email: String, password: String): Completable
-    fun getEmailHint(part_email: String): Single<List<Suggestion>>
+
 }
