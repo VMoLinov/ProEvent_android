@@ -1,5 +1,6 @@
 package ru.myproevent.ui.views
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.KeyEvent
@@ -60,10 +61,12 @@ class KeyboardAwareAutoCompleteTextView : AppCompatAutoCompleteTextView {
         selectionChangedListener?.let { it(selStart, selEnd) }
     }
 
+    @SuppressLint("CheckResult")
     fun initHints(searchHints: (String) -> Unit) {
         adapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, arrayOf())
         setAdapter(adapter)
         RxTextView.textChangeEvents(this)
+            .filter { it.text().isNotEmpty() }
             .debounce(500, TimeUnit.MILLISECONDS)
             .subscribe {
                 searchHints(it.text().toString())
