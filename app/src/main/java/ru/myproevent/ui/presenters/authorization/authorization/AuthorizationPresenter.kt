@@ -1,7 +1,9 @@
 package ru.myproevent.ui.presenters.authorization.authorization
 
+import android.util.Log
 import com.github.terrakok.cicerone.Router
 import io.reactivex.observers.DisposableCompletableObserver
+import ru.myproevent.domain.models.repositories.email_hint.IEmailHintRepository
 import ru.myproevent.domain.models.repositories.internet_access_info.IInternetAccessInfoRepository
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
@@ -13,6 +15,9 @@ class AuthorizationPresenter(localRouter: Router) : BaseMvpPresenter<Authorizati
 
     @Inject
     lateinit var interAccessInfoRepository: IInternetAccessInfoRepository
+
+    @Inject
+    lateinit var emailHintRepository: IEmailHintRepository
 
     private inner class LoginObserver : DisposableCompletableObserver() {
         override fun onComplete() {
@@ -50,5 +55,14 @@ class AuthorizationPresenter(localRouter: Router) : BaseMvpPresenter<Authorizati
 
     fun recoverPassword() {
         localRouter.navigateTo(screens.recovery())
+    }
+
+    fun typedEmail(partEmail: String) {
+        emailHintRepository.getEmailHint(partEmail)
+            .observeOn(uiScheduler)
+            .subscribe(
+                { viewState.setEmailHint(it) },
+                { Log.e("EMAIL_HINT", it.localizedMessage ?: "") }
+            ).disposeOnDestroy()
     }
 }
