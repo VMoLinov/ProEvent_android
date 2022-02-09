@@ -2,6 +2,7 @@ package ru.myproevent.ui.views
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
@@ -19,9 +20,15 @@ class KeyboardAwareAutoCompleteTextView : AppCompatAutoCompleteTextView {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
-    var adapter: ArrayAdapter<String>? = null
+    private var adapter: ArrayAdapter<String>? = null
+    private var searchHints: ((String) -> Unit)? = null
+
 
     override fun onEditorAction(actionCode: Int) {
         super.onEditorAction(actionCode)
@@ -63,6 +70,7 @@ class KeyboardAwareAutoCompleteTextView : AppCompatAutoCompleteTextView {
 
     @SuppressLint("CheckResult")
     fun initHints(searchHints: (String) -> Unit) {
+        this.searchHints = searchHints
         adapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, arrayOf())
         setAdapter(adapter)
         RxTextView.textChangeEvents(this)
@@ -76,6 +84,17 @@ class KeyboardAwareAutoCompleteTextView : AppCompatAutoCompleteTextView {
     fun setEmailHint(emailSuggestion: List<Suggestion>) {
         adapter?.clear()
         adapter?.addAll(emailSuggestion.map { it.value })
-        adapter?.filter?.filter("", null);
+        if (!(emailSuggestion.size == 1 && emailSuggestion[0].value == text.toString())) {
+            adapter?.filter?.filter("", null)
+            showDropDown()
+        }
     }
+
+    override fun onFocusChanged(focused: Boolean, direction: Int, previouslyFocusedRect: Rect?) {
+        super.onFocusChanged(focused, direction, previouslyFocusedRect)
+        if (focused && filter != null) {
+            searchHints?.let { it(text.toString()) }
+        }
+    }
+
 }
