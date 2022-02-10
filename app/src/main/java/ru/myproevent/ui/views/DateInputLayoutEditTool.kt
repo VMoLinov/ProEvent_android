@@ -34,6 +34,7 @@ class DateInputLayoutEditTool:TextInputLayoutEditTool {
         if(firstTime || endIconDrawable?.isVisible?:false) textEdit?.performClick()
         firstTime=false
         textEdit?.visibility = VISIBLE
+        endIconMode = END_ICON_NONE
     }
 
     fun setDialogDate(parentFragmentManager:FragmentManager):View.OnClickListener{
@@ -65,7 +66,6 @@ class DateInputLayoutEditTool:TextInputLayoutEditTool {
                         val gregorianCalendar = GregorianCalendar(
                             year, month, dayOfMonth
                         )
-                        endIconMode = END_ICON_NONE
                         editText?.text = SpannableStringBuilder(
                             // TODO: для вывода сделать local date format
                             SimpleDateFormat(getString(R.string.dateFormat)).apply {
@@ -78,6 +78,7 @@ class DateInputLayoutEditTool:TextInputLayoutEditTool {
                     }
                 }
             newFragment.show(ft, "dialog")
+             endIconMode = END_ICON_NONE
         }
         this.dateEditClickListener=dateEditClickListener
         return dateEditClickListener
