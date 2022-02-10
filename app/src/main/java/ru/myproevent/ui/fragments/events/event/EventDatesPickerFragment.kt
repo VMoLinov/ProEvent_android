@@ -1,5 +1,6 @@
 package ru.myproevent.ui.fragments.events.event
 
+<<<<<<< HEAD
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.res.Resources
@@ -14,6 +15,10 @@ import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.R
 import ru.myproevent.databinding.DialogDatePickerBinding
+=======
+import moxy.ktx.moxyPresenter
+import ru.myproevent.ProEventApp
+>>>>>>> Stage
 import ru.myproevent.databinding.FragmentEventDatesPickerBinding
 import ru.myproevent.domain.models.entities.TimeInterval
 import ru.myproevent.ui.BackButtonListener
