@@ -7,12 +7,12 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableSingleObserver
 import moxy.MvpPresenter
-import moxy.MvpView
 import ru.myproevent.ProEventApp
 import ru.myproevent.ui.screens.IScreens
 import javax.inject.Inject
 
-open class BaseMvpPresenter<V : BaseMvpView>(protected open var localRouter: Router) : MvpPresenter<V>() {
+open class BaseMvpPresenter<V : BaseMvpView>(protected open var localRouter: Router) :
+    MvpPresenter<V>() {
 
     @Inject
     lateinit var uiScheduler: Scheduler

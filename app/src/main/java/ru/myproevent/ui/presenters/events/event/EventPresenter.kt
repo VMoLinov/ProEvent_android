@@ -1,14 +1,11 @@
 package ru.myproevent.ui.presenters.events.event
 
-import android.util.Log
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.model.LazyHeaders
 import android.widget.Toast
 import com.github.terrakok.cicerone.Router
-import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.ProEventApp
 import ru.myproevent.domain.models.entities.Address
 import ru.myproevent.domain.models.entities.Event
+import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.entities.TimeInterval
 import ru.myproevent.domain.models.repositories.events.IProEventEventsRepository
 import ru.myproevent.domain.models.repositories.images.IImagesRepository
@@ -132,7 +129,9 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
         localRouter.navigateTo(screens.participantPickerTypeSelection(pickedParticipantsIds))
     }
 
-    fun pickDates() {
+    fun pickDates(timeInterval: TimeInterval?) {
+        if (timeInterval == null) localRouter.navigateTo(screens.eventDatesPicker(null))
+        else localRouter.navigateTo(screens.eventDatesPicker(timeInterval))
         Toast.makeText(ProEventApp.instance, "EventPresenter::pickDates call", Toast.LENGTH_LONG)
             .show()
     }
@@ -151,7 +150,8 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
     }
 
     private fun addDateItemView(timeInterval: TimeInterval) {
-        var datePosition = pickedDates.indexOfLast { currTimeInterval -> return@indexOfLast currTimeInterval.start <= timeInterval.start } + 1
+        var datePosition =
+            pickedDates.indexOfLast { currTimeInterval -> return@indexOfLast currTimeInterval.start <= timeInterval.start } + 1
         viewState.addDateItemView(
             timeInterval,
             datePosition
@@ -297,13 +297,17 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
         pickedDates.remove(timeInterval)
     }
 
-    fun removeDate(position: Int){
+    fun removeDate(position: Int) {
         viewState.removeDate(pickedDates[position], pickedDates.toList())
         pickedDates.removeAt(position)
     }
 
-    fun editDate(position: Int){
-        Toast.makeText(ProEventApp.instance, "EventPresenter::editDate call;\npickedDates[position]: ${pickedDates[position]};", Toast.LENGTH_LONG)
+    fun editDate(position: Int) {
+        Toast.makeText(
+            ProEventApp.instance,
+            "EventPresenter::editDate call;\npickedDates[position]: ${pickedDates[position]};",
+            Toast.LENGTH_LONG
+        )
             .show()
     }
 
@@ -311,7 +315,7 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
         viewState.showEditOptions()
     }
 
-    fun hideDateEditOptions(){
+    fun hideDateEditOptions() {
         viewState.hideDateEditOptions()
     }
 }
