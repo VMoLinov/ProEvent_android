@@ -1,0 +1,181 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ProEvent_white"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical"
+    android:theme="@style/Theme.Proevent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/exFourAppBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/ProEvent_white"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/exFourToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:theme="@style/Example4ToolbarTheme"
+            app:titleTextColor="@color/ProEvent_white"
+            tools:background="@color/ProEvent_blue_800" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="14dp"
+            android:paddingTop="2dp"
+            android:paddingEnd="14dp"
+            android:paddingBottom="10dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/exFourStartDateText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:gravity="start|center_vertical"
+                android:minLines="1"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="26sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/exFourHeaderDivider"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Mon 22 Apr" />
+
+            <View
+                android:id="@+id/exFourHeaderDivider"
+                android:layout_width="1.5dp"
+                android:layout_height="0dp"
+                android:background="#EAEAEA"
+                android:rotation="45"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/exFourEndDateText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:gravity="end|center_vertical"
+                android:minLines="1"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="26sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/exFourHeaderDivider"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Thu 9 May" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <include
+            android:id="@+id/legendLayout"
+            layout="@layout/calendar_day_legend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal">
+
+        <com.kizitonwose.calendarview.CalendarView
+            android:id="@+id/exFourCalendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:paddingHorizontal="30dp"
+            android:paddingBottom="100dp"
+            app:cv_dayViewResource="@layout/calendar_day"
+            app:cv_monthHeaderResource="@layout/calendar_header" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_gravity="bottom"
+            android:background="@color/ProEvent_white"
+            android:elevation="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="-10dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/dates_start"
+                        android:textColor="@color/ProEvent_blue_800"
+                        android:textSize="22sp"
+                        android:textStyle="normal" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/dates_end"
+                        android:textColor="@color/ProEvent_blue_800"
+                        android:textSize="22sp"
+                        android:textStyle="normal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TimePicker
+                        android:id="@+id/timePickerStart"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:scaleX="0.8"
+                        android:scaleY="0.8"
+                        android:theme="@style/ProEventTimePicker"
+                        android:timePickerMode="spinner" />
+
+                    <TimePicker
+                        android:id="@+id/timePickerEnd"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:scaleX="0.8"
+                        android:scaleY="0.8"
+                        android:theme="@style/ProEventTimePicker"
+                        android:timePickerMode="spinner" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/exFourSaveButton"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:enabled="false"
+                android:text="@string/save"
+                app:backgroundTint="@android:color/darker_gray" />
+        </FrameLayout>
+    </FrameLayout>
+</LinearLayout>

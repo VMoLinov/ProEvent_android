@@ -90,7 +90,7 @@
     <string name="actual_events">Мероприятия: Актуальные</string>
     <string name="completed_events">Мероприятия: Завершенные</string>
     <string name="search_edit_hint">Поиск</string>
-    <string name="empty_string"></string>
+    <string name="empty_string" />
     <string name="finish_event">Завершить мероприятие</string>
     <string name="copy_event">Скопировать мероприятие</string>
     <string name="edit_event_image">Изменить фото мероприятия</string>
@@ -150,24 +150,10 @@
     <string name="event_date_test_string">НАЧАЛО: 02.01 (ВС) 9:00\nКОНЕЦ: 02.01 (ВС) 23:00</string>
     <string name="event_date_menu_edit">Изменить</string>
     <string name="event_date_menu_delete">Удалить</string>
-    <string name="dates_begin">Начало</string>
-    <string name="dates_end">Конец</string>
-    <string name="dates_repeat">Повторять</string>
-    <string name="dates_repeat_start">Начало повторений</string>
-    <string name="dates_repeat_end">Конец повторений</string>
-    <string name="dates_start_event">Начало мероприятия</string>
-    <string name="dates_end_event">Завершение мероприятия</string>
-    <string name="dates_dialog_positive">OK</string>
-    <string name="dates_dialog_cancel">Cancel</string>
-    <string name="dates_start_repeat">Начало повторений</string>
-    <string name="dates_end_repeat">Конец повторений</string>
-    <string-array name="repeat_types">
-        <item>Не повторять</item>
-        <item>Каждый день</item>
-        <item>Раз в неделю</item>
-        <item>Раз в месяц</item>
-        <item>Раз в год</item>
-    </string-array>
     <string name="cancel">Отмена</string>
     <string name="save">Сохранить</string>
+    <string name="dates_start">Начало</string>
+    <string name="dates_end">Конец</string>
+    <string name="dates_delete">Удалить</string>
+    <string name="dates_range_pick">Выбор периода</string>
 </resources>

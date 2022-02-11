@@ -291,7 +291,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
                     rightMargin = pxValue(20f).toInt()
                     topMargin = dateEditOptionsPosition[1]
                 }
-//            background.setOnClickListener { presenter.hideDateEditOptions() }
+            background.setOnClickListener { presenter.hideDateEditOptions() }
             editDate.setOnClickListener {
                 presenter.editDate(position)
                 // TODO: убрать этот пример
@@ -1090,13 +1090,14 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             addPoint.setOnClickListener { showMessage("addPoint\nДанная возможность пока не доступна") }
             addParticipant.setOnClickListener { presenter.pickParticipants() }
             addDate.setOnClickListener {
-                presenter.pickDates(null)
                 // TODO: убрать этот пример
+                val timeInterval = TimeInterval(1643937476, 1643941090)
                 parentFragmentManager.setFragmentResult(DATE_PICKER_ADD_RESULT_KEY, Bundle().apply {
                     putParcelable(
-                        NEW_DATE_KEY, TimeInterval(1643937476, 1643941090)
+                        NEW_DATE_KEY, timeInterval
                     )
                 })
+                presenter.addEventDate(timeInterval)
             }
         }
 

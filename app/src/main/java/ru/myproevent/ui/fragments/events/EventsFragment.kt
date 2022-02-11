@@ -38,6 +38,7 @@ class EventsFragment : BaseMvpFragment<FragmentEventsBinding>(FragmentEventsBind
         super.onViewCreated(view, savedInstanceState)
         initHeaderFilter()
         binding.addEvent.setOnClickListener { presenter.addEvent() }
+        binding.addFirstEvent.setOnClickListener { presenter.addEvent() }
         binding.root.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         binding.appBar.bringToFront();
     }

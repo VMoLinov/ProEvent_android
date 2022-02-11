@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="4dp"
-            android:text="@string/dates_begin"
+            android:text="@string/dates_start"
             android:textColor="@color/ProEvent_bright_orange_500"
             android:textSize="16sp" />
 
@@ -100,7 +100,6 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="4dp"
                 android:labelFor="@id/repeatEdit"
-                android:text="@string/dates_repeat"
                 android:textColor="@color/ProEvent_bright_orange_500"
                 android:textSize="16sp" />
 
@@ -133,7 +132,6 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="4dp"
-                android:text="@string/dates_repeat_start"
                 android:textColor="@color/ProEvent_bright_orange_500"
                 android:textSize="16sp" />
 
@@ -162,7 +160,6 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="4dp"
-                android:text="@string/dates_repeat_end"
                 android:textColor="@color/ProEvent_bright_orange_500"
                 android:textSize="16sp" />
 

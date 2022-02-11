@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/date_edit_options"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/background"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_gravity="end"
-    android:background="@drawable/background_rounded"
-    android:elevation="10dp"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
+    <LinearLayout
+        android:id="@+id/date_edit_options"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_gravity="end"
+        android:background="@drawable/background_rounded"
+        android:elevation="10dp"
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
 
 
         <com.google.android.material.button.MaterialButton
@@ -41,3 +47,4 @@
             android:textColor="@color/ProEvent_blue_800"
             android:textSize="20sp" />
     </LinearLayout>
+</FrameLayout>

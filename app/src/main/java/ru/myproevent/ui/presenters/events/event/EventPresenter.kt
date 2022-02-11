@@ -196,8 +196,8 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
         }
     }
 
-    fun addEventDate(timeInterval: TimeInterval) {
-        addDateItemView(timeInterval)
+    fun addEventDate(timeInterval: TimeInterval?) {
+        localRouter.navigateTo(screens.eventDatesPicker(timeInterval))
     }
 
     fun clearDates() {
