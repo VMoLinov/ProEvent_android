@@ -1,24 +1,15 @@
 package ru.myproevent.ui.fragments.events.event
 
-<<<<<<< HEAD
-import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.res.Resources
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.NumberPicker
 import androidx.core.view.isVisible
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.R
 import ru.myproevent.databinding.DialogDatePickerBinding
-=======
-import moxy.ktx.moxyPresenter
-import ru.myproevent.ProEventApp
->>>>>>> Stage
 import ru.myproevent.databinding.FragmentEventDatesPickerBinding
 import ru.myproevent.domain.models.entities.TimeInterval
 import ru.myproevent.ui.BackButtonListener
@@ -105,14 +96,14 @@ class EventDatesPickerFragment :
             .setTitle(title)
             .setPositiveButton(getString(R.string.dates_dialog_positive)) { _, _ ->
                 with(dialogBinding) {
-//                    val timeStamp = onDateSet(
-////                        datePicker.dayOfMonth,
-////                        datePicker.month,
-////                        datePicker.year,
-////                        timePicker.hour,
-////                        timePicker.minute
-//                    )
-//                    inputView.setText(convertLongToString(timeStamp))
+                    val timeStamp = onDateSet(
+                        datePicker.dayOfMonth,
+                        datePicker.month,
+                        datePicker.year,
+                        timePicker.hour,
+                        timePicker.minute
+                    )
+                    inputView.setText(convertLongToString(timeStamp))
                     handleSaveArea(isVisible = true)
                 }
             }
@@ -130,15 +121,14 @@ class EventDatesPickerFragment :
         }
     }
 
-    @SuppressLint("PrivateApi")
     private fun constraintsPickerDialog(dialogBinding: DialogDatePickerBinding) {
         with(dialogBinding) {
             val calendar: Calendar = Calendar.getInstance(Locale.getDefault())
-//            datePicker.minDate = calendar.timeInMillis
+            datePicker.minDate = calendar.timeInMillis
             calendar.add(Calendar.YEAR, YEARS_TO_GO)
-//            datePicker.maxDate = calendar.timeInMillis
+            datePicker.maxDate = calendar.timeInMillis
             val is24hours = android.text.format.DateFormat.is24HourFormat(requireContext())
-//            timePicker.setIs24HourView(is24hours)
+            timePicker.setIs24HourView(is24hours)
         }
     }
 
