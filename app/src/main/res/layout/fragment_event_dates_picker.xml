@@ -18,7 +18,7 @@
         app:layout_constraintWidth_max="360dp" />
 
     <LinearLayout
-        android:id="@+id/name_input_container"
+        android:id="@+id/nameInputContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
@@ -39,18 +39,18 @@
             android:textSize="16sp" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/begin_input"
+            android:id="@+id/beginInput"
             style="@style/ProEventRWTextInputLayoutStyle"
-            android:clickable="true"
-            android:focusable="true"
             app:endIconDrawable="@drawable/ic_calendar"
             app:endIconMode="custom">
 
             <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
-                android:id="@+id/begin_edit"
+                android:id="@+id/beginEdit"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:inputType="date"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
                 android:maxLength="320"
                 android:textColorHint="@color/ProEvent_blue_600"
                 android:textIsSelectable="true"
@@ -68,18 +68,18 @@
             android:textSize="16sp" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/end_input"
+            android:id="@+id/endInput"
             style="@style/ProEventRWTextInputLayoutStyle"
-            android:clickable="true"
-            android:focusable="true"
             app:endIconDrawable="@drawable/ic_calendar"
             app:endIconMode="custom">
 
             <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
-                android:id="@+id/end_edit"
+                android:id="@+id/endEdit"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:inputType="date"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
                 android:maxLength="320"
                 android:textColorHint="@color/ProEvent_blue_600"
                 android:textIsSelectable="true"
@@ -93,34 +93,34 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/repeatText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="4dp"
-                android:labelFor="@id/repeat_edit"
+                android:labelFor="@id/repeatEdit"
                 android:text="@string/dates_repeat"
                 android:textColor="@color/ProEvent_bright_orange_500"
                 android:textSize="16sp" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/repeat_input"
-                style="@style/ProEventAutoCompleteTextStyle"
-                android:clickable="true"
-                android:focusable="true">
+                android:id="@+id/repeatInput"
+                style="@style/ProEventAutoCompleteTextStyle">
 
                 <AutoCompleteTextView
-                    android:id="@+id/repeat_edit"
+                    android:id="@+id/repeatEdit"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:ellipsize="end"
+                    android:inputType="none"
                     android:maxLines="1"
                     tools:text="Не повторять" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/repeat_container"
+            android:id="@+id/repeatContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -138,18 +138,18 @@
                 android:textSize="16sp" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/repeat_start_input"
+                android:id="@+id/repeatStartInput"
                 style="@style/ProEventRWTextInputLayoutStyle"
-                android:clickable="true"
-                android:focusable="true"
                 app:endIconDrawable="@drawable/ic_calendar"
                 app:endIconMode="custom">
 
                 <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
-                    android:id="@+id/repeat_start_edit"
+                    android:id="@+id/repeatStartEdit"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="date"
+                    android:clickable="false"
+                    android:cursorVisible="false"
+                    android:focusable="false"
                     android:maxLength="320"
                     android:textColorHint="@color/ProEvent_blue_600"
                     android:textIsSelectable="true"
@@ -167,18 +167,18 @@
                 android:textSize="16sp" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/repeat_end_input"
+                android:id="@+id/repeatEndInput"
                 style="@style/ProEventRWTextInputLayoutStyle"
-                android:clickable="true"
-                android:focusable="true"
                 app:endIconDrawable="@drawable/ic_calendar"
                 app:endIconMode="custom">
 
                 <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
-                    android:id="@+id/repeat_end_edit"
+                    android:id="@+id/repeatEndEdit"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="date"
+                    android:clickable="false"
+                    android:cursorVisible="false"
+                    android:focusable="false"
                     android:maxLength="320"
                     android:textColorHint="@color/ProEvent_blue_600"
                     android:textIsSelectable="true"

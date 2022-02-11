@@ -155,4 +155,17 @@
     <string name="dates_repeat">Повторять</string>
     <string name="dates_repeat_start">Начало повторений</string>
     <string name="dates_repeat_end">Конец повторений</string>
+    <string name="dates_start_event">Начало мероприятия</string>
+    <string name="dates_end_event">Завершение мероприятия</string>
+    <string name="dates_dialog_positive">OK</string>
+    <string name="dates_dialog_cancel">Cancel</string>
+    <string name="dates_start_repeat">Начало повторений</string>
+    <string name="dates_end_repeat">Конец повторений</string>
+    <string-array name="repeat_types">
+        <item>Не повторять</item>
+        <item>Каждый день</item>
+        <item>Раз в неделю</item>
+        <item>Раз в месяц</item>
+        <item>Раз в год</item>
+    </string-array>
 </resources>

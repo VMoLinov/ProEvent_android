@@ -34,7 +34,8 @@
         android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title" />
+        app:layout_constraintTop_toBottomOf="@id/title"
+        tools:visibility="visible" />
 
     <View
         android:id="@+id/save_hit_area"
@@ -44,7 +45,8 @@
         app:layout_constraintBottom_toBottomOf="@id/save"
         app:layout_constraintLeft_toLeftOf="@id/save"
         app:layout_constraintRight_toRightOf="@id/save"
-        app:layout_constraintTop_toTopOf="@id/save" />
+        app:layout_constraintTop_toTopOf="@id/save"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/cancel"
@@ -58,7 +60,8 @@
         android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintRight_toLeftOf="@id/save"
-        app:layout_constraintTop_toBottomOf="@id/title" />
+        app:layout_constraintTop_toBottomOf="@id/title"
+        tools:visibility="visible" />
 
     <View
         android:id="@+id/cancel_hit_area"
@@ -68,7 +71,8 @@
         app:layout_constraintBottom_toBottomOf="@id/cancel"
         app:layout_constraintLeft_toLeftOf="@id/cancel"
         app:layout_constraintRight_toRightOf="@id/cancel"
-        app:layout_constraintTop_toTopOf="@id/cancel" />
+        app:layout_constraintTop_toTopOf="@id/cancel"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/action_menu"
