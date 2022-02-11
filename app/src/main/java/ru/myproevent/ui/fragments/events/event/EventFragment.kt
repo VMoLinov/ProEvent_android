@@ -1090,13 +1090,14 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             addPoint.setOnClickListener { showMessage("addPoint\nДанная возможность пока не доступна") }
             addParticipant.setOnClickListener { presenter.pickParticipants() }
             addDate.setOnClickListener {
-                presenter.pickDates(null)
+                EventDatesPickerFragment.newInstance(null)
+                presenter.addEventDate(null)
                 // TODO: убрать этот пример
-                parentFragmentManager.setFragmentResult(DATE_PICKER_ADD_RESULT_KEY, Bundle().apply {
-                    putParcelable(
-                        NEW_DATE_KEY, TimeInterval(1643937476, 1643941090)
-                    )
-                })
+//                parentFragmentManager.setFragmentResult(DATE_PICKER_ADD_RESULT_KEY, Bundle().apply {
+//                    putParcelable(
+//                        NEW_DATE_KEY, TimeInterval(1643937476, 1643941090)
+//                    )
+//                })
             }
         }
 

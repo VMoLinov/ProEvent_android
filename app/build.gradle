@@ -105,6 +105,7 @@ dependencies {
     implementation 'com.github.yalantis:ucrop:2.2.7'
 
     // DateRangePicker
+    implementation 'com.github.kizitonwose:CalendarView:1.0.4'
 
     implementation 'com.jakewharton.rxbinding2:rxbinding:2.0.0'
 }

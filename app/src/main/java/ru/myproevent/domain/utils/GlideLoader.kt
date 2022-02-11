@@ -1,6 +1,5 @@
 package ru.myproevent.domain.utils
 
-import android.content.Context
 import android.net.Uri
 import android.widget.ImageView
 import com.bumptech.glide.Glide
