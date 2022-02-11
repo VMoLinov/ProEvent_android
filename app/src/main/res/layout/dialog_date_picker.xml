@@ -15,15 +15,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <DatePicker
+        <CalendarView
             android:id="@+id/datePicker"
+            android:showWeekNumber="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <TimePicker
-            android:id="@+id/timePicker"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:timePickerMode="spinner" />
+            android:orientation="horizontal">
+
+            <TimePicker
+                android:id="@+id/timePickerStart"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:theme="@style/ProEventTimePicker"
+                android:timePickerMode="spinner" />
+
+            <TimePicker
+                android:id="@+id/timePickerEnd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:theme="@style/ProEventTimePicker"
+                android:timePickerMode="spinner" />
+        </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ProEventTimePicker" parent="Widget.MaterialComponents.TimePicker">
+        <item name="android:textColorPrimary">@color/ProEvent_blue_800</item>
+        <item name="android:textColorSecondary">@android:color/transparent</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">22sp</item>
+    </style>
+</resources>
