@@ -16,12 +16,16 @@ import javax.inject.Inject
 
 class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(localRouter) {
     private var curProfile: Profile? = null
+    private val editedSet = mutableMapOf<Int, Boolean>()
 
     private inner class ProfileEditObserver(private var profile: Profile) :
         DisposableCompletableObserver() {
         override fun onComplete() {
             curProfile = profile
+            editedSet.keys.forEach { editedSet[it] = false }
+            viewState.setFieldEdited(editedSet)
             viewState.showProfile(profile)
+            editedSet.clear()
             viewState.showMessage("Изменения сохранены")
         }
 
@@ -68,6 +72,10 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
 
     @Inject
     lateinit var imagesRepository: IImagesRepository
+
+    override fun onFirstViewAttach() {
+        getProfile()
+    }
 
     fun saveProfile(
         name: String,
@@ -126,4 +134,9 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
     )
 
     fun cancelEdit() = curProfile?.let { viewState.showProfile(it) }
+
+    fun clickOnEditIcon(id: Int) {
+        editedSet[id] = true
+        viewState.setFieldEdited(editedSet)
+    }
 }
