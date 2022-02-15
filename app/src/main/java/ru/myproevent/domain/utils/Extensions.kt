@@ -4,12 +4,14 @@ import android.content.res.Resources
 import android.util.TypedValue
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import ru.myproevent.domain.models.ContactDto
 import ru.myproevent.domain.models.EventDto
-import ru.myproevent.domain.models.ProfileDto
+import ru.myproevent.domain.models.ProfileMiniDto
 import ru.myproevent.domain.models.entities.Address
 import ru.myproevent.domain.models.entities.contact.Contact
 import ru.myproevent.domain.models.entities.contact.Status
 import ru.myproevent.domain.models.entities.Event
+import ru.myproevent.domain.models.entities.Profile
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -17,12 +19,19 @@ fun ImageView.load(url: String) {
     Glide.with(context).load(url).into(this)
 }
 
-fun ProfileDto.toContact(status: Status?) =
-    Contact(userId, status, fullName, nickName, msisdn, position, birthdate, imgUri, description)
+fun Profile.toProfile() =
+    Profile(id, email, fullName, nickName, phone, position, birthdate, imgUri, description)
 
-fun Contact.toProfileDto() =
-    ProfileDto(userId, fullName, nickName, msisdn, position, birthdate, imgUri, description)
+fun ProfileMiniDto.toProfile() =
+    Profile(userId, null, fullName, nickName, null, null, null, imgUri, null)
 
+fun Profile.toProfileDto() =
+    Profile(id, email, fullName, nickName, phone, position, birthdate, imgUri, description)
+
+fun Profile.toContact(status: Status?) =
+    Contact(id, status, email, fullName, nickName, phone, position, birthdate, imgUri, description)
+
+fun Contact.toContactDto() = ContactDto(id, status.toString())
 fun EventDto.toEvent(datePattern: String = "yyyy-MM-dd'T'HH:mm:ss"): Event {
     val dateFormat = SimpleDateFormat(datePattern)
     dateFormat.timeZone = TimeZone.getTimeZone("GMT")
@@ -50,7 +59,7 @@ fun Event.toEventDto(datePattern: String = "yyyy-MM-dd'T'HH:mm:ss"): EventDto {
         id,
         name,
         ownerUserId,
-        eventStatus.value,
+        status.toString(),
         dateFormat.format(startDate),
         dateFormat.format(endDate),
         description,

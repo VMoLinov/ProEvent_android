@@ -2,7 +2,7 @@ package ru.myproevent.ui.presenters.events.event.participant
 
 import android.os.Bundle
 import com.github.terrakok.cicerone.Router
-import ru.myproevent.domain.models.ProfileDto
+import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.utils.PARTICIPANT_ID_KEY
 import ru.myproevent.domain.utils.PARTICIPANT_TO_REMOVE_ID_RESULT_KEY
 import ru.myproevent.domain.utils.toContact
@@ -14,7 +14,7 @@ class EventParticipantPresenter(localRouter: Router) :
         viewState.openChat(userId)
     }
 
-    fun openProfile(profileDto: ProfileDto) {
+    fun openProfile(profile: Profile) {
         // TODO: null передаётся как заглушка, так как на экране contact поле status пока не используется.
         //             Но если это поле будет использованно в дальнейшем, то здесь будет необходимо
         //             передавать действительное значение стутуса, инчае экран с контактом будет
@@ -22,7 +22,7 @@ class EventParticipantPresenter(localRouter: Router) :
         //             (это сделано для того чтобы можно было найти этот комментарий и переделать этот вызов)
         //             В дальнейшем сервер возможно будет отрефакторен так что profileDto и contactDto
         //             будут объеденены в одну сущность (так как они отличаются тольно наличием email и status)
-        localRouter.navigateTo(screens.contact(profileDto.toContact(null)))
+        localRouter.navigateTo(screens.contact(profile.id))
     }
 
     fun removeParticipant(id: Long) {

@@ -4,7 +4,7 @@ import android.widget.Toast
 import com.github.terrakok.cicerone.Router
 import io.reactivex.observers.DisposableCompletableObserver
 import ru.myproevent.ProEventApp
-import ru.myproevent.domain.models.ProfileDto
+import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.providers.internet_access_info.IInternetAccessInfoProvider
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
@@ -16,10 +16,10 @@ class LoginPresenter(localRouter: Router) : BaseMvpPresenter<LoginView>(localRou
         override fun onComplete() {
             profileRepository
                 .saveProfile(
-                    ProfileDto(
-                        userId = loginRepository.getLocalId()!!,
+                    Profile(
+                        id = loginRepository.getLocalId()!!,
                         nickName = login
-                    ), null
+                    )
                 )
                 .observeOn(uiScheduler)
                 .subscribeWith(LoginSaveObserver())

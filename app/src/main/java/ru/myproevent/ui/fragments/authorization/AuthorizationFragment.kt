@@ -17,6 +17,7 @@ import ru.myproevent.ui.presenters.main.RouterProvider
 import ru.myproevent.ui.presenters.main.Tab
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
+import ru.myproevent.domain.models.Suggestion
 import ru.myproevent.domain.utils.pxValue
 
 class AuthorizationFragment :
@@ -115,6 +116,7 @@ class AuthorizationFragment :
                     }
                 }
             }
+            binding.emailEdit.initHints { presenter.typedEmail(it) }
             passwordEdit.setOnFocusChangeListener { v, hasFocus ->
                 if (!hasFocus) {
                     passwordInvalidError = false
@@ -174,5 +176,9 @@ class AuthorizationFragment :
 
     override fun finishAuthorization() {
         (requireActivity() as BottomNavigation).openTab(Tab.HOME)
+    }
+
+    override fun setEmailHint(emailSuggestion: List<Suggestion>) {
+        binding.emailEdit.setEmailHint(emailSuggestion)
     }
 }

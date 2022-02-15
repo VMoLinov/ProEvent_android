@@ -24,6 +24,7 @@
     <color name="ProEvent_blue_500">#7D7DB2</color>
     <color name="ProEvent_blue_600">#5C5C99</color>
     <color name="ProEvent_blue_300">#C3C3E5</color>
+    <color name="ProEvent_blue_200">#DADAF2</color>
     <color name="ProEvent_blue_50">#F5F5FA</color>
     <color name="button_text_color">@color/ProEvent_blue_800</color>
     <color name="ProEvent_bright_orange_500">#CC3314</color>

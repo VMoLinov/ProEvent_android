@@ -1,8 +1,13 @@
 package ru.myproevent.ui.presenters.authorization.registration
 
+import android.annotation.SuppressLint
+import android.util.Log
 import com.github.terrakok.cicerone.Router
+import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableCompletableObserver
 import ru.myproevent.domain.models.providers.internet_access_info.IInternetAccessInfoProvider
+import retrofit2.HttpException
+import ru.myproevent.domain.models.repositories.email_hint.IEmailHintRepository
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
 import java.util.regex.Pattern
@@ -39,6 +44,9 @@ class RegistrationPresenter(localRouter: Router) : BaseMvpPresenter<Registration
 
     @Inject
     lateinit var loginRepository: IProEventLoginRepository
+
+    @Inject
+    lateinit var emailHintRepository: IEmailHintRepository
 
     @Inject
     lateinit var interAccessInfoProvider: IInternetAccessInfoProvider
@@ -98,9 +106,11 @@ class RegistrationPresenter(localRouter: Router) : BaseMvpPresenter<Registration
     }
 
     fun typedEmail(partEmail: String) {
-        loginRepository.getEmailHint(partEmail)
+        emailHintRepository.getEmailHint(partEmail)
             .observeOn(uiScheduler)
-            .subscribe { it -> viewState.setEmailHint(it) }
-            .disposeOnDestroy()
+            .subscribe(
+                { viewState.setEmailHint(it) },
+                { Log.e("EMAIL_HINT", it.localizedMessage ?: "") }
+            ).disposeOnDestroy()
     }
 }

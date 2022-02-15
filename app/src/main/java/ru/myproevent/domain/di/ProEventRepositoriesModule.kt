@@ -4,6 +4,8 @@ import dagger.Binds
 import dagger.Module
 import ru.myproevent.domain.models.repositories.contacts.IProEventContactsRepository
 import ru.myproevent.domain.models.repositories.contacts.ProEventContactsRepository
+import ru.myproevent.domain.models.repositories.email_hint.EmailHintRepository
+import ru.myproevent.domain.models.repositories.email_hint.IEmailHintRepository
 import ru.myproevent.domain.models.repositories.events.IProEventEventsRepository
 import ru.myproevent.domain.models.repositories.events.ProEventEventsRepository
 import ru.myproevent.domain.models.repositories.images.IImagesRepository
@@ -16,6 +18,7 @@ import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRep
 import ru.myproevent.domain.models.repositories.proevent_login.ProEventLoginRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
 import ru.myproevent.domain.models.repositories.profiles.ProEventProfilesRepository
+import ru.myproevent.domain.utils.GlideLoader
 import javax.inject.Singleton
 
 @Module
@@ -47,4 +50,8 @@ interface ProEventRepositoriesModule {
     @Singleton
     @Binds
     fun bindImagesRepository(imagesRepository: ImagesRepository): IImagesRepository
+
+    @Singleton
+    @Binds
+    fun bindEmailHintRepository(emailHintRepository: EmailHintRepository): IEmailHintRepository
 }

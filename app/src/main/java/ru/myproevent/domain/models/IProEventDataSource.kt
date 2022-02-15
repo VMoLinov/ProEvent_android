@@ -9,6 +9,7 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
 import ru.myproevent.BuildConfig
+import ru.myproevent.domain.models.entities.Profile
 
 interface IProEventDataSource {
     @POST("auth/login")
@@ -24,13 +25,16 @@ interface IProEventDataSource {
     fun refreshCheckCode(@Body refreshBody: RefreshBody): Completable
 
     @POST("profiles")
-    fun createProfile(@Body profile: ProfileDto): Call<ProfileDto>
+    fun createProfile(@Body profile: Profile): Call<Profile>
 
     @PUT("profiles")
-    fun editProfile(@Body profile: ProfileDto): Call<ProfileDto>
+    fun editProfile(@Body profile: Profile): Call<Profile>
 
     @GET("profiles/user/{userId}")
-    fun getProfile(@Path("userId") userId: Long): Call<ProfileDto>
+    fun getProfile(@Path("userId") userId: Long): Call<Profile>
+
+    @POST("profiles/list")
+    fun getMiniProfiles(@Body ids: ProfileIdListDto): Call<List<ProfileMiniDto>>
 
     @GET("contacts")
     fun getContacts(
@@ -83,21 +87,10 @@ interface IProEventDataSource {
     fun saveImage(
         @Part("file") name: String,
         @Part image: MultipartBody.Part
-    ): Call<UUIDBody>
+    ): Single<UUIDBody>
 
     @DELETE("storage/{uuid}")
-    fun deleteImage(@Path("uuid") uuid: String): Call<ResponseBody>
-
-    @POST
-    @Headers(
-        "Authorization: Token ${BuildConfig.EMAIL_HINT_API_TOKEN}",
-        "Accept: application/json",
-        "Content-Type: application/json"
-    )
-    fun getEmailHint(
-        @Body hintRequest: HintRequest,
-        @Url fullUrl: String = BuildConfig.EMAIL_HINT_API_URL
-    ): Single<HintResponse>
+    fun deleteImage(@Path("uuid") uuid: String): Completable
 }
 
 data class LoginBody(val email: String, val password: String)
@@ -116,18 +109,24 @@ data class NewPasswordBody(val code: Int, val email: String, val password: Strin
 
 data class UUIDBody(val uuid: String)
 
-@Parcelize
-data class ProfileDto(
+//data class ProfileDto(
+//    var userId: Long,
+//    var email: String? = null,
+//    var fullName: String? = null,
+//    var nickName: String? = null,
+//    var msisdn: String? = null,
+//    var position: String? = null,
+//    var birthdate: String? = null,
+//    var imgUri: String? = null,
+//    var description: String? = null
+//)
+
+data class ProfileMiniDto(
     var userId: Long,
-    var email: String? = null,
     var fullName: String? = null,
     var nickName: String? = null,
-    var msisdn: String? = null,
-    var position: String? = null,
-    var birthdate: String? = null,
-    var imgUri: String? = null,
-    var description: String? = null
-) : Parcelable
+    var imgUri: String? = null
+)
 
 data class ContactDto(val id: Long, val status: String)
 
@@ -171,7 +170,3 @@ data class EventDto(
     val pointsPointIds: LongArray?,
     val imageFile: String?,
 )
-
-data class HintRequest(val query: String)
-data class HintResponse(val suggestions: List<Suggestion>)
-data class Suggestion(val value: String)

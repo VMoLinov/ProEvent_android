@@ -7,13 +7,15 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.textfield.TextInputLayout
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.databinding.FragmentSecurityBinding
-import ru.myproevent.domain.models.ProfileDto
+import ru.myproevent.domain.models.entities.Profile
+import ru.myproevent.domain.models.Suggestion
 import ru.myproevent.ui.fragments.BaseMvpFragment
 import ru.myproevent.ui.presenters.main.RouterProvider
 import ru.myproevent.ui.presenters.settings.security.SecurityPresenter
@@ -38,7 +40,7 @@ class SecurityFragment : BaseMvpFragment<FragmentSecurityBinding>(FragmentSecuri
 
     private fun setEditListeners(
         textInput: TextInputLayout,
-        textEdit: KeyboardAwareTextInputEditText
+        textEdit: EditText
     ) {
         textEdit.keyListener = null
         textInput.setEndIconOnClickListener {
@@ -68,6 +70,7 @@ class SecurityFragment : BaseMvpFragment<FragmentSecurityBinding>(FragmentSecuri
 
         defaultKeyListener = emailEdit.keyListener
         setEditListeners(emailInput, emailEdit)
+        binding.emailEdit.initHints { presenter.typedEmail(it) }
         setEditListeners(loginInput, loginEdit)
         newPasswordEdit.doAfterTextChanged { showSaveButton() }
         save.setOnClickListener {
@@ -85,9 +88,9 @@ class SecurityFragment : BaseMvpFragment<FragmentSecurityBinding>(FragmentSecuri
         presenter.getProfile()
     }
 
-    override fun showProfile(profileDto: ProfileDto) {
+    override fun showProfile(profile: Profile) {
         with(binding) {
-            with(profileDto) {
+            with(profile) {
                 email?.let { emailEdit.text = SpannableStringBuilder(it) }
                 nickName?.let { loginEdit.text = SpannableStringBuilder(it) }
             }
@@ -97,5 +100,9 @@ class SecurityFragment : BaseMvpFragment<FragmentSecurityBinding>(FragmentSecuri
     override fun makeProfileEditable() {
         // TODO:
         showMessage("makeProfileEditable()")
+    }
+
+    override fun setEmailHint(emailSuggestion: List<Suggestion>) {
+        binding.emailEdit.setEmailHint(emailSuggestion)
     }
 }

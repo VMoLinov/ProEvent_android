@@ -1,22 +1,31 @@
 package ru.myproevent.ui.presenters.settings.account
 
-import android.net.Uri
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.github.terrakok.cicerone.Router
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableSingleObserver
-import ru.myproevent.domain.models.ProfileDto
+import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.repositories.images.IImagesRepository
 import ru.myproevent.domain.models.providers.internet_access_info.IInternetAccessInfoProvider
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
+import java.io.File
 import javax.inject.Inject
 
 class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(localRouter) {
-    private inner class ProfileEditObserver : DisposableCompletableObserver() {
+    private var curProfile: Profile? = null
+    private val editedSet = mutableMapOf<Int, Boolean>()
+
+    private inner class ProfileEditObserver(private var profile: Profile) :
+        DisposableCompletableObserver() {
         override fun onComplete() {
+            curProfile = profile
+            editedSet.keys.forEach { editedSet[it] = false }
+            viewState.setFieldEdited(editedSet)
+            viewState.showProfile(profile)
+            editedSet.clear()
             viewState.showMessage("Изменения сохранены")
         }
 
@@ -30,8 +39,9 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
         }
     }
 
-    private inner class ProfileGetObserver : DisposableSingleObserver<ProfileDto>() {
-        override fun onSuccess(profileDto: ProfileDto) {
+    private inner class ProfileGetObserver : DisposableSingleObserver<Profile>() {
+        override fun onSuccess(profileDto: Profile) {
+            curProfile = profileDto
             viewState.showProfile(profileDto)
         }
 
@@ -63,29 +73,48 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
     @Inject
     lateinit var imagesRepository: IImagesRepository
 
+    override fun onFirstViewAttach() {
+        getProfile()
+    }
+
     fun saveProfile(
         name: String,
         phone: String,
         dateOfBirth: String,
         position: String,
         role: String,
-        newProfilePictureUri: Uri?
+        uuid: String?
     ) {
+        val profile = Profile(
+            id = loginRepository.getLocalId()!!,
+            fullName = name,
+            phone = phone,
+            position = position,
+            birthdate = dateOfBirth,
+            description = role,
+            imgUri = uuid
+        )
         profilesRepository
-            .saveProfile(
-                ProfileDto(
-                    userId = loginRepository.getLocalId()!!,
-                    fullName = name,
-                    msisdn = phone,
-                    position = position,
-                    birthdate = dateOfBirth,
-                    description = role
-                ),
-                newProfilePictureUri
-            )
+            .saveProfile(profile)
             .observeOn(uiScheduler)
-            .subscribeWith(ProfileEditObserver())
+            .subscribeWith(ProfileEditObserver(profile))
             .disposeOnDestroy()
+    }
+
+    fun saveImage(file: File, callback: ((String?) -> Unit)? = null) {
+        imagesRepository
+            .saveImage(file)
+            .observeOn(uiScheduler)
+            .subscribe({
+                callback?.invoke(it.uuid)
+            }, {
+                callback?.invoke(null)
+            })
+            .disposeOnDestroy()
+    }
+
+    fun deleteImage(uuid: String) {
+        imagesRepository.deleteImage(uuid).subscribe().disposeOnDestroy()
     }
 
     fun getProfile() {
@@ -103,4 +132,11 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
             .addHeader("Authorization", "Bearer ${loginRepository.getLocalToken()}")
             .build()
     )
+
+    fun cancelEdit() = curProfile?.let { viewState.showProfile(it) }
+
+    fun clickOnEditIcon(id: Int) {
+        editedSet[id] = true
+        viewState.setFieldEdited(editedSet)
+    }
 }

@@ -4,13 +4,12 @@ import android.os.Bundle
 import android.util.Log
 import com.github.terrakok.cicerone.Router
 import ru.myproevent.domain.models.ContactDto
-import ru.myproevent.domain.models.entities.contact.Action
-import ru.myproevent.domain.models.entities.contact.Contact
-import ru.myproevent.domain.models.entities.contact.Status
+import ru.myproevent.domain.models.entities.Contact
 import ru.myproevent.domain.models.repositories.contacts.IProEventContactsRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
 import ru.myproevent.domain.utils.PARTICIPANTS_PICKER_RESULT_KEY
 import ru.myproevent.domain.utils.CONTACTS_KEY
+import ru.myproevent.domain.utils.toContactDto
 import ru.myproevent.ui.presenters.BaseMvpPresenter
 import ru.myproevent.ui.presenters.contacts.contacts_list.IContactItemView
 import ru.myproevent.ui.presenters.events.event.participant_pickers.participant_from_contacts_picker.adapters.IContactPickerPresenter
@@ -68,7 +67,7 @@ class ParticipantFromContactsPickerPresenter(
                             contactDto.id,
                             fullName = "Заглушка",
                             description = "Профиля нет, или не загрузился",
-                            status = Status.fromString(contactDto.status)
+                            status = Contact.Status.fromString(contactDto.status)
                         )
                         fillItemView(view, contacts[pos]!!)
                     }).disposeOnDestroy()
@@ -82,16 +81,16 @@ class ParticipantFromContactsPickerPresenter(
                 } else if (!nickName.isNullOrEmpty()) {
                     view.setName(nickName!!)
                 } else {
-                    view.setName(userId.toString())
+                    view.setName(id.toString())
                 }
-                if (eventParticipantsIds.contains(contact.userId)) {
+                if (eventParticipantsIds.contains(contact.id)) {
                     view.setDescription("Уже добавлен как участник")
                 } else if (!description.isNullOrEmpty()) {
                     view.setDescription(description!!)
                 } else if (!nickName.isNullOrEmpty()) {
                     view.setDescription(nickName!!)
                 } else {
-                    view.setDescription("id пользователя: $userId")
+                    view.setDescription("id пользователя: $id")
                 }
                 //imgUri?.let { view.loadImg(it) }
                 status?.let { view.setStatus(it) }
@@ -102,7 +101,7 @@ class ParticipantFromContactsPickerPresenter(
 
         override fun onItemClick(view: IContactPickerItemView) {
             contacts[view.pos]?.let {
-                if (eventParticipantsIds.contains(it.userId)) {
+                if (eventParticipantsIds.contains(it.id)) {
                     viewState.showMessage("Данный пользователь уже добавлен как участник")
                     return
                 }
@@ -139,7 +138,7 @@ class ParticipantFromContactsPickerPresenter(
                 setName(it)
             } ?: pickedParticipants[pos].nickName?.let {
                 setName(it)
-            } ?: setName("#${pickedParticipants[pos].userId}")
+            } ?: setName("#${pickedParticipants[pos].id}")
         }
 
         override fun onItemClick(view: IPickedContactItemView) {
@@ -166,9 +165,9 @@ class ParticipantFromContactsPickerPresenter(
             viewState.updateContactsList()
         }, { contact ->
             val action = when (contact.status) {
-                Status.DECLINED -> Action.DELETE
-                Status.PENDING -> Action.CANCEL
-                Status.REQUESTED -> Action.ACCEPT
+                Contact.Status.DECLINED -> Contact.Action.DELETE
+                Contact.Status.PENDING -> Contact.Action.CANCEL
+                Contact.Status.REQUESTED -> Contact.Action.ACCEPT
                 else -> return@ContactListPresenter
             }
 
@@ -192,11 +191,11 @@ class ParticipantFromContactsPickerPresenter(
         }
     }
 
-    private fun performActionOnContact(contact: Contact, action: Action) {
+    private fun performActionOnContact(contact: Contact, action: Contact.Action) {
         when (action) {
-            Action.ACCEPT -> contactsRepository.acceptContact(contact.userId)
-            Action.CANCEL, Action.DELETE -> contactsRepository.deleteContact(contact.userId)
-            Action.DECLINE -> contactsRepository.declineContact(contact.userId)
+            Contact.Action.ACCEPT -> contactsRepository.acceptContact(contact.id)
+            Contact.Action.CANCEL, Contact.Action.DELETE -> contactsRepository.deleteContact(contact.id)
+            Contact.Action.DECLINE -> contactsRepository.declineContact(contact.id)
             else -> return
         }.observeOn(uiScheduler)
             .subscribe({ loadData() }, { viewState.showToast("Не удалось выполнить действие") })
@@ -208,11 +207,11 @@ class ParticipantFromContactsPickerPresenter(
         loadData()
     }
 
-    fun loadData(status: Status = Status.ALL) {
-        contactsRepository.getContacts(1, Int.MAX_VALUE, status)
+    fun loadData(status: Contact.Status = Contact.Status.ALL) {
+        contactsRepository.getContacts(status)
             .observeOn(uiScheduler)
             .subscribe({ data ->
-                contactsPickerListPresenter.setData(data.content, data.totalElements.toInt())
+                contactsPickerListPresenter.setData(data.map { it.toContactDto() }, data.size)
             }, {
                 viewState.showToast("ПРОИЗОШЛА ОШИБКА: ${it.message}")
             }).disposeOnDestroy()
@@ -220,7 +219,7 @@ class ParticipantFromContactsPickerPresenter(
 
     fun confirmPick() {
         Log.d("[MYLOG]", "presenter confirmPick")
-        if(pickedParticipants.isEmpty()){
+        if (pickedParticipants.isEmpty()) {
             viewState.showMessage("Должен быть выбран минимум 1 контакт")
             return
         }

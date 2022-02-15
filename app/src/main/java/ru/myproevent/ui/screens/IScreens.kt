@@ -1,7 +1,7 @@
 package ru.myproevent.ui.screens
 
 import com.github.terrakok.cicerone.Screen
-import ru.myproevent.domain.models.ProfileDto
+import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.entities.Address
 import ru.myproevent.domain.models.entities.contact.Contact
 import ru.myproevent.domain.models.entities.Event
@@ -17,7 +17,7 @@ interface IScreens {
     fun account(): Screen
     fun security(): Screen
     fun contacts(): Screen
-    fun contact(contact: Contact): Screen
+    fun contact(profileId: Long): Screen
     fun contactAdd(): Screen
     fun chat(): Screen
     fun chat1(): Screen
@@ -31,6 +31,6 @@ interface IScreens {
     fun participantFromContactsPicker(participantsIds: List<Long>): Screen
     fun participantByEmailPicker(): Screen
     fun addEventPlace(address: Address? = null): Screen
-    fun eventParticipant(profileDto: ProfileDto): Screen
+    fun eventParticipant(profile: Profile): Screen
     fun newPassword(email: String): Screen
 }

@@ -1,21 +1,21 @@
-package ru.myproevent.ui.views.cropimage
+package ru.myproevent.ui.views
 
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.view.View
-import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
-import com.bumptech.glide.Glide
 import com.yalantis.ucrop.UCrop
 import java.io.File
 
 class CropImageHandler(
     private val viewOnClick: View,
-    private val viewToLoad: ImageView,
-    private val resultCaller: CropImageView,
+    private val pickImageCallback:
+        (pickImageActivityContract: ActivityResultContract<Any?, Uri?>, cropActivityResultLauncher: ActivityResultLauncher<Uri>)
+    -> ActivityResultLauncher<Any?>,
+    private val cropCallback: (cropActivityContract: ActivityResultContract<Uri, Uri?>) -> ActivityResultLauncher<Uri>,
     private val isCircle: Boolean
 ) {
     private lateinit var pickImageActivityResultLauncher: ActivityResultLauncher<Any?>
@@ -66,19 +66,9 @@ class CropImageHandler(
     }
 
     fun init() {
+        cropActivityResultLauncher = cropCallback(cropActivityContract)
         pickImageActivityResultLauncher =
-            resultCaller.registerForActivityResult(pickImageActivityContract) {
-                it?.let { uri -> cropActivityResultLauncher.launch(uri) }
-            }
-        cropActivityResultLauncher = resultCaller.registerForActivityResult(cropActivityContract) {
-            it?.let { uri ->
-                Glide.with(viewToLoad)
-                    .load(uri)
-                    .circleCrop()
-                    .into(viewToLoad)
-                resultCaller.newPictureUri = uri
-            }
-        }
+            pickImageCallback(pickImageActivityContract, cropActivityResultLauncher)
         viewOnClick.setOnClickListener { pickImageActivityResultLauncher.launch(null) }
     }
 

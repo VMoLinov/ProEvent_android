@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/root_container"
     android:background="@color/ProEvent_white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -34,13 +34,16 @@
                 android:scrollbars="vertical">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/event_image_view"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="3dp"
+                    android:contentDescription="@string/event_image"
                     android:src="@drawable/ic_event_image_placeholder" />
 
                 <TextView
+                    android:id="@+id/edit_event_image"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -64,7 +67,7 @@
                         android:id="@+id/name_input_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="20dp"
                         android:layout_marginBottom="4dp"
                         android:text="@string/event_name_input_title"
                         android:textColor="@color/ProEvent_bright_orange_500"
@@ -74,6 +77,7 @@
                         android:id="@+id/name_input"
                         style="@style/ProEventRWTextInputLayoutStyle"
                         android:clickable="true"
+                        android:focusable="true"
                         app:endIconMode="none">
 
                         <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
@@ -101,7 +105,7 @@
                         android:id="@+id/date_input_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="20dp"
                         android:layout_marginBottom="4dp"
                         android:text="@string/date_input_title"
                         android:textColor="@color/ProEvent_bright_orange_500"
@@ -111,6 +115,7 @@
                         android:id="@+id/date_input"
                         style="@style/ProEventRWTextInputLayoutStyle"
                         android:clickable="true"
+                        android:focusable="true"
                         app:endIconMode="none">
 
                         <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
@@ -138,7 +143,7 @@
                         android:id="@+id/location_input_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="20dp"
                         android:layout_marginBottom="4dp"
                         android:text="@string/location_input_title"
                         android:textColor="@color/ProEvent_bright_orange_500"
@@ -148,6 +153,7 @@
                         android:id="@+id/location_input"
                         style="@style/ProEventRWTextInputLayoutStyle"
                         android:clickable="true"
+                        android:focusable="true"
                         app:endIconMode="none">
 
                         <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
@@ -167,18 +173,91 @@
                     android:layout_height="wrap_content">
 
                     <TextView
+                        android:id="@+id/dates_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@color/ProEvent_blue_300"
+                        android:gravity="center"
+                        android:text="Даты мероприятия"
+                        android:textColor="@color/ProEvent_blue_800"
+                        android:textSize="20sp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <View
+                        android:id="@+id/dates_bar_hit_area"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        app:layout_constraintBottom_toBottomOf="@id/dates_bar"
+                        app:layout_constraintLeft_toLeftOf="@id/dates_bar"
+                        app:layout_constraintRight_toRightOf="@id/dates_bar"
+                        app:layout_constraintTop_toTopOf="@id/dates_bar" />
+
+                    <ImageView
+                        android:id="@+id/add_date"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="7dp"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_add"
+                        app:layout_constraintBottom_toBottomOf="@id/dates_bar"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/dates_bar" />
+
+                    <ImageView
+                        android:id="@+id/expand_dates"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="7dp"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_expand"
+                        app:layout_constraintBottom_toBottomOf="@id/dates_bar"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/dates_bar"
+                        app:tint="@color/ProEvent_blue_800" />
+
+                    <LinearLayout
+                        android:id="@+id/dates_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/dates_bar">
+
+                        <TextView
+                            android:id="@+id/no_dates"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="60dp"
+                            android:backgroundTint="@color/ProEvent_blue_600"
+                            android:gravity="center"
+                            android:paddingTop="30dp"
+                            android:paddingBottom="10dp"
+                            android:text="Отсутствует.\nНажмите + чтобы добавить."
+                            android:textColor="@color/ProEvent_blue_800"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </LinearLayout>
+
+                    <TextView
                         android:id="@+id/description_bar"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_marginTop="20dp"
                         android:background="@color/ProEvent_blue_300"
                         android:gravity="center"
-                        android:text="Описание"
+                        android:text="@string/event_description"
                         android:textColor="@color/ProEvent_blue_800"
                         android:textSize="20sp"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toBottomOf="@id/dates_container" />
 
                     <View
                         android:id="@+id/description_bar_hit_area"
@@ -193,7 +272,8 @@
                         android:id="@+id/edit_description"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_marginLeft="7dp"
+                        android:layout_marginStart="7dp"
+                        android:contentDescription="@string/event_edit_description"
                         android:scaleType="center"
                         android:src="@drawable/ic_edit"
                         app:layout_constraintBottom_toBottomOf="@id/description_bar"
@@ -205,14 +285,14 @@
                         android:id="@+id/expand_description"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_marginLeft="7dp"
+                        android:layout_marginStart="7dp"
+                        android:contentDescription="@string/event_expand_description"
                         android:scaleType="center"
                         android:src="@drawable/ic_expand"
                         app:layout_constraintBottom_toBottomOf="@id/description_bar"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="@id/description_bar"
                         app:tint="@color/ProEvent_blue_800" />
-
 
                     <FrameLayout
                         android:id="@+id/description_container"
@@ -244,10 +324,9 @@
                             android:gravity="center"
                             android:paddingTop="30dp"
                             android:paddingBottom="10dp"
-                            android:text="Отсутствует.\nНажмите / чтобы добавить."
+                            android:text="@string/event_no_description"
                             android:textColor="@color/ProEvent_blue_800"
                             android:textSize="16sp" />
-
                     </FrameLayout>
 
                     <TextView
@@ -257,7 +336,7 @@
                         android:layout_marginTop="20dp"
                         android:background="@color/ProEvent_blue_300"
                         android:gravity="center"
-                        android:text="Карта мероприятия"
+                        android:text="@string/event_map"
                         android:textColor="@color/ProEvent_blue_800"
                         android:textSize="20sp"
                         app:layout_constraintLeft_toLeftOf="parent"
@@ -277,7 +356,8 @@
                         android:id="@+id/add_map"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_marginLeft="7dp"
+                        android:layout_marginStart="7dp"
+                        android:contentDescription="@string/add_map"
                         android:scaleType="center"
                         android:src="@drawable/ic_add"
                         app:layout_constraintBottom_toBottomOf="@id/maps_bar"
@@ -288,7 +368,8 @@
                         android:id="@+id/expand_maps"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_marginLeft="7dp"
+                        android:layout_marginStart="7dp"
+                        android:contentDescription="@string/event_expand_maps"
                         android:scaleType="center"
                         android:src="@drawable/ic_expand"
                         app:layout_constraintBottom_toBottomOf="@id/maps_bar"
@@ -315,7 +396,7 @@
                             android:gravity="center"
                             android:paddingTop="30dp"
                             android:paddingBottom="10dp"
-                            android:text="Отсутствует.\nНажмите + чтобы добавить."
+                            android:text="@string/event_no_maps"
                             android:textColor="@color/ProEvent_blue_800"
                             android:textSize="16sp"
                             app:layout_constraintLeft_toLeftOf="parent"
@@ -330,7 +411,7 @@
                         android:layout_marginTop="20dp"
                         android:background="@color/ProEvent_blue_300"
                         android:gravity="center"
-                        android:text="Точки"
+                        android:text="@string/event_points"
                         android:textColor="@color/ProEvent_blue_800"
                         android:textSize="20sp"
                         app:layout_constraintLeft_toLeftOf="parent"
@@ -350,7 +431,8 @@
                         android:id="@+id/add_point"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_marginLeft="7dp"
+                        android:layout_marginStart="7dp"
+                        android:contentDescription="@string/event_points"
                         android:scaleType="center"
                         android:src="@drawable/ic_add"
                         app:layout_constraintBottom_toBottomOf="@id/points_bar"
@@ -361,7 +443,8 @@
                         android:id="@+id/expand_points"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_marginLeft="7dp"
+                        android:layout_marginStart="7dp"
+                        android:contentDescription="@string/event_expand_points"
                         android:scaleType="center"
                         android:src="@drawable/ic_expand"
                         app:layout_constraintBottom_toBottomOf="@id/points_bar"
@@ -388,7 +471,7 @@
                             android:gravity="center"
                             android:paddingTop="30dp"
                             android:paddingBottom="10dp"
-                            android:text="Отсутствуют.\nНажмите + чтобы добавить."
+                            android:text="@string/event_no_points"
                             android:textColor="@color/ProEvent_blue_800"
                             android:textSize="16sp" />
                     </LinearLayout>
@@ -400,7 +483,7 @@
                         android:layout_marginTop="20dp"
                         android:background="@color/ProEvent_blue_300"
                         android:gravity="center"
-                        android:text="Участники"
+                        android:text="@string/event_participants"
                         android:textColor="@color/ProEvent_blue_800"
                         android:textSize="20sp"
                         app:layout_constraintLeft_toLeftOf="parent"
@@ -420,7 +503,8 @@
                         android:id="@+id/add_participant"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_marginLeft="7dp"
+                        android:layout_marginStart="7dp"
+                        android:contentDescription="@string/event_add_participants"
                         android:scaleType="center"
                         android:src="@drawable/ic_add"
                         app:layout_constraintBottom_toBottomOf="@id/participants_bar"
@@ -431,7 +515,8 @@
                         android:id="@+id/expand_participants"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_marginLeft="7dp"
+                        android:layout_marginStart="7dp"
+                        android:contentDescription="@string/event_expand_participants"
                         android:scaleType="center"
                         android:src="@drawable/ic_expand"
                         app:layout_constraintBottom_toBottomOf="@id/participants_bar"
@@ -459,7 +544,7 @@
                             android:gravity="center"
                             android:paddingTop="30dp"
                             android:paddingBottom="10dp"
-                            android:text="Отсутствуют.\nНажмите + чтобы добавить."
+                            android:text="@string/event_no_participants"
                             android:textColor="@color/ProEvent_blue_800"
                             android:textSize="16sp" />
                     </LinearLayout>
@@ -473,7 +558,7 @@
             android:layout_height="40dp"
             android:background="@color/ProEvent_blue_300"
             android:gravity="center"
-            android:text="Описание"
+            android:text="@string/event_description"
             android:textColor="@color/ProEvent_blue_800"
             android:textSize="20sp"
             android:visibility="gone"
@@ -495,7 +580,8 @@
             android:id="@+id/absolute_bar_edit"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginLeft="7dp"
+            android:layout_marginStart="7dp"
+            android:contentDescription="@string/progress_bar"
             android:scaleType="center"
             android:src="@drawable/ic_add"
             android:visibility="gone"
@@ -507,7 +593,8 @@
             android:id="@+id/absolute_bar_expand"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginLeft="7dp"
+            android:layout_marginStart="7dp"
+            android:contentDescription="@string/progress_bar"
             android:scaleType="center"
             android:src="@drawable/ic_expand"
             android:visibility="gone"
@@ -536,14 +623,13 @@
 
             <TextView
                 android:id="@+id/title"
-                fontPath="@string/default_font_bold_path"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="7dp"
+                android:layout_marginStart="7dp"
                 android:ellipsize="end"
                 android:includeFontPadding="false"
                 android:maxLines="2"
-                android:text="Новое мероприятие"
+                android:text="@string/event_new_event"
                 android:textAlignment="center"
                 android:textColor="@color/ProEvent_blue_800"
                 android:textSize="20sp"
@@ -553,13 +639,12 @@
 
             <TextView
                 android:id="@+id/save"
-                fontPath="@string/default_font_bold_path"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginRight="20dp"
                 android:paddingHorizontal="20dp"
-                android:text="Сохранить"
+                android:text="@string/event_save"
                 android:textColor="@color/ProEvent_bright_orange_500"
                 android:textSize="16sp"
                 android:visibility="gone"
@@ -578,13 +663,12 @@
 
             <TextView
                 android:id="@+id/cancel"
-                fontPath="@string/default_font_bold_path"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
                 android:paddingHorizontal="20dp"
-                android:text="Отмена"
+                android:text="@string/event_cancel"
                 android:textColor="@color/ProEvent_bright_orange_500"
                 android:textSize="16sp"
                 android:visibility="gone"
@@ -605,6 +689,7 @@
                 android:id="@+id/action_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/event_action_menu"
                 android:src="@drawable/ic_pie"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@id/action_menu_hit_area"
@@ -616,7 +701,7 @@
                 android:id="@+id/action_menu_hit_area"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginRight="7dp"
+                android:layout_marginEnd="7dp"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="@+id/title"
                 app:layout_constraintRight_toRightOf="parent"
@@ -626,7 +711,8 @@
                 android:id="@+id/back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
+                android:contentDescription="@string/event_back"
                 android:src="@drawable/ic_back_to"
                 app:layout_constraintBottom_toBottomOf="@id/title"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -682,7 +768,7 @@
                     android:includeFontPadding="false"
                     android:paddingHorizontal="13dp"
                     android:paddingVertical="14dp"
-                    android:text="Отменить мероприятие"
+                    android:text="@string/event_cancel_event"
                     android:textColor="@color/ProEvent_blue_800"
                     android:textSize="16sp"
                     android:visibility="gone"
@@ -696,7 +782,7 @@
                     android:includeFontPadding="false"
                     android:paddingHorizontal="13dp"
                     android:paddingVertical="14dp"
-                    android:text="Удалить мероприятие"
+                    android:text="@string/event_delete_event"
                     android:textColor="@color/ProEvent_blue_800"
                     android:textSize="16sp"
                     android:visibility="gone"

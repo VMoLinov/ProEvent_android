@@ -1,207 +1,166 @@
 package ru.myproevent.ui.fragments.settings
 
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.telephony.PhoneNumberFormattingTextWatcher
 import android.text.SpannableStringBuilder
 import android.text.method.KeyListener
+import android.util.Log
 import android.view.View
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import com.bumptech.glide.Glide
 import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.textfield.TextInputLayout.END_ICON_CUSTOM
 import com.google.android.material.textfield.TextInputLayout.END_ICON_NONE
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.R
 import ru.myproevent.databinding.FragmentAccountBinding
-import ru.myproevent.domain.models.ProfileDto
+import ru.myproevent.domain.models.entities.Profile
+import ru.myproevent.domain.utils.PhoneTextWatcher
+import ru.myproevent.domain.utils.GlideLoader
 import ru.myproevent.ui.fragments.BaseMvpFragment
-import ru.myproevent.ui.views.cropimage.CropImageHandler
-import ru.myproevent.ui.views.cropimage.CropImageView
 import ru.myproevent.ui.presenters.main.RouterProvider
 import ru.myproevent.ui.presenters.settings.account.AccountPresenter
 import ru.myproevent.ui.presenters.settings.account.AccountView
+import ru.myproevent.ui.views.CropImageHandler
 import ru.myproevent.ui.views.KeyboardAwareTextInputEditText
+import ru.myproevent.ui.views.TextInputLayoutEditTool
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountBinding::inflate),
-    AccountView, CropImageView {
+    AccountView {
 
-    val calendar: Calendar = Calendar.getInstance()
-    var currYear: Int = calendar.get(Calendar.YEAR)
-    var currMonth: Int = calendar.get(Calendar.MONTH)
-    var currDay: Int = calendar.get(Calendar.DAY_OF_MONTH)
-
-    private val dateEditClickListener = View.OnClickListener {
-        // TODO: отрефакторить
-        // https://github.com/terrakok/Cicerone/issues/106
-        val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
-        val prev: Fragment? = parentFragmentManager.findFragmentByTag("dialog")
-        if (prev != null) {
-            ft.remove(prev)
-        }
-        ft.addToBackStack(null)
-        var pickerYear = currYear
-        var pickerMonth = currMonth
-        var pickerDay = currDay
-        if (!binding.dateOfBirthEdit.text.isNullOrEmpty()) {
-            val pickerDate = GregorianCalendar().apply {
-                time =
-                    SimpleDateFormat(getString(R.string.dateFormat)).parse(binding.dateOfBirthEdit.text.toString())
-            }
-            pickerYear = pickerDate.get(Calendar.YEAR)
-            pickerMonth = pickerDate.get(Calendar.MONTH)
-            pickerDay = pickerDate.get(Calendar.DATE)
-        }
-        val newFragment: DialogFragment =
-            ProEventDatePickerDialog.newInstance(pickerYear, pickerMonth, pickerDay).apply {
-                onDateSetListener = { year, month, dayOfMonth ->
-                    val gregorianCalendar = GregorianCalendar(
-                        year, month, dayOfMonth
-                    )
-                    this@AccountFragment.binding.dateOfBirthEdit.text = SpannableStringBuilder(
-                        // TODO: для вывода сделать local date format
-                        SimpleDateFormat(getString(R.string.dateFormat)).apply {
-                            calendar = gregorianCalendar
-                        }.format(
-                            gregorianCalendar.time
-                        )
-                    )
-                }
-            }
-        newFragment.show(ft, "dialog")
-    }
-
-    private fun showKeyBoard(view: View) {
-        val imm: InputMethodManager =
-            requireContext().getSystemService(InputMethodManager::class.java)
-        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
-    }
+    private var newPictureUUID: String? = null
+    private val imageLoader = GlideLoader().apply { ProEventApp.instance.appComponent.inject(this) }
 
     override val presenter by moxyPresenter {
         AccountPresenter((parentFragment as RouterProvider).router).apply {
             ProEventApp.instance.appComponent.inject(this)
         }
     }
-    private lateinit var defaultKeyListener: KeyListener
-
-    private lateinit var phoneKeyListener: KeyListener
-
-    private fun setEditListeners(
-        textInput: TextInputLayout,
-        textEdit: KeyboardAwareTextInputEditText
-    ) {
-        textEdit.keyListener = null
-        textInput.setEndIconOnClickListener {
-            textEdit.keyListener = defaultKeyListener
-            textEdit.requestFocus()
-            showKeyBoard(textEdit)
-            textEdit.text?.let { it1 -> textEdit.setSelection(it1.length) }
-            textInput.endIconMode = END_ICON_NONE
-            binding.save.visibility = VISIBLE
-        }
-    }
-
-    private fun setPhoneListeners(
-        textInput: TextInputLayout,
-        textEdit: KeyboardAwareTextInputEditText
-    ) {
-        textEdit.keyListener = null
-        textInput.setEndIconOnClickListener {
-            textEdit.keyListener = phoneKeyListener
-            textEdit.requestFocus()
-            showKeyBoard(textEdit)
-            textEdit.text?.let { it1 -> textEdit.setSelection(it1.length) }
-            textInput.endIconMode = END_ICON_NONE
-            binding.save.visibility = VISIBLE
-        }
-    }
-
-    companion object {
-        fun newInstance() = AccountFragment()
-    }
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
         super.onViewCreated(view, savedInstanceState)
         // TODO Передавать фрагмент слишком жирно, нужно придумать что проще
-        CropImageHandler(
-            viewOnClick = editUserImage,
-            viewToLoad = userImageView,
-            resultCaller = this@AccountFragment,
-            isCircle = true
-        ).init()
-        defaultKeyListener = nameEdit.keyListener
-        setEditListeners(nameInput, nameEdit)
-        phoneKeyListener = phoneEdit.keyListener
-        setPhoneListeners(phoneInput, phoneEdit)
-        dateOfBirthEdit.keyListener = null
+        initCrop()
         dateOfBirthEdit.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 dateOfBirthEdit.performClick()
             }
         }
-        dateOfBirthInput.setEndIconOnClickListener {
-            dateOfBirthEdit.requestFocus()
-            dateOfBirthEdit.setOnClickListener(dateEditClickListener)
-            dateOfBirthEdit.performClick()
-            dateOfBirthInput.endIconMode = END_ICON_NONE
-            save.visibility = VISIBLE
-        }
-        setEditListeners(positionInput, positionEdit)
-        setEditListeners(roleInput, roleEdit)
-        save.setOnClickListener {
-            presenter.saveProfile(
-                nameEdit.text.toString(),
-                phoneEdit.text.toString(),
-                dateOfBirthEdit.text.toString(),
-                positionEdit.text.toString(),
-                roleEdit.text.toString(),
-                newPictureUri
-            )
-        }
+        initEditListeners()
+        save.setOnClickListener { saveProfile(newPictureUUID) }
         titleButton.setOnClickListener { presenter.onBackPressed() }
-        phoneEdit.addTextChangedListener(PhoneNumberFormattingTextWatcher())
-        phoneEdit.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                if (phoneEdit.text.isNullOrEmpty()) {
-                    phoneEdit.text = SpannableStringBuilder("+7")
-                }
-            }
-        }
-        presenter.getProfile()
+        phoneEdit.addTextChangedListener(PhoneTextWatcher())
+        cancel.setOnClickListener { presenter.cancelEdit() }
     }
 
-    override var newPictureUri: Uri? = null
+    private fun initCrop() {
+        CropImageHandler(
+            viewOnClick = binding.editUserImage,
+            pickImageCallback = { pickImageActivityContract, cropActivityResultLauncher ->
+                registerForActivityResult(pickImageActivityContract) {
+                    it?.let { uri -> cropActivityResultLauncher.launch(uri) }
+                }
+            },
+            cropCallback = { cropActivityContract ->
+                registerForActivityResult(cropActivityContract) {
+                    it?.let { uri ->
+                        imageLoader.loadCircle(binding.userImageView, uri)
+                        newPictureUri(uri)
+                    }
+                }
+            },
+            isCircle = true
+        ).init()
+    }
 
-    override fun showProfile(profileDto: ProfileDto) {
+    private fun saveProfile(uuid: String?) = with(binding) {
+        presenter.saveProfile(
+            nameEdit.text.toString(),
+            if(phoneEdit.text.toString().isNotBlank()) "+7 ${phoneEdit.text.toString()}" else "",
+            dateOfBirthEdit.text.toString(),
+            positionEdit.text.toString(),
+            roleEdit.text.toString(),
+            uuid.orEmpty()
+        )
+    }
+
+    private fun saveCallBack(uuid: String?) {
+        newPictureUUID?.let { presenter.deleteImage(it) }
+        newPictureUUID = uuid
+        saveProfile(newPictureUUID)
+    }
+
+    private fun newPictureUri(uri: Uri) {
+        presenter.saveImage(File(uri.path.orEmpty()), ::saveCallBack)
+    }
+
+    override fun showProfile(profile: Profile) {
         with(binding) {
-            with(profileDto) {
+            with(profile) {
                 fullName?.let { nameEdit.text = SpannableStringBuilder(it) }
-                msisdn?.let { phoneEdit.text = SpannableStringBuilder(it) }
+                if (!phone.isNullOrBlank()) {
+                    phoneEdit.setText(phone!!.subSequence(3, phone!!.length))
+                }
                 birthdate?.let { dateOfBirthEdit.text = SpannableStringBuilder(it) }
                 position?.let { positionEdit.text = SpannableStringBuilder(it) }
                 description?.let { roleEdit.text = SpannableStringBuilder(it) }
                 imgUri?.let {
-                    Glide.with(this@AccountFragment)
-                        .load(presenter.getGlideUrl(it))
-                        .circleCrop()
-                        .into(binding.userImageView)
+                    newPictureUUID = it
+                    imageLoader.loadCircle(binding.userImageView, it)
                 }
+                groupEdit.visibility = GONE
             }
+        }
+    }
+
+    private fun initEditListeners() {
+        with(binding) {
+            nameInput.setEditListeners(nameEdit, presenter::clickOnEditIcon)
+            phoneInput.setEditListeners(phoneEdit, presenter::clickOnEditIcon)
+            positionInput.setEditListeners(positionEdit, presenter::clickOnEditIcon)
+            roleInput.setEditListeners(roleEdit, presenter::clickOnEditIcon)
+            dateOfBirthInput.setDialogDate(parentFragmentManager)
+            dateOfBirthInput.setEditListeners(dateOfBirthEdit, presenter::clickOnEditIcon)
         }
     }
 
     override fun makeProfileEditable() {
         // TODO:
         showMessage("makeProfileEditable()")
+    }
+
+    override fun setFieldEdited(ids: Map<Int, Boolean>) {
+        ids.keys.forEach {
+            requireActivity().findViewById<TextInputLayoutEditTool>(it)
+                .setRedacting(ids[it] ?: false)
+        }
+        binding.groupEdit.visibility = if (ids.values.contains(true)) VISIBLE else GONE
+    }
+
+    companion object {
+        fun newInstance() = AccountFragment()
+    }
+
+    override fun showMessage(message: String) {
+        Toast.makeText(ProEventApp.instance, message, Toast.LENGTH_LONG).show()
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        savedInstanceState?.let { binding.dateOfBirthInput.firstTime = false }
     }
 }
