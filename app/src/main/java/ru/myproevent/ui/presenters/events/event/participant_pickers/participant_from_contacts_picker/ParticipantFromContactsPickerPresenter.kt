@@ -3,12 +3,13 @@ package ru.myproevent.ui.presenters.events.event.participant_pickers.participant
 import android.os.Bundle
 import android.util.Log
 import com.github.terrakok.cicerone.Router
+import ru.myproevent.R
 import ru.myproevent.domain.models.ContactDto
 import ru.myproevent.domain.models.entities.Contact
 import ru.myproevent.domain.models.repositories.contacts.IProEventContactsRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
-import ru.myproevent.domain.utils.PARTICIPANTS_PICKER_RESULT_KEY
 import ru.myproevent.domain.utils.CONTACTS_KEY
+import ru.myproevent.domain.utils.PARTICIPANTS_PICKER_RESULT_KEY
 import ru.myproevent.domain.utils.toContactDto
 import ru.myproevent.ui.presenters.BaseMvpPresenter
 import ru.myproevent.ui.presenters.contacts.contacts_list.IContactItemView
@@ -84,15 +85,14 @@ class ParticipantFromContactsPickerPresenter(
                     view.setName(id.toString())
                 }
                 if (eventParticipantsIds.contains(contact.id)) {
-                    view.setDescription("Уже добавлен как участник")
+                    view.setDescription(getString(R.string.already_participant_01))
                 } else if (!description.isNullOrEmpty()) {
                     view.setDescription(description!!)
                 } else if (!nickName.isNullOrEmpty()) {
                     view.setDescription(nickName!!)
                 } else {
-                    view.setDescription("id пользователя: $id")
+                    view.setDescription(getString(R.string.user_id, id))
                 }
-                //imgUri?.let { view.loadImg(it) }
                 status?.let { view.setStatus(it) }
 
                 view.setSelection(pickedParticipants.contains(contact))
@@ -102,7 +102,7 @@ class ParticipantFromContactsPickerPresenter(
         override fun onItemClick(view: IContactPickerItemView) {
             contacts[view.pos]?.let {
                 if (eventParticipantsIds.contains(it.id)) {
-                    viewState.showMessage("Данный пользователь уже добавлен как участник")
+                    viewState.showMessage(getString(R.string.already_participant_02))
                     return
                 }
                 itemClickListener?.invoke(view, it)
@@ -171,7 +171,17 @@ class ParticipantFromContactsPickerPresenter(
                 else -> return@ContactListPresenter
             }
 
-            viewState.showConfirmationScreen(action) { confirmed ->
+            val message = getString(
+                when (action) {
+                    Contact.Action.ACCEPT -> R.string.accept_contact_request_question
+                    Contact.Action.CANCEL -> R.string.cancel_request_question
+                    Contact.Action.DECLINE -> R.string.decline_contact_request_question
+                    Contact.Action.DELETE -> R.string.delete_contact_question
+                    else -> R.string.empty_string
+                }
+            )
+
+            viewState.showConfirmationScreen(message) { confirmed ->
                 viewState.hideConfirmationScreen()
                 if (!confirmed) return@showConfirmationScreen
                 performActionOnContact(contact, action)
@@ -198,7 +208,7 @@ class ParticipantFromContactsPickerPresenter(
             Contact.Action.DECLINE -> contactsRepository.declineContact(contact.id)
             else -> return
         }.observeOn(uiScheduler)
-            .subscribe({ loadData() }, { viewState.showToast("Не удалось выполнить действие") })
+            .subscribe({ loadData() }, { viewState.showToast(getString(R.string.action_failed)) })
             .disposeOnDestroy()
     }
 
@@ -213,14 +223,14 @@ class ParticipantFromContactsPickerPresenter(
             .subscribe({ data ->
                 contactsPickerListPresenter.setData(data.map { it.toContactDto() }, data.size)
             }, {
-                viewState.showToast("ПРОИЗОШЛА ОШИБКА: ${it.message}")
+                viewState.showToast(getString(R.string.error_occurred, it.message))
             }).disposeOnDestroy()
     }
 
     fun confirmPick() {
         Log.d("[MYLOG]", "presenter confirmPick")
         if (pickedParticipants.isEmpty()) {
-            viewState.showMessage("Должен быть выбран минимум 1 контакт")
+            viewState.showMessage(getString(R.string.at_least_1_contact_must_be_selected))
             return
         }
         viewState.setResult(

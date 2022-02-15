@@ -5,19 +5,19 @@ import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.widget.LinearLayout
+import androidx.core.view.isVisible
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.R
 import ru.myproevent.databinding.FragmentAuthorizationBinding
+import ru.myproevent.domain.utils.pxValue
 import ru.myproevent.ui.fragments.BaseMvpFragment
 import ru.myproevent.ui.presenters.authorization.authorization.AuthorizationPresenter
 import ru.myproevent.ui.presenters.authorization.authorization.AuthorizationView
 import ru.myproevent.ui.presenters.main.BottomNavigation
 import ru.myproevent.ui.presenters.main.RouterProvider
 import ru.myproevent.ui.presenters.main.Tab
-import android.widget.LinearLayout
-import androidx.core.view.isVisible
-import ru.myproevent.domain.utils.pxValue
 
 class AuthorizationFragment :
     BaseMvpFragment<FragmentAuthorizationBinding>(FragmentAuthorizationBinding::inflate),
@@ -40,7 +40,7 @@ class AuthorizationFragment :
         body.post {
             val availableHeight = root.height
 
-            if(passwordRecovery.lineCount > 1|| registration.lineCount > 1){
+            if (passwordRecovery.lineCount > 1 || registration.lineCount > 1) {
                 bottomOptionsContainer.orientation = LinearLayout.VERTICAL
                 bottomOptionsHorizontalSeparator.visibility = GONE
             }
@@ -56,10 +56,10 @@ class AuthorizationFragment :
                             pxValue(40f)
                         }.toInt()
                     }
-                if(difference > pxValue(40f)){
+                if (difference > pxValue(40f)) {
                     logo.isVisible = false
                 }
-                if(difference > pxValue(80f + 48f)){
+                if (difference > pxValue(80f + 48f)) {
                     formTitle.isVisible = false
                 }
             }
@@ -84,7 +84,7 @@ class AuthorizationFragment :
                 presenter.authorize(
                     emailEdit.text.toString(),
                     passwordEdit.text.toString(),
-                    rememberMeCheckbox?.isChecked ?: true
+                    rememberMeCheckbox.isChecked
                 )
             }
             registration.setOnClickListener {

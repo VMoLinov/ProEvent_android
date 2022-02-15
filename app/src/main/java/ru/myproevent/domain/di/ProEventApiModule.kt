@@ -32,7 +32,7 @@ class ProEventApiModule {
         @Named("addTokenInterceptor") tokenInterceptor: Interceptor
     ): IProEventDataSource {
         val interceptor = HttpLoggingInterceptor()
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+            .apply { level = HttpLoggingInterceptor.Level.BODY }
         val client = OkHttpClient.Builder()
             .addNetworkInterceptor(tokenInterceptor)
             .addInterceptor(interceptor)

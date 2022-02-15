@@ -4,7 +4,6 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import ru.myproevent.domain.models.IProEventDataSource
-import ru.myproevent.domain.models.Page
 import ru.myproevent.domain.models.entities.Contact
 import ru.myproevent.domain.models.entities.Contact.Status
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
@@ -26,7 +25,8 @@ class ProEventContactsRepository @Inject constructor(
             val contactDtos = data.content
             profilesRepository.getMiniProfiles(contactDtos.map { it.id }).map { profiles ->
                 profiles.map { profile ->
-                    val status = Status.fromString(contactDtos.find { it.id == profile.id }!!.status)
+                    val status =
+                        Status.fromString(contactDtos.find { it.id == profile.id }!!.status)
                     profile.toContact(status)
                 }
             }

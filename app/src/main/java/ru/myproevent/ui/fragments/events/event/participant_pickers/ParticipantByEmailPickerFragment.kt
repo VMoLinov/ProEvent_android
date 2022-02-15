@@ -3,7 +3,6 @@ package ru.myproevent.ui.fragments.events.event.participant_pickers
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.core.view.isVisible
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.R
@@ -30,7 +29,8 @@ class ParticipantByEmailPickerFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(binding) {
-            contactAddExplanation.text = getString(R.string.participant_add_by_profile_value_explanation)
+            contactAddExplanation.text =
+                getString(R.string.participant_add_by_profile_value_explanation)
             titleButton.setOnClickListener { presenter.onBackPressed() }
             searchContact.setOnClickListener {
                 presenter.inviteParticipantByEmail(emailEdit.text.toString())
@@ -39,6 +39,10 @@ class ParticipantByEmailPickerFragment :
     }
 
     override fun setResult(requestKey: String, result: Bundle) {
-        Toast.makeText(requireContext(), "Данный функционал пока недоступен. На сервере нет функции приглашения участника по email.", Toast.LENGTH_LONG).show()
+        Toast.makeText(
+            requireContext(),
+            "Данный функционал пока недоступен. На сервере нет функции приглашения участника по email.",
+            Toast.LENGTH_LONG
+        ).show()
     }
 }

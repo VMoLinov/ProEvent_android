@@ -5,11 +5,13 @@ import com.bumptech.glide.load.model.LazyHeaders
 import com.github.terrakok.cicerone.Router
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableSingleObserver
+import ru.myproevent.R
 import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.repositories.images.IImagesRepository
 import ru.myproevent.domain.models.repositories.internet_access_info.IInternetAccessInfoRepository
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
+import ru.myproevent.domain.utils.GlideLoader
 import ru.myproevent.ui.presenters.BaseMvpPresenter
 import java.io.File
 import javax.inject.Inject
@@ -22,7 +24,7 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
         override fun onComplete() {
             curProfile = profile
             viewState.showProfile(profile)
-            viewState.showMessage("Изменения сохранены")
+            viewState.showMessage(getString(R.string.changes_saved))
         }
 
         override fun onError(error: Throwable) {
@@ -30,7 +32,9 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
             interAccessInfoRepository
                 .hasInternetConnection()
                 .observeOn(uiScheduler)
-                .subscribeWith(InterAccessInfoObserver("Этого не должно было произойти(ProfileEditObserver):\n${error}"))
+                .subscribeWith(
+                    InterAccessInfoObserver(getString(R.string.impossible_error_02, error))
+                )
                 .disposeOnDestroy()
         }
     }
@@ -43,7 +47,7 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
 
         override fun onError(error: Throwable) {
             error.printStackTrace()
-            if (error is retrofit2.adapter.rxjava2.HttpException) {
+            if (error is retrofit2.HttpException) {
                 when (error.code()) {
                     404 -> viewState.makeProfileEditable()
                 }
@@ -52,7 +56,9 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
             interAccessInfoRepository
                 .hasInternetConnection()
                 .observeOn(uiScheduler)
-                .subscribeWith(InterAccessInfoObserver("Этого не должно было произойти (ProfileGetObserver):\n${error}"))
+                .subscribeWith(
+                    InterAccessInfoObserver(getString(R.string.impossible_error_03, error))
+                )
                 .disposeOnDestroy()
         }
     }
@@ -119,7 +125,7 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
 
     // TODO: вынести URL в ресурсы или константы
     fun getGlideUrl(uuid: String) = GlideUrl(
-        "http://178.249.69.107:8762/api/v1/storage/$uuid",
+        GlideLoader.URL_PATH + uuid,
         LazyHeaders.Builder()
             .addHeader("Authorization", "Bearer ${loginRepository.getLocalToken()}")
             .build()

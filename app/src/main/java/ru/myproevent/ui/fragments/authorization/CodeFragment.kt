@@ -1,14 +1,14 @@
 package ru.myproevent.ui.fragments.authorization
 
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.text.TextWatcher
-import android.view.*
+import android.view.KeyEvent
+import android.view.MotionEvent
+import android.view.View
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import com.google.android.material.button.MaterialButton
@@ -133,18 +133,11 @@ class CodeFragment : BaseMvpFragment<FragmentCodeBinding>(FragmentCodeBinding::i
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
         super.onViewCreated(view, savedInstanceState)
         setLayoutParams()
-        codeExplanation.text =
-            String.format(getString(R.string.code_explanation_text), presenter.getEmail())
+        codeExplanation.text = getString(R.string.code_explanation_text, presenter.getEmail())
         continueRegistration.setOnClickListener {
-            getVerificationCode()?.let { code -> presenter.continueRegistration(code) } ?: run {
-                Toast.makeText(
-                    ProEventApp.instance.applicationContext,
-                    "Код не может быть пустым или содержать не числовые символы",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
+            getVerificationCode().let { code -> presenter.continueRegistration(code) }
         }
-        refreshCode.setOnClickListener{presenter.refreshCode()}
+        refreshCode.setOnClickListener { presenter.refreshCode() }
         authorize.setOnClickListener { presenter.authorize() }
         ohNowIRemember.setOnClickListener { authorize.performClick() }
         bottomOptionsContainer.setOnClickListener { authorize.performClick() }
@@ -224,16 +217,9 @@ class CodeFragment : BaseMvpFragment<FragmentCodeBinding>(FragmentCodeBinding::i
             intArrayOf(-android.R.attr.state_focused),
         )
 
-        val defaultColors = intArrayOf(
-            resources.getColor(R.color.ProEvent_blue_300),
-            resources.getColor(R.color.ProEvent_blue_300),
-            resources.getColor(R.color.ProEvent_blue_300),
-            resources.getColor(R.color.ProEvent_blue_300),
-            resources.getColor(R.color.ProEvent_blue_300),
-            resources.getColor(R.color.ProEvent_blue_300),
-            resources.getColor(R.color.ProEvent_blue_300),
-            resources.getColor(R.color.ProEvent_blue_300)
-        )
+        val defaultColors = resources.getColor(R.color.ProEvent_blue_300, null).let {
+            intArrayOf(it, it, it, it, it, it, it, it)
+        }
 
         if (message.isNullOrBlank()) {
             errorMessage.isVisible = false
@@ -246,16 +232,9 @@ class CodeFragment : BaseMvpFragment<FragmentCodeBinding>(FragmentCodeBinding::i
         errorMessage.text = message
         errorMessage.isVisible = true
 
-        val errorColors = intArrayOf(
-            Color.parseColor("#FF6A4D"),
-            Color.parseColor("#FF6A4D"),
-            Color.parseColor("#FF6A4D"),
-            Color.parseColor("#FF6A4D"),
-            Color.parseColor("#FF6A4D"),
-            Color.parseColor("#FF6A4D"),
-            Color.parseColor("#FF6A4D"),
-            Color.parseColor("#FF6A4D")
-        )
+        val errorColors = resources.getColor(R.color.PE_error_color_01, null).let {
+            intArrayOf(it, it, it, it, it, it, it, it)
+        }
 
         digit1.setBoxStrokeColorStateList(ColorStateList(colorStates, errorColors))
         digit2.setBoxStrokeColorStateList(ColorStateList(colorStates, errorColors))

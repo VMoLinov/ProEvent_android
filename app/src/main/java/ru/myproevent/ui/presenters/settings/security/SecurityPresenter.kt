@@ -5,6 +5,7 @@ import com.github.terrakok.cicerone.Router
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableSingleObserver
 import ru.myproevent.ProEventApp
+import ru.myproevent.R
 import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.repositories.internet_access_info.IInternetAccessInfoRepository
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
@@ -17,7 +18,7 @@ import javax.inject.Inject
 class SecurityPresenter(localRouter: Router) : BaseMvpPresenter<SecurityView>(localRouter) {
     private inner class ProfileEditObserver : DisposableCompletableObserver() {
         override fun onComplete() {
-            viewState.showMessage("Изменения сохранены")
+            viewState.showMessage(getString(R.string.changes_saved))
         }
 
         override fun onError(error: Throwable) {
@@ -25,7 +26,9 @@ class SecurityPresenter(localRouter: Router) : BaseMvpPresenter<SecurityView>(lo
             interAccessInfoRepository
                 .hasInternetConnection()
                 .observeOn(uiScheduler)
-                .subscribeWith(InterAccessInfoObserver("Этого не должно было произойти(ProfileEditObserver):\n${error}"))
+                .subscribeWith(
+                    InterAccessInfoObserver(getString(R.string.impossible_error_02, error))
+                )
                 .disposeOnDestroy()
         }
     }
@@ -40,7 +43,7 @@ class SecurityPresenter(localRouter: Router) : BaseMvpPresenter<SecurityView>(lo
 
         override fun onError(error: Throwable) {
             error.printStackTrace()
-            if (error is retrofit2.adapter.rxjava2.HttpException) {
+            if (error is retrofit2.HttpException) {
                 when (error.code()) {
                     404 -> viewState.makeProfileEditable()
                 }
@@ -49,7 +52,9 @@ class SecurityPresenter(localRouter: Router) : BaseMvpPresenter<SecurityView>(lo
             interAccessInfoRepository
                 .hasInternetConnection()
                 .observeOn(uiScheduler)
-                .subscribeWith(InterAccessInfoObserver("Этого не должно было произойти (ProfileGetObserver):\n${error}"))
+                .subscribeWith(
+                    InterAccessInfoObserver(getString(R.string.impossible_error_03, error))
+                )
                 .disposeOnDestroy()
         }
     }
@@ -65,8 +70,12 @@ class SecurityPresenter(localRouter: Router) : BaseMvpPresenter<SecurityView>(lo
 
     fun saveProfile(email: String, login: String) {
         // TODO:
-        if(userProfile == null){
-            Toast.makeText(ProEventApp.instance, "Операция сохранения в данный момент не доступна, так как профиль ещё не загрузился", Toast.LENGTH_LONG).show()
+        if (userProfile == null) {
+            Toast.makeText(
+                ProEventApp.instance,
+                getString(R.string.saving_not_enabled),
+                Toast.LENGTH_LONG
+            ).show()
             return
         }
         userProfile!!.apply {

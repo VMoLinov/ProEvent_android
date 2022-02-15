@@ -12,6 +12,7 @@ import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.textfield.TextInputLayout
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
+import ru.myproevent.R
 import ru.myproevent.databinding.FragmentSecurityBinding
 import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.ui.fragments.BaseMvpFragment
@@ -72,7 +73,8 @@ class SecurityFragment : BaseMvpFragment<FragmentSecurityBinding>(FragmentSecuri
         newPasswordEdit.doAfterTextChanged { showSaveButton() }
         save.setOnClickListener {
             if (oldPasswordEdit.text.toString() != newPasswordEdit.text.toString() || oldPasswordEdit.text.toString() != confirmPasswordEdit.text.toString()) {
-                Toast.makeText(context, "Пароли не совпадают", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, getString(R.string.passwords_not_same), Toast.LENGTH_LONG)
+                    .show()
                 return@setOnClickListener
             }
             presenter.saveProfile(

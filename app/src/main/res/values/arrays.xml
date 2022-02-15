@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="contacts_filter_items">
-        <item>Все контакты</item>
-        <item>Исходящие заявки</item>
-        <item>Входящие заявки</item>
+        <item>@string/all_contacts</item>
+        <item>@string/outgoing_contacts</item>
+        <item>@string/incoming_contacts</item>
     </string-array>
 
     <string-array name="contacts_filter_titles">
-        <item>Контакты: Все</item>
-        <item>Контакты: Исходящие</item>
-        <item>Контакты: Входящие</item>
+        <item>@string/contacts_all</item>
+        <item>@string/contacts_outgoing</item>
+        <item>@string/contacts_incoming</item>
     </string-array>
 
     <string-array name="events_filter_items">
-        <item>Все актуальные мероприятия</item>
-        <item>Мои актуальные мероприятия</item>
-        <item>Мои завершенные мероприятия</item>
+        <item>@string/all_actual_events</item>
+        <item>@string/my_actual_events</item>
+        <item>@string/my_completed_events</item>
     </string-array>
 
     <string-array name="events_filter_titles">
-        <item>Мероприятия</item>
-        <item>Мероприятия: Актуальные</item>
-        <item>Мероприятия: Завершенные</item>
+        <item>@string/events</item>
+        <item>@string/actual_events</item>
+        <item>@string/completed_events</item>
     </string-array>
 </resources>

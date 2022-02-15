@@ -29,7 +29,7 @@ class EventParticipantFragment :
     }
 
     companion object {
-        val PROFILE_ARG = "PROFILE"
+        const val PROFILE_ARG = "PROFILE"
         fun newInstance(profile: Profile) = EventParticipantFragment().apply {
             arguments = Bundle().apply { putParcelable(PROFILE_ARG, profile) }
         }
@@ -37,7 +37,7 @@ class EventParticipantFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
         super.onViewCreated(view, savedInstanceState)
-        with(profile){
+        with(profile) {
             title.text = fullName ?: nickName ?: "[#$id]"
             pointEdit.setText("[ДАННОЕ ПОЛЕ ПОКА НЕ РЕАЛИЗОВАНО НА СЕРВЕРЕ]")
             positionEdit.setText(position)

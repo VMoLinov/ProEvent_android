@@ -6,9 +6,10 @@ import moxy.viewstate.strategy.alias.OneExecution
 import ru.myproevent.ui.presenters.BaseMvpView
 
 @AddToEndSingle
-interface EventParticipantView : BaseMvpView{
+interface EventParticipantView : BaseMvpView {
     @OneExecution
     fun openChat(userId: Long)
+
     @OneExecution
     fun setResult(requestKey: String, result: Bundle)
 }

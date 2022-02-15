@@ -7,7 +7,8 @@ import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRep
 import ru.myproevent.ui.presenters.BaseMvpPresenter
 import javax.inject.Inject
 
-class AuthorizationPresenter(localRouter: Router) : BaseMvpPresenter<AuthorizationView>(localRouter) {
+class AuthorizationPresenter(localRouter: Router) :
+    BaseMvpPresenter<AuthorizationView>(localRouter) {
     @Inject
     lateinit var loginRepository: IProEventLoginRepository
 
@@ -21,7 +22,7 @@ class AuthorizationPresenter(localRouter: Router) : BaseMvpPresenter<Authorizati
 
         override fun onError(error: Throwable) {
             error.printStackTrace()
-            if (error is retrofit2.adapter.rxjava2.HttpException) {
+            if (error is retrofit2.HttpException) {
                 when (error.code()) {
                     401, 404 -> viewState.authorizationDataInvalid()
                 }

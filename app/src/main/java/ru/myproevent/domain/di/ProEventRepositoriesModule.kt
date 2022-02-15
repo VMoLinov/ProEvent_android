@@ -16,7 +16,8 @@ import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRep
 import ru.myproevent.domain.models.repositories.proevent_login.ProEventLoginRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
 import ru.myproevent.domain.models.repositories.profiles.ProEventProfilesRepository
-import ru.myproevent.domain.utils.GlideLoader
+import ru.myproevent.domain.models.repositories.resourceProvider.IResourceProvider
+import ru.myproevent.domain.models.repositories.resourceProvider.ResourceProvider
 import javax.inject.Singleton
 
 @Module
@@ -48,4 +49,8 @@ interface ProEventRepositoriesModule {
     @Singleton
     @Binds
     fun bindImagesRepository(imagesRepository: ImagesRepository): IImagesRepository
+
+    @Singleton
+    @Binds
+    fun bindResorceProvider(resourceProvider: ResourceProvider): IResourceProvider
 }

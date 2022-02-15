@@ -1,9 +1,8 @@
 package ru.myproevent.ui.presenters.authorization.registration
 
-import android.annotation.SuppressLint
 import com.github.terrakok.cicerone.Router
-import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableCompletableObserver
+import ru.myproevent.R
 import ru.myproevent.domain.models.repositories.internet_access_info.IInternetAccessInfoRepository
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
@@ -12,7 +11,7 @@ import javax.inject.Inject
 
 val VALID_EMAIL_ADDRESS_REGEX: Pattern =
     Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE)
-val VALID_PASSVORD_REGEX: Pattern =
+val VALID_PASSWORD_REGEX: Pattern =
     Pattern.compile("^(?=.*[0-9])(?=.*[а-яё])(?=\\S+\$).{6,}\$", Pattern.CASE_INSENSITIVE)
 
 class RegistrationPresenter(localRouter: Router) : BaseMvpPresenter<RegistrationView>(localRouter) {
@@ -23,10 +22,10 @@ class RegistrationPresenter(localRouter: Router) : BaseMvpPresenter<Registration
 
         override fun onError(error: Throwable) {
             error.printStackTrace()
-            if (error is retrofit2.adapter.rxjava2.HttpException) {
+            if (error is retrofit2.HttpException) {
                 if (error.code() == 409) {
-                    viewState.showMessage("Для введённого email уже есть аккаунт")
-                    viewState.showEmailErrorMessage("Для введённого email уже есть аккаунт")
+                    viewState.showMessage(getString(R.string.email_is_already_registered))
+                    viewState.showEmailErrorMessage(getString(R.string.email_is_already_registered))
                     return
                 }
                 return
@@ -49,36 +48,33 @@ class RegistrationPresenter(localRouter: Router) : BaseMvpPresenter<Registration
         localRouter.navigateTo(screens.authorization())
     }
 
-    fun continueRegistration(agreement: Boolean, email: String, password: String, confirmedPassword: String) {
+    fun continueRegistration(
+        agreement: Boolean,
+        email: String,
+        password: String,
+        confirmedPassword: String
+    ) {
         // TODO: спросить у дизайнера нужен ли progress bar
-        var errorMessage: String? = ""
-        if (!VALID_PASSVORD_REGEX.matcher(password).find()) {
-            errorMessage += "Пароль должен содержать " +
-                    "минимум одну кириллическую букву, " +
-                    "одну цифру, " +
-                    "иметь длину не менее 6 символов.\n"
-            viewState.showPasswordErrorMessage(
-                "Пароль должен содержать:\n" +
-                        "• минимум одну кириллическую букву\n" +
-                        "• одну цифру\n" +
-                        "• иметь длину не менее 6 символов."
-            )
+        val errorMessage = StringBuilder()
+        if (!VALID_PASSWORD_REGEX.matcher(password).find()) {
+            errorMessage.append(getString(R.string.password_requirements_01))
+            viewState.showPasswordErrorMessage(getString(R.string.password_requirements_02))
         }
         if (password != confirmedPassword) {
-            errorMessage += "Пароли не совпадают.\n"
-            viewState.showPasswordConfirmErrorMessage("Пароли не совпадают.\n")
+            errorMessage.append(getString(R.string.passwords_not_same)).append(".\n")
+            viewState.showPasswordConfirmErrorMessage(getString(R.string.passwords_not_same) + ".\n")
         }
 
         if (email.isEmpty()) {
-            errorMessage += "Поле с email не может быть пустым."
-            viewState.showEmailErrorMessage("Поле с email не может быть пустым.")
+            errorMessage.append(getString(R.string.email_cant_be_empty))
+            viewState.showEmailErrorMessage(getString(R.string.email_cant_be_empty))
         } else if (!VALID_EMAIL_ADDRESS_REGEX.matcher(email).find()) {
-            errorMessage += "Неправильно заполнен email."
-            viewState.showEmailErrorMessage("Неправильно заполнен email.")
+            errorMessage.append(getString(R.string.incorrect_email))
+            viewState.showEmailErrorMessage(getString(R.string.incorrect_email))
         }
 
-        if (!errorMessage.isNullOrBlank()) {
-            viewState.showMessage(errorMessage)
+        if (errorMessage.isNotBlank()) {
+            viewState.showMessage(errorMessage.toString())
             return
         }
         loginRepository

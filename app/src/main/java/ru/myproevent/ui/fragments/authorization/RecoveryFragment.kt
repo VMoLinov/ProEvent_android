@@ -51,8 +51,8 @@ class RecoveryFragment : BaseMvpFragment<FragmentRecoveryBinding>(FragmentRecove
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setLayoutParams()
-        with(binding){
-            continueRecovery.setOnClickListener{ presenter.resetPassword(emailEdit.text.toString()) }
+        with(binding) {
+            continueRecovery.setOnClickListener { presenter.resetPassword(emailEdit.text.toString()) }
             bottomOptionsContainer.setOnClickListener { presenter.authorize() }
         }
     }

@@ -13,8 +13,6 @@ import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.repositories.images.IImagesRepository
 import ru.myproevent.domain.utils.toContact
 import ru.myproevent.domain.utils.toProfile
-import ru.myproevent.domain.utils.toProfileDto
-import java.io.File
 import javax.inject.Inject
 
 class ProEventProfilesRepository @Inject constructor(
@@ -30,7 +28,7 @@ class ProEventProfilesRepository @Inject constructor(
         throw HttpException(response)
     }.subscribeOn(Schedulers.io())
 
-    override fun getMiniProfiles(ids: List<Long>): Single<List<Profile>>  = Single.fromCallable {
+    override fun getMiniProfiles(ids: List<Long>): Single<List<Profile>> = Single.fromCallable {
         val response = api.getMiniProfiles(ProfileIdListDto(ids)).execute()
         if (response.isSuccessful) {
             return@fromCallable response.body()!!.map { it.toProfile() }

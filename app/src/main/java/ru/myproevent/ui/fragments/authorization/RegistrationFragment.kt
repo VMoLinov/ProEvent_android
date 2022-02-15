@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.Space
 import android.widget.TextView
@@ -17,6 +18,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.jakewharton.rxbinding2.widget.RxTextView
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.R
@@ -29,8 +31,6 @@ import ru.myproevent.ui.presenters.authorization.registration.RegistrationPresen
 import ru.myproevent.ui.presenters.authorization.registration.RegistrationView
 import ru.myproevent.ui.presenters.main.RouterProvider
 import java.lang.reflect.Field
-import android.widget.ArrayAdapter
-import com.jakewharton.rxbinding2.widget.RxTextView
 import java.util.concurrent.TimeUnit
 
 class RegistrationFragment :
@@ -238,6 +238,6 @@ class RegistrationFragment :
     override fun setEmailHint(emailSuggestion: List<Suggestion>) {
         adapter?.clear()
         adapter?.addAll(emailSuggestion.map { it.value })
-        adapter?.filter?.filter(binding.emailEdit.text, null);
+        adapter?.filter?.filter(binding.emailEdit.text, null)
     }
 }

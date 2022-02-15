@@ -2,14 +2,10 @@ package ru.myproevent.ui.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.AutoCompleteTextView
-import android.widget.TextView.OnEditorActionListener
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView
-import com.google.android.material.textfield.TextInputEditText
 
 
 // В отличии от TextInputEditText теряет фокус когда клавиатура скрыта
@@ -18,7 +14,11 @@ class KeyboardAwareAutoCompleteTextView : AppCompatAutoCompleteTextView {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     override fun onEditorAction(actionCode: Int) {
         super.onEditorAction(actionCode)
@@ -36,7 +36,7 @@ class KeyboardAwareAutoCompleteTextView : AppCompatAutoCompleteTextView {
     }
 
     // TODO: отрефакторить - избавиться от этого метода(сделать его private)
-    fun hideKeyBoard(){
+    fun hideKeyBoard() {
         clearFocus()
         (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).apply {
             if (isActive(this@KeyboardAwareAutoCompleteTextView)) {

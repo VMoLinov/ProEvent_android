@@ -2,6 +2,7 @@ package ru.myproevent.ui.presenters.authorization.code
 
 import com.github.terrakok.cicerone.Router
 import io.reactivex.observers.DisposableCompletableObserver
+import ru.myproevent.R
 import ru.myproevent.domain.models.repositories.internet_access_info.IInternetAccessInfoRepository
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
@@ -15,13 +16,13 @@ class CodePresenter(localRouter: Router) : BaseMvpPresenter<CodeView>(localRoute
 
         override fun onError(error: Throwable) {
             error.printStackTrace()
-            if (error is retrofit2.adapter.rxjava2.HttpException) {
+            if (error is retrofit2.HttpException) {
                 if (error.code() == 401) {
-                    viewState.showMessage("4-значный код введен неверно")
-                    viewState.showCodeErrorMessage("4-значный код введен неверно")
+                    viewState.showMessage(getString(R.string.code_error_message_01))
+                    viewState.showCodeErrorMessage(getString(R.string.code_error_message_01))
                     return
                 }
-                viewState.showMessage("Произошла ошибка: ${error.code()}")
+                viewState.showMessage(getString(R.string.error_occurred, error.code()))
                 return
             }
             interAccessInfoRepository
@@ -34,13 +35,13 @@ class CodePresenter(localRouter: Router) : BaseMvpPresenter<CodeView>(localRoute
 
     private inner class RefreshObserver : DisposableCompletableObserver() {
         override fun onComplete() {
-            viewState.showMessage("На почту отправлен новый код")
+            viewState.showMessage(getString(R.string.new_code_has_been_sent_to_email))
         }
 
         override fun onError(error: Throwable) {
             error.printStackTrace()
-            if (error is retrofit2.adapter.rxjava2.HttpException) {
-                viewState.showMessage("Произошла ошибка: ${error.code()}")
+            if (error is retrofit2.HttpException) {
+                viewState.showMessage(getString(R.string.error_occurred, error.code()))
                 return
             }
             interAccessInfoRepository
@@ -58,20 +59,20 @@ class CodePresenter(localRouter: Router) : BaseMvpPresenter<CodeView>(localRoute
     lateinit var interAccessInfoRepository: IInternetAccessInfoRepository
 
     fun continueRegistration(code: String) {
-        if (code.isNullOrBlank()) {
-            viewState.showMessage("Введите 4-значеный код, котрый пришёл на почту")
-            viewState.showCodeErrorMessage("Введите 4-значеный код, котрый пришёл на почту")
+        if (code.isBlank()) {
+            viewState.showMessage(getString(R.string.enter_4digit_email_code))
+            viewState.showCodeErrorMessage(getString(R.string.enter_4digit_email_code))
             return
         }
         if (code.length != 4) {
-            viewState.showMessage("Код должен содержать 4 цифры")
-            viewState.showCodeErrorMessage("Код должен содержать 4 цифры")
+            viewState.showMessage(getString(R.string.code_must_contain_4_digits))
+            viewState.showCodeErrorMessage(getString(R.string.code_must_contain_4_digits))
             return
         }
         with(code.toIntOrNull()) {
             if (this == null) {
-                viewState.showMessage("Код должен содержать только цифровые символы")
-                viewState.showCodeErrorMessage("Код должен содержать только цифровые символы")
+                viewState.showMessage(getString(R.string.code_must_contain_only_digits))
+                viewState.showCodeErrorMessage(getString(R.string.code_must_contain_only_digits))
                 return
             }
             // TODO: спросить у дизайнера нужено ли здесь отображать progress bar

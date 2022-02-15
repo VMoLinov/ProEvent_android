@@ -2,6 +2,7 @@ package ru.myproevent.ui.presenters.authorization.new_password
 
 import com.github.terrakok.cicerone.Router
 import io.reactivex.observers.DisposableCompletableObserver
+import ru.myproevent.R
 import ru.myproevent.domain.models.repositories.internet_access_info.IInternetAccessInfoRepository
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
@@ -16,13 +17,13 @@ class NewPasswordPresenter(localRouter: Router) : BaseMvpPresenter<NewPasswordVi
 
     private inner class RefreshObserver : DisposableCompletableObserver() {
         override fun onComplete() {
-            viewState.showMessage("На почту отправлен новый код")
+            viewState.showMessage(getString(R.string.new_code_has_been_sent_to_email))
         }
 
         override fun onError(error: Throwable) {
             error.printStackTrace()
-            if (error is retrofit2.adapter.rxjava2.HttpException) {
-                viewState.showMessage("Произошла ошибка: ${error.code()}")
+            if (error is retrofit2.HttpException) {
+                viewState.showMessage(getString(R.string.error_occurred, error.code()))
                 return
             }
             interAccessInfoRepository
@@ -40,8 +41,8 @@ class NewPasswordPresenter(localRouter: Router) : BaseMvpPresenter<NewPasswordVi
 
         override fun onError(error: Throwable) {
             error.printStackTrace()
-            if (error is retrofit2.adapter.rxjava2.HttpException) {
-                viewState.showMessage("Произошла ошибка: ${error.code()}")
+            if (error is retrofit2.HttpException) {
+                viewState.showMessage(getString(R.string.error_occurred, error.code()))
                 return
             }
             interAccessInfoRepository
@@ -52,7 +53,11 @@ class NewPasswordPresenter(localRouter: Router) : BaseMvpPresenter<NewPasswordVi
         }
     }
 
-    private inner class NewPasswordSetObserver(val email: String, val password: String, val rememberPassword: Boolean) : DisposableCompletableObserver() {
+    private inner class NewPasswordSetObserver(
+        val email: String,
+        val password: String,
+        val rememberPassword: Boolean
+    ) : DisposableCompletableObserver() {
         override fun onComplete() {
             loginRepository
                 .login(email, password, rememberPassword)
@@ -63,8 +68,8 @@ class NewPasswordPresenter(localRouter: Router) : BaseMvpPresenter<NewPasswordVi
 
         override fun onError(error: Throwable) {
             error.printStackTrace()
-            if (error is retrofit2.adapter.rxjava2.HttpException) {
-                viewState.showMessage("Произошла ошибка: $error")
+            if (error is retrofit2.HttpException) {
+                viewState.showMessage(getString(R.string.error_occurred, error))
                 return
             }
             interAccessInfoRepository
@@ -83,31 +88,38 @@ class NewPasswordPresenter(localRouter: Router) : BaseMvpPresenter<NewPasswordVi
             .disposeOnDestroy()
     }
 
-    fun setNewPassword(code: String, email: String, password: String, confirmedPassword: String, rememberPassword: Boolean) {
-        var errorMessage: String? = ""
-        if (code.isNullOrBlank()) {
-            errorMessage += "Введите 4-значеный код, котрый пришёл на почту.\n"
-            viewState.showCodeErrorMessage("Введите 4-значеный код, котрый пришёл на почту")
-        } else if(code.toIntOrNull() == null){
-            errorMessage += "Код должен содержать только цифровые символы\n"
-            viewState.showCodeErrorMessage("Код должен содержать только цифровые символы")
+    fun setNewPassword(
+        code: String,
+        email: String,
+        password: String,
+        confirmedPassword: String,
+        rememberPassword: Boolean
+    ) {
+        val errorMessage = StringBuilder()
+        if (code.isBlank()) {
+            errorMessage.append(getString(R.string.enter_4digit_email_code)).append(".\n")
+            viewState.showCodeErrorMessage(getString(R.string.enter_4digit_email_code))
+        } else if (code.toIntOrNull() == null) {
+            errorMessage.append(getString(R.string.code_must_contain_only_digits)).append(".\n")
+            viewState.showCodeErrorMessage(getString(R.string.code_must_contain_only_digits))
         }
         if (code.length != 4) {
-            errorMessage += "Код должен содержать 4 цифры.\n"
-            viewState.showCodeErrorMessage("Код должен содержать 4 цифры")
+            errorMessage.append(getString(R.string.code_must_contain_4_digits)).append(".\n")
+            viewState.showCodeErrorMessage(getString(R.string.code_must_contain_4_digits))
         }
         if (password != confirmedPassword) {
-            errorMessage += "Пароли не совпадают.\n"
-            viewState.showPasswordConfirmErrorMessage("Пароли не совпадают.\n")
+            errorMessage.append(getString(R.string.passwords_not_same)).append(".\n")
+            viewState.showPasswordConfirmErrorMessage(getString(R.string.passwords_not_same) + ".\n")
         }
-        if (!errorMessage.isNullOrBlank()) {
-            viewState.showMessage(errorMessage)
+        if (errorMessage.isNotBlank()) {
+            viewState.showMessage(errorMessage.toString())
             return
         }
         loginRepository
             .setNewPassword(code.toInt(), email, password)
             .observeOn(uiScheduler)
-            .subscribeWith(NewPasswordSetObserver(email, password, rememberPassword)).disposeOnDestroy()
+            .subscribeWith(NewPasswordSetObserver(email, password, rememberPassword))
+            .disposeOnDestroy()
     }
 
     fun authorize() = localRouter.navigateTo(screens.authorization())

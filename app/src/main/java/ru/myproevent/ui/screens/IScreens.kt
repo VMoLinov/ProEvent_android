@@ -1,10 +1,9 @@
 package ru.myproevent.ui.screens
 
 import com.github.terrakok.cicerone.Screen
-import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.entities.Address
-import ru.myproevent.domain.models.entities.Contact
 import ru.myproevent.domain.models.entities.Event
+import ru.myproevent.domain.models.entities.Profile
 
 interface IScreens {
     fun authorization(): Screen
