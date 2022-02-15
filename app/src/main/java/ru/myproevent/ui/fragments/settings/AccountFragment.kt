@@ -30,6 +30,7 @@ import ru.myproevent.ui.presenters.settings.account.AccountPresenter
 import ru.myproevent.ui.presenters.settings.account.AccountView
 import ru.myproevent.ui.views.CropImageHandler
 import ru.myproevent.ui.views.KeyboardAwareTextInputEditText
+import ru.myproevent.ui.views.TextInputLayoutEditTool
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -37,103 +38,12 @@ import java.util.*
 class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountBinding::inflate),
     AccountView {
 
-    private val calendar: Calendar = Calendar.getInstance()
     private var newPictureUUID: String? = null
-    var currYear: Int = calendar.get(Calendar.YEAR)
-    var currMonth: Int = calendar.get(Calendar.MONTH)
-    var currDay: Int = calendar.get(Calendar.DAY_OF_MONTH)
-    private lateinit var defaultKeyListener: KeyListener
-    private lateinit var phoneKeyListener: KeyListener
     private val imageLoader = GlideLoader().apply { ProEventApp.instance.appComponent.inject(this) }
-    private val dateEditClickListener = View.OnClickListener {
-        // TODO: отрефакторить
-        // https://github.com/terrakok/Cicerone/issues/106
-        val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
-        val prev: Fragment? = parentFragmentManager.findFragmentByTag("dialog")
-        if (prev != null) {
-            ft.remove(prev)
-        }
-        ft.addToBackStack(null)
-        var pickerYear = currYear
-        var pickerMonth = currMonth
-        var pickerDay = currDay
-        if (!binding.dateOfBirthEdit.text.isNullOrEmpty()) {
-            val pickerDate = GregorianCalendar().apply {
-                time =
-                    SimpleDateFormat(getString(R.string.dateFormat)).parse(binding.dateOfBirthEdit.text.toString())
-            }
-            pickerYear = pickerDate.get(Calendar.YEAR)
-            pickerMonth = pickerDate.get(Calendar.MONTH)
-            pickerDay = pickerDate.get(Calendar.DATE)
-        }
-        val newFragment: DialogFragment =
-            ProEventDatePickerDialog.newInstance(pickerYear, pickerMonth, pickerDay).apply {
-                onDateSetListener = { year, month, dayOfMonth ->
-                    val gregorianCalendar = GregorianCalendar(
-                        year, month, dayOfMonth
-                    )
-                    binding.dateOfBirthInput.endIconMode = END_ICON_NONE
-                    this@AccountFragment.binding.dateOfBirthEdit.text = SpannableStringBuilder(
-                        // TODO: для вывода сделать local date format
-                        SimpleDateFormat(getString(R.string.dateFormat)).apply {
-                            calendar = gregorianCalendar
-                        }.format(
-                            gregorianCalendar.time
-                        )
-                    )
-                }
-            }
-        newFragment.show(ft, "dialog")
-    }
-
-    private fun showKeyBoard(view: View) {
-        val imm: InputMethodManager =
-            requireContext().getSystemService(InputMethodManager::class.java)
-        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
-    }
 
     override val presenter by moxyPresenter {
         AccountPresenter((parentFragment as RouterProvider).router).apply {
             ProEventApp.instance.appComponent.inject(this)
-        }
-    }
-
-    private fun setEditListeners(
-        textInput: TextInputLayout,
-        textEdit: KeyboardAwareTextInputEditText
-    ) {
-        setEditIcon(textInput)
-        textEdit.keyListener = null
-        textInput.setEndIconOnClickListener {
-            textEdit.keyListener = defaultKeyListener
-            textEdit.requestFocus()
-            showKeyBoard(textEdit)
-            textEdit.text?.let { it1 -> textEdit.setSelection(it1.length) }
-            textInput.endIconMode = END_ICON_NONE
-            binding.groupEdit.visibility = VISIBLE
-        }
-    }
-
-    private fun setEditIcon(textInput: TextInputLayout) {
-        textInput.endIconMode = END_ICON_CUSTOM
-        textInput.endIconDrawable = requireContext().getDrawable(R.drawable.ic_edit)
-    }
-
-    private fun setPhoneListeners(
-        textInput: TextInputLayout,
-        textEdit: KeyboardAwareTextInputEditText
-    ) {
-        setEditIcon(textInput)
-        textEdit.isFocusableInTouchMode = false
-        textEdit.keyListener = null
-        textInput.setEndIconOnClickListener {
-            textEdit.isFocusableInTouchMode = true
-            textEdit.keyListener = phoneKeyListener
-            textEdit.requestFocus()
-            showKeyBoard(textEdit)
-            textEdit.text?.let { it1 -> textEdit.setSelection(it1.length) }
-            textInput.endIconMode = END_ICON_NONE
-            binding.groupEdit.visibility = VISIBLE
         }
     }
 
@@ -142,18 +52,15 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
         super.onViewCreated(view, savedInstanceState)
         // TODO Передавать фрагмент слишком жирно, нужно придумать что проще
         initCrop()
-        defaultKeyListener = nameEdit.keyListener
-        phoneKeyListener = phoneEdit.keyListener
-        dateOfBirthEdit.keyListener = null
         dateOfBirthEdit.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 dateOfBirthEdit.performClick()
             }
         }
+        initEditListeners()
         save.setOnClickListener { saveProfile(newPictureUUID) }
         titleButton.setOnClickListener { presenter.onBackPressed() }
         phoneEdit.addTextChangedListener(PhoneTextWatcher())
-        presenter.getProfile()
         cancel.setOnClickListener { presenter.cancelEdit() }
     }
 
@@ -213,28 +120,18 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
                     imageLoader.loadCircle(binding.userImageView, it)
                 }
                 groupEdit.visibility = GONE
-
-                initEditListeners()
             }
         }
     }
 
     private fun initEditListeners() {
         with(binding) {
-            setEditListeners(nameInput, nameEdit)
-            setPhoneListeners(phoneInput, phoneEdit)
-            setEditListeners(positionInput, positionEdit)
-            setEditListeners(roleInput, roleEdit)
-
-            dateOfBirthEdit.keyListener = null
-            setEditIcon(dateOfBirthInput)
-            dateOfBirthInput.setEndIconOnClickListener {
-                dateOfBirthEdit.isFocusableInTouchMode = false
-                dateOfBirthEdit.requestFocus()
-                dateOfBirthEdit.setOnClickListener(dateEditClickListener)
-                dateOfBirthEdit.performClick()
-                groupEdit.visibility = VISIBLE
-            }
+            nameInput.setEditListeners(nameEdit, presenter::clickOnEditIcon)
+            phoneInput.setEditListeners(phoneEdit, presenter::clickOnEditIcon)
+            positionInput.setEditListeners(positionEdit, presenter::clickOnEditIcon)
+            roleInput.setEditListeners(roleEdit, presenter::clickOnEditIcon)
+            dateOfBirthInput.setDialogDate(parentFragmentManager)
+            dateOfBirthInput.setEditListeners(dateOfBirthEdit, presenter::clickOnEditIcon)
         }
     }
 
@@ -243,11 +140,24 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
         showMessage("makeProfileEditable()")
     }
 
+    override fun setFieldEdited(ids: Map<Int, Boolean>) {
+        ids.keys.forEach {
+            requireActivity().findViewById<TextInputLayoutEditTool>(it)
+                .setRedacting(ids[it] ?: false)
+        }
+        binding.groupEdit.visibility = if (ids.values.contains(true)) VISIBLE else GONE
+    }
+
     companion object {
         fun newInstance() = AccountFragment()
     }
 
     override fun showMessage(message: String) {
         Toast.makeText(ProEventApp.instance, message, Toast.LENGTH_LONG).show()
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        savedInstanceState?.let { binding.dateOfBirthInput.firstTime = false }
     }
 }

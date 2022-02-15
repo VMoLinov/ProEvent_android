@@ -4,6 +4,8 @@ import dagger.Binds
 import dagger.Module
 import ru.myproevent.domain.models.repositories.contacts.IProEventContactsRepository
 import ru.myproevent.domain.models.repositories.contacts.ProEventContactsRepository
+import ru.myproevent.domain.models.repositories.email_hint.EmailHintRepository
+import ru.myproevent.domain.models.repositories.email_hint.IEmailHintRepository
 import ru.myproevent.domain.models.repositories.events.IProEventEventsRepository
 import ru.myproevent.domain.models.repositories.events.ProEventEventsRepository
 import ru.myproevent.domain.models.repositories.images.IImagesRepository
@@ -53,4 +55,8 @@ interface ProEventRepositoriesModule {
     @Singleton
     @Binds
     fun bindResorceProvider(resourceProvider: ResourceProvider): IResourceProvider
+
+    @Singleton
+    @Binds
+    fun bindEmailHintRepository(emailHintRepository: EmailHintRepository): IEmailHintRepository
 }

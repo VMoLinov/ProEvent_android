@@ -1,5 +1,6 @@
 package ru.myproevent.ui.presenters.settings.security
 
+import android.util.Log
 import android.widget.Toast
 import com.github.terrakok.cicerone.Router
 import io.reactivex.observers.DisposableCompletableObserver
@@ -7,6 +8,7 @@ import io.reactivex.observers.DisposableSingleObserver
 import ru.myproevent.ProEventApp
 import ru.myproevent.R
 import ru.myproevent.domain.models.entities.Profile
+import ru.myproevent.domain.models.repositories.email_hint.IEmailHintRepository
 import ru.myproevent.domain.models.repositories.internet_access_info.IInternetAccessInfoRepository
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
@@ -68,6 +70,9 @@ class SecurityPresenter(localRouter: Router) : BaseMvpPresenter<SecurityView>(lo
     @Inject
     lateinit var interAccessInfoRepository: IInternetAccessInfoRepository
 
+    @Inject
+    lateinit var emailHintRepository: IEmailHintRepository
+
     fun saveProfile(email: String, login: String) {
         // TODO:
         if (userProfile == null) {
@@ -95,5 +100,14 @@ class SecurityPresenter(localRouter: Router) : BaseMvpPresenter<SecurityView>(lo
             .observeOn(uiScheduler)
             .subscribeWith(ProfileGetObserver())
             .disposeOnDestroy()
+    }
+
+    fun typedEmail(partEmail: String) {
+        emailHintRepository.getEmailHint(partEmail)
+            .observeOn(uiScheduler)
+            .subscribe(
+                { viewState.setEmailHint(it) },
+                { Log.e("EMAIL_HINT", it.localizedMessage ?: "") }
+            ).disposeOnDestroy()
     }
 }
