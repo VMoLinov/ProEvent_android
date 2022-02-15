@@ -3,6 +3,7 @@ package ru.myproevent.ui.presenters.events.event
 import android.widget.Toast
 import com.github.terrakok.cicerone.Router
 import ru.myproevent.ProEventApp
+import ru.myproevent.R
 import ru.myproevent.domain.models.entities.Address
 import ru.myproevent.domain.models.entities.Event
 import ru.myproevent.domain.models.entities.Profile
@@ -65,12 +66,12 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
             .observeOn(uiScheduler)
             .subscribe({
                 callback?.invoke(it)
-                viewState.showMessage("Мероприятие создано")
+                viewState.showMessage(getString(R.string.event_created))
                 viewState.hideEditOptions()
                 viewState.showActionOptions()
             }, {
                 callback?.invoke(null)
-                viewState.showMessage("ПРОИЗОШЛА ОШИБКА: ${it.message}")
+                viewState.showMessage(getString(R.string.error_occurred, it.message))
             }).disposeOnDestroy()
     }
 
@@ -81,10 +82,10 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
             .observeOn(uiScheduler)
             .subscribe({
                 callback?.invoke(event)
-                viewState.showMessage("Изменения сохранены")
+                viewState.showMessage(getString(R.string.changes_saved))
             }, {
                 callback?.invoke(null)
-                viewState.showMessage("ПРОИЗОШЛА ОШИБКА: ${it.message}")
+                viewState.showMessage(getString(R.string.error_occurred, it.message))
             }).disposeOnDestroy()
     }
 
@@ -121,7 +122,7 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
             .subscribe({
                 localRouter.navigateTo(screens.event(it))
             }, {
-                viewState.showMessage("ПРОИЗОШЛА ОШИБКА: ${it.message}")
+                viewState.showMessage(getString(R.string.error_occurred, it.message))
             }).disposeOnDestroy()
     }
 

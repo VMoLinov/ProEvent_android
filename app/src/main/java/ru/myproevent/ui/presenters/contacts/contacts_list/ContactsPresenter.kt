@@ -1,7 +1,9 @@
 package ru.myproevent.ui.presenters.contacts.contacts_list
 
 import com.github.terrakok.cicerone.Router
+import ru.myproevent.R
 import ru.myproevent.domain.models.entities.Contact
+import ru.myproevent.domain.models.entities.Contact.Action
 import ru.myproevent.domain.models.entities.Contact.Status
 import ru.myproevent.domain.models.repositories.contacts.IProEventContactsRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
@@ -36,13 +38,13 @@ class ContactsPresenter(localRouter: Router) : BaseMvpPresenter<ContactsView>(lo
                 val name = when {
                     !fullName.isNullOrBlank() -> fullName!!
                     !nickName.isNullOrBlank() -> nickName!!
-                    else -> "ID: $id"
+                    else -> getString(R.string.id_01, id)
                 }
                 view.setName(name)
 
                 val decs = when {
-                    !description.isNullOrBlank() -> fullName!!
-                    else -> "ID: $id"
+                    !description.isNullOrBlank() -> description!!
+                    else -> getString(R.string.id_01, id)
                 }
                 view.setDescription(decs)
 
@@ -69,34 +71,45 @@ class ContactsPresenter(localRouter: Router) : BaseMvpPresenter<ContactsView>(lo
         localRouter.navigateTo(screens.contact(contact.id))
     }, { contact ->
         val action = when (contact.status) {
-            Status.DECLINED -> Contact.Action.DELETE
-            Status.PENDING -> Contact.Action.CANCEL
-            Status.REQUESTED -> Contact.Action.ACCEPT
+            Status.DECLINED -> Action.DELETE
+            Status.PENDING -> Action.CANCEL
+            Status.REQUESTED -> Action.ACCEPT
             else -> return@ContactsListPresenter
         }
 
-        viewState.showConfirmationScreen(action) { confirmed ->
+        val message = getString(
+            when (action) {
+                Action.ACCEPT -> R.string.accept_contact_request_question
+                Action.CANCEL -> R.string.cancel_request_question
+                Action.DECLINE -> R.string.decline_contact_request_question
+                Action.DELETE -> R.string.delete_contact_question
+                else -> R.string.empty_string
+            }
+        )
+
+        viewState.showConfirmationScreen(message) { confirmed ->
             viewState.hideConfirmationScreen()
             if (!confirmed) return@showConfirmationScreen
             performActionOnContact(contact, action)
         }
     })
 
-    private fun performActionOnContact(contact: Contact, action: Contact.Action) {
+    private fun performActionOnContact(contact: Contact, action: Action) {
         when (action) {
-            Contact.Action.ACCEPT -> contactsRepository.acceptContact(contact.id)
-            Contact.Action.CANCEL, Contact.Action.DELETE -> contactsRepository.deleteContact(contact.id)
-            Contact.Action.DECLINE -> contactsRepository.declineContact(contact.id)
+            Action.ACCEPT -> contactsRepository.acceptContact(contact.id)
+            Action.CANCEL, Action.DELETE -> contactsRepository.deleteContact(contact.id)
+            Action.DECLINE -> contactsRepository.declineContact(contact.id)
             else -> return
         }.observeOn(uiScheduler)
-            .subscribe({ loadData() }, { viewState.showMessage("Не удалось выполнить действие") })
+            .subscribe(
+                { loadData() },
+                { viewState.showMessage(getString(R.string.action_failed)) })
             .disposeOnDestroy()
     }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.init()
-        loadData()
     }
 
     fun addContact() {
@@ -114,7 +127,7 @@ class ContactsPresenter(localRouter: Router) : BaseMvpPresenter<ContactsView>(lo
                 else viewState.hideNoContactsLayout()
             }, {
                 viewState.setProgressBarVisibility(false)
-                viewState.showMessage("ПРОИЗОШЛА ОШИБКА: ${it.message}")
+                viewState.showMessage(getString(R.string.error_occurred, it.message))
             }).disposeOnDestroy()
     }
 

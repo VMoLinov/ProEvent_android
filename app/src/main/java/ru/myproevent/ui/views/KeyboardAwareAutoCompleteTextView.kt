@@ -13,7 +13,6 @@ import com.jakewharton.rxbinding2.widget.RxTextView
 import ru.myproevent.domain.models.Suggestion
 import java.util.concurrent.TimeUnit
 
-
 // В отличии от TextInputEditText теряет фокус когда клавиатура скрыта
 class KeyboardAwareAutoCompleteTextView : AppCompatAutoCompleteTextView {
     var selectionChangedListener: ((selStart: Int, selEnd: Int) -> Unit)? = null
@@ -28,7 +27,6 @@ class KeyboardAwareAutoCompleteTextView : AppCompatAutoCompleteTextView {
 
     private var adapter: ArrayAdapter<String>? = null
     private var searchHints: ((String) -> Unit)? = null
-
 
     override fun onEditorAction(actionCode: Int) {
         super.onEditorAction(actionCode)
@@ -46,7 +44,7 @@ class KeyboardAwareAutoCompleteTextView : AppCompatAutoCompleteTextView {
     }
 
     // TODO: отрефакторить - избавиться от этого метода(сделать его private)
-    fun hideKeyBoard(){
+    fun hideKeyBoard() {
         clearFocus()
         (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).apply {
             if (isActive(this@KeyboardAwareAutoCompleteTextView)) {

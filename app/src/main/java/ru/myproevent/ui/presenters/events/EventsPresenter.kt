@@ -1,6 +1,7 @@
 package ru.myproevent.ui.presenters.events
 
 import com.github.terrakok.cicerone.Router
+import ru.myproevent.R
 import ru.myproevent.domain.models.entities.Event
 import ru.myproevent.domain.models.repositories.events.IProEventEventsRepository
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
@@ -61,14 +62,16 @@ class EventsPresenter(localRouter: Router) : BaseMvpPresenter<EventsView>(localR
             val sb = StringBuilder()
 
             if (inSameDay(start, end)) {
-                dateFormat = SimpleDateFormat("dd.MM.yyyy")
-                sb.append(dateFormat.format(start)).append(" с ")
+                dateFormat = SimpleDateFormat(getString(R.string.events_list_date_format_01))
+                sb.append(dateFormat.format(start)).append(getString(R.string.since))
 
-                dateFormat = SimpleDateFormat(" HH.mm")
-                sb.append(dateFormat.format(start)).append(" до ").append(dateFormat.format(end))
+                dateFormat = SimpleDateFormat(getString(R.string.events_list_date_format_02))
+                sb.append(dateFormat.format(start)).append(getString(R.string.until))
+                    .append(dateFormat.format(end))
             } else {
-                dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm")
-                sb.append(dateFormat.format(start)).append(" - ").append(dateFormat.format(end))
+                dateFormat = SimpleDateFormat(getString(R.string.events_list_date_format_03))
+                sb.append(dateFormat.format(start)).append(getString(R.string.hyphen))
+                    .append(dateFormat.format(end))
             }
 
             return sb.toString()
@@ -94,7 +97,6 @@ class EventsPresenter(localRouter: Router) : BaseMvpPresenter<EventsView>(localR
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.init()
-        loadData()
     }
 
     fun loadData() {
@@ -107,7 +109,7 @@ class EventsPresenter(localRouter: Router) : BaseMvpPresenter<EventsView>(localR
                 viewState.setNoEventsLayoutVisibility(data.isEmpty())
             }, {
                 viewState.setProgressBarVisibility(false)
-                viewState.showMessage("ПРОИЗОШЛА ОШИБКА: ${it.message}")
+                viewState.showMessage(getString(R.string.error_occurred, it.message))
             }).disposeOnDestroy()
     }
 

@@ -139,7 +139,11 @@ class AddEventPlaceFragment :
         }
 
         currentPlace =
-            ProEventAddress(initialPlace.latitude, initialPlace.longitude, "Красная площадь")
+            ProEventAddress(
+                initialPlace.latitude,
+                initialPlace.longitude,
+                getString(R.string.default_map_location)
+            )
         getAddressAsync(initialPlace)
         binding.buttonConfirm.visibility = View.VISIBLE
     }
@@ -203,15 +207,15 @@ class AddEventPlaceFragment :
     private fun showRationaleDialog() {
         activity?.let {
             AlertDialog.Builder(it)
-                .setTitle("Доступ к геолокации")
-                .setMessage("Для опредления местоположения нужен доступ к геолокации")
-                .setPositiveButton("Предоставить доступ") { dialog, _ ->
+                .setTitle(getString(R.string.geolocation_access_title))
+                .setMessage(getString(R.string.geolocation_access_message))
+                .setPositiveButton(getString(R.string.geolocation_access_button_text)) { dialog, _ ->
                     binding.root.post {
                         dialog.dismiss()
                         requestPermission()
                     }
                 }
-                .setNegativeButton("Нет") { dialog, _ -> dialog.dismiss() }
+                .setNegativeButton(getString(R.string.no_text)) { dialog, _ -> dialog.dismiss() }
                 .create()
                 .show()
         }

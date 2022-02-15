@@ -26,7 +26,7 @@ class ProEventProfilesRepository @Inject constructor(
         throw HttpException(response)
     }.subscribeOn(Schedulers.io())
 
-    override fun getMiniProfiles(ids: List<Long>): Single<List<Profile>>  = Single.fromCallable {
+    override fun getMiniProfiles(ids: List<Long>): Single<List<Profile>> = Single.fromCallable {
         val response = api.getMiniProfiles(ProfileIdListDto(ids)).execute()
         if (response.isSuccessful) {
             return@fromCallable response.body()!!.map { it.toProfile() }

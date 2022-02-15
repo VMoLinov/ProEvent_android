@@ -4,6 +4,6 @@ import moxy.viewstate.strategy.alias.AddToEndSingle
 import ru.myproevent.ui.presenters.BaseMvpView
 
 @AddToEndSingle
-interface CodeView : BaseMvpView{
+interface CodeView : BaseMvpView {
     fun showCodeErrorMessage(message: String?)
 }

@@ -10,7 +10,12 @@ import ru.myproevent.R
 
 class ProEventConfirmButton : MaterialButton {
     constructor(context: Context) : this(context, null)
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, com.google.android.material.R.attr.materialButtonStyle)
+    constructor(context: Context, attrs: AttributeSet?) : this(
+        context,
+        attrs,
+        com.google.android.material.R.attr.materialButtonStyle
+    )
+
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,

@@ -77,17 +77,17 @@ class ParticipantFromContactsPickerFragment :
             when (option.id) {
                 R.id.all_contacts -> {
                     // TODO: Вынести в ресурсы
-                    title.text = "Контакты: Все"
-                    noContactsText.text = "У вас пока нет контактов"
+                    title.text = getString(R.string.contacts_all)
+                    noContactsText.text = getString(R.string.you_have_no_contacts)
                 }
                 R.id.outgoing_contacts -> {
-                    title.text = "Контакты: Исходящие"
-                    noContactsText.text = "У вас нет активных запросов"
+                    title.text = getString(R.string.contacts_outgoing)
+                    noContactsText.text = getString(R.string.you_have_no_active_requests)
                 }
 
                 R.id.incoming_contacts -> {
-                    title.text = "Контакты: Входящие"
-                    noContactsText.text = "У вас нет активных запросов"
+                    title.text = getString(R.string.contacts_incoming)
+                    noContactsText.text = getString(R.string.you_have_no_active_requests)
                 }
             }
         }
@@ -235,21 +235,10 @@ class ParticipantFromContactsPickerFragment :
     }
 
     override fun showConfirmationScreen(
-        action: Contact.Action,
+        message: String,
         callBack: ((confirmed: Boolean) -> Unit)?
     ) {
-        binding.tvConfirmMsg.text = when (action) {
-            Contact.Action.ACCEPT ->
-                getString(R.string.accept_contact_request_question)
-            Contact.Action.CANCEL ->
-                getString(R.string.cancel_request_question)
-            Contact.Action.DECLINE ->
-                getString(R.string.decline_contact_request_question)
-            Contact.Action.DELETE ->
-                getString(R.string.delete_contact_question)
-            else -> null
-        }
-
+        binding.tvConfirmMsg.text = message
         confirmScreenCallBack = callBack
 
         binding.container.visibility = View.INVISIBLE
@@ -302,7 +291,7 @@ class ParticipantFromContactsPickerFragment :
 
     override fun setPickedParticipantsCount(curr: Int, all: Int) {
         binding.pickedContactsCount.text =
-            String.format(getString(R.string.picked_contacts_count_format), curr, all)
+            getString(R.string.picked_contacts_count_format, curr, all)
     }
 
     override fun showToast(text: String) = Toast.makeText(context, text, Toast.LENGTH_LONG).show()
@@ -317,7 +306,7 @@ class ParticipantFromContactsPickerFragment :
 
     override fun onStop() {
         super.onStop()
-        (requireActivity()  as BottomNavigation).showBottomNavigation()
+        (requireActivity() as BottomNavigation).showBottomNavigation()
     }
 
     override fun onBackPressed() = presenter.onBackPressed()

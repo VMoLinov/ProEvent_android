@@ -1,8 +1,8 @@
 package ru.myproevent.ui.presenters.contacts.contact
 
 import com.github.terrakok.cicerone.Router
+import ru.myproevent.R
 import ru.myproevent.domain.models.entities.Profile
-import ru.myproevent.domain.models.repositories.images.IImagesRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
 import javax.inject.Inject
@@ -18,15 +18,15 @@ class ContactPresenter(localRouter: Router) : BaseMvpPresenter<ContactView>(loca
             .subscribe({ profile ->
                 fillFields(profile!!)
             }, {
-                viewState.showMessage("ПРОИЗОШЛА ОШИБКА: ${it.message}")
+                viewState.showMessage(getString(R.string.error_occurred, it.message))
             }).disposeOnDestroy()
     }
 
     private fun fillFields(profile: Profile) = with(profile) {
-        val title = when{
+        val title = when {
             !fullName.isNullOrBlank() -> fullName!!
             !nickName.isNullOrBlank() -> nickName!!
-            else -> "ID: $id"
+            else -> getString(R.string.id_01, id)
         }
         viewState.setTitle(title)
 

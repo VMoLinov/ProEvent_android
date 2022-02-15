@@ -1,6 +1,6 @@
 package ru.myproevent.ui.presenters.main
 
-enum class Tab{
+enum class Tab {
     AUTHORIZATION,
     HOME,
     CONTACTS,

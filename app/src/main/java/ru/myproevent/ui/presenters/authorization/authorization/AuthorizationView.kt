@@ -8,6 +8,7 @@ import ru.myproevent.ui.presenters.BaseMvpView
 @AddToEndSingle
 interface AuthorizationView : BaseMvpView {
     fun authorizationDataInvalid()
+
     @OneExecution
     fun finishAuthorization()
     fun setEmailHint(emailSuggestion: List<Suggestion>)

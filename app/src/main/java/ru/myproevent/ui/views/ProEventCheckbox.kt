@@ -21,7 +21,7 @@ class ProEventCheckbox : FrameLayout {
         setImageDrawable(ProEventApp.instance.getDrawable(R.drawable.checkbox_foreground))
     }
 
-    private fun changeCheckState(){
+    private fun changeCheckState() {
         isChecked = !isChecked
         updateContent()
     }
@@ -30,7 +30,7 @@ class ProEventCheckbox : FrameLayout {
         removeAllViews()
         addView(backgroundView, params)
         addView(borderView, params)
-        if(isChecked){
+        if (isChecked) {
             addView(foregroundView, params)
         }
         invalidate()
@@ -44,15 +44,22 @@ class ProEventCheckbox : FrameLayout {
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
-    fun touch(){
+    fun touch() {
         changeCheckState()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        params = LayoutParams(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.getSize(heightMeasureSpec))
+        params = LayoutParams(
+            MeasureSpec.getSize(widthMeasureSpec),
+            MeasureSpec.getSize(heightMeasureSpec)
+        )
         updateContent()
     }
 

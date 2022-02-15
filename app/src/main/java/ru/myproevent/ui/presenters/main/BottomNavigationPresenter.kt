@@ -4,7 +4,6 @@ import com.github.terrakok.cicerone.Router
 import moxy.InjectViewState
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
-import java.lang.Exception
 import javax.inject.Inject
 
 @InjectViewState
@@ -38,7 +37,7 @@ class BottomNavigationPresenter(localRouter: Router) :
         viewState.showTab(tab, friendAccess)
     }
 
-    fun exit(){
+    fun exit() {
         viewState.resetState(friendAccess)
     }
 

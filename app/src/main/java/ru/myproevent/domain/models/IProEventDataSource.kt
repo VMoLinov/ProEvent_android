@@ -119,10 +119,11 @@ data class UUIDBody(val uuid: String)
 //)
 
 data class ProfileMiniDto(
-    var userId: Long,
-    var fullName: String? = null,
-    var nickName: String? = null,
-    var imgUri: String? = null
+    val userId: Long,
+    val fullName: String? = null,
+    val nickName: String? = null,
+    val imgUri: String? = null,
+    val description: String? = null
 )
 
 data class ContactDto(val id: Long, val status: String)

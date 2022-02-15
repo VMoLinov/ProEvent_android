@@ -1,7 +1,6 @@
 package ru.myproevent.ui.fragments.authorization
 
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.SpannableStringBuilder
@@ -142,8 +141,7 @@ class NewPasswordFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
         super.onViewCreated(view, savedInstanceState)
         setLayoutParams()
-        codeExplanation.text =
-            String.format(getString(R.string.code_explanation_text), email)
+        codeExplanation.text = getString(R.string.code_explanation_text, email)
         // TODO: отрефакторить - вынести это в кастомные вьюхи
         digit1Edit.selectionChangedListener =
             { _, _ -> digit1Edit.setSelection(digit1Edit.length()) }
@@ -169,9 +167,9 @@ class NewPasswordFragment :
         refreshCode.setOnClickListener { presenter.refreshCode(email) }
         continueRegistration.setOnClickListener {
             presenter.setNewPassword(
-                code =  getVerificationCode(),
-                email =  email,
-                password =  passwordEdit.text.toString(),
+                code = getVerificationCode(),
+                email = email,
+                password = passwordEdit.text.toString(),
                 confirmedPassword = passwordConfirmEdit.text.toString(),
                 rememberPassword = rememberMeCheckbox.isChecked
             )
@@ -214,16 +212,9 @@ class NewPasswordFragment :
         errorMessage.text = message
         errorMessage.isVisible = true
 
-        val errorColors = intArrayOf(
-            Color.parseColor("#FF6A4D"),
-            Color.parseColor("#FF6A4D"),
-            Color.parseColor("#FF6A4D"),
-            Color.parseColor("#FF6A4D"),
-            Color.parseColor("#FF6A4D"),
-            Color.parseColor("#FF6A4D"),
-            Color.parseColor("#FF6A4D"),
-            Color.parseColor("#FF6A4D")
-        )
+        val errorColors = resources.getColor(R.color.PE_error_color_01, null).let {
+            intArrayOf(it, it, it, it, it, it, it, it)
+        }
 
         digit1.setBoxStrokeColorStateList(ColorStateList(colorStates, errorColors))
         digit2.setBoxStrokeColorStateList(ColorStateList(colorStates, errorColors))

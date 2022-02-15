@@ -6,7 +6,7 @@ import ru.myproevent.ui.presenters.BaseMvpPresenter
 class AddEventPlacePresenter(localRouter: Router) :
     BaseMvpPresenter<AddEventPlaceView>(localRouter) {
 
-        fun backTo(){
-            localRouter.backTo(screens.currentlyOpenEventScreen())
-        }
+    fun backTo() {
+        localRouter.backTo(screens.currentlyOpenEventScreen())
+    }
 }

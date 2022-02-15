@@ -18,7 +18,7 @@ class ChatsFragment : BaseMvpFragment<FragmentChatsBinding>(FragmentChatsBinding
         fun newInstance() = ChatsFragment()
     }
 
-    val router by lazy{(parentFragment as RouterProvider).router}
+    val router by lazy { (parentFragment as RouterProvider).router }
 
     override val presenter by moxyPresenter {
         BaseMvpPresenter<BaseMvpView>((parentFragment as RouterProvider).router).apply {}
@@ -27,7 +27,7 @@ class ChatsFragment : BaseMvpFragment<FragmentChatsBinding>(FragmentChatsBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        with(binding){
+        with(binding) {
             profileContainer1.setOnClickListener { router.navigateTo(Screens().chat()) }
             profileContainer2.setOnClickListener { router.navigateTo(Screens().chat1()) }
             profileContainer3.setOnClickListener { router.navigateTo(Screens().chat1()) }
