@@ -15,15 +15,30 @@ class ProEventEditOptions : FrameLayout {
         context,
         attrs,
         defStyleAttr
-    ){
+    ) {
         addView(binding.root)
         initViews()
     }
 
+    val editableForms = mutableListOf<ProEventEditableForm>()
+
     private val binding = ItemEditOptionsBinding.inflate(LayoutInflater.from(context))
 
-    private fun initViews() = with(binding){
-        cancel.setOnClickListener { Toast.makeText(ProEventApp.instance, "ОТМЕНА ИЗМЕНЕНИЙ", Toast.LENGTH_SHORT).show() }
-        save.setOnClickListener { Toast.makeText(ProEventApp.instance, "СОХРАНЕНИЕ ИЗМЕНЕНИЙ", Toast.LENGTH_SHORT).show() }
+    private fun initViews() = with(binding) {
+        cancel.setOnClickListener {
+            for (form in editableForms) {
+                form.cancelEdit()
+            }
+        }
+        save.setOnClickListener {
+            for (form in editableForms) {
+                form.saveEdit()
+            }
+        }
+    }
+
+    interface ProEventEditableForm {
+        fun saveEdit()
+        fun cancelEdit()
     }
 }
