@@ -37,8 +37,6 @@ class ProEventEventsRepository @Inject constructor(
             "",
             loginRepository.getLocalId()!!,
             "",
-            "",
-            "",
             null,
             null,
             null,

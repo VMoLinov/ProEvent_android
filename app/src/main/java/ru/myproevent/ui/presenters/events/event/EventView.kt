@@ -6,6 +6,7 @@ import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.entities.Event
 import ru.myproevent.domain.models.entities.TimeInterval
 import ru.myproevent.ui.presenters.BaseMvpView
+import java.text.FieldPosition
 
 @AddToEnd
 interface EventView : BaseMvpView {
@@ -19,12 +20,12 @@ interface EventView : BaseMvpView {
     fun expandDates()
     fun clearDates()
     fun clearParticipants()
-    fun showAbsoluteBar(
+    fun showAbsoluteFormsHeader(
         title: String,
-        iconResource: Int?,
-        iconTintResource: Int?,
-        onCollapseScroll: Int,
+        editIcon: Int?,
+        editIconTint: Int?,
         onCollapse: () -> Unit,
+        onCollapseScrollToPosition: Int,
         onEdit: () -> Unit
     )
     fun hideAbsoluteBar()
@@ -34,10 +35,20 @@ interface EventView : BaseMvpView {
     fun cancelEdit()
     fun showEditOptions()
     fun hideEditOptions()
-    fun showActionOptions()
+    fun enableSaveOptions()
+    fun disableSaveOptions()
+    fun enableActionOptions()
     fun showDateEditOptions(position: Int)
     fun hideDateEditOptions()
     fun lockEdit()
     fun removeParticipant(id: Long, pickedParticipantsIds: List<Long>)
     fun removeDate(date: TimeInterval, pickedDates: List<TimeInterval>)
+
+    fun init()
+    fun updateEventScreenList()
+    fun eventScreenListNotifyItemRangeInserted(positionStart: Int, itemCount: Int)
+    fun eventScreenListNotifyItemRangeRemoved(positionStart: Int, itemCount: Int)
+
+    @OneExecution
+    fun hideKeyboard()
 }

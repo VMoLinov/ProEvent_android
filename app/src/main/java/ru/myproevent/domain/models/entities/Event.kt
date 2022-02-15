@@ -10,8 +10,6 @@ data class Event(
     var name: String,
     var ownerUserId: Long,
     var status: Status,
-    var startDate: Date,
-    var endDate: Date,
     var description: String?,
     var participantsUserIds: LongArray?,
     var city: String?,

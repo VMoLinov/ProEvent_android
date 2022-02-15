@@ -13,11 +13,8 @@ import ru.myproevent.ui.fragments.chat.ChatsFragment
 import ru.myproevent.ui.fragments.contacts.ContactAddFragment
 import ru.myproevent.ui.fragments.contacts.ContactFragment
 import ru.myproevent.ui.fragments.contacts.ContactsFragment
-import ru.myproevent.ui.fragments.events.event.AddEventPlaceFragment
-import ru.myproevent.ui.fragments.events.event.EventActionConfirmationFragment
 import ru.myproevent.ui.fragments.events.EventsFragment
-import ru.myproevent.ui.fragments.events.event.EventFragment
-import ru.myproevent.ui.fragments.events.event.EventParticipantFragment
+import ru.myproevent.ui.fragments.events.event.*
 import ru.myproevent.ui.fragments.events.event.participant_pickers.ParticipantByEmailPickerFragment
 import ru.myproevent.ui.fragments.events.event.participant_pickers.ParticipantFromContactsPickerFragment
 import ru.myproevent.ui.fragments.events.event.participant_pickers.ParticipantPickerTypeSelectionFragment
@@ -42,8 +39,8 @@ class Screens : IScreens {
     override fun chat1() = FragmentScreen { Chat1Fragment.newInstance() }
     override fun chats() = FragmentScreen { ChatsFragment.newInstance() }
     override fun events() = FragmentScreen { EventsFragment.newInstance() }
-    override fun event() = FragmentScreen("EVENT") { EventFragment.newInstance() }
-    override fun event(event: Event) = FragmentScreen("EVENT") { EventFragment.newInstance(event) }
+    override fun event() = FragmentScreen("EVENT") { EventFragmentNew.newInstance() }
+    override fun event(event: Event) = FragmentScreen("EVENT") { EventFragmentNew.newInstance(event) }
     override fun currentlyOpenEventScreen() = FragmentScreen("EVENT") { throw RuntimeException("В текущем стеке нет экрана Screens.event") }
     override fun eventActionConfirmation(event: Event, status: Event.Status?) = FragmentScreen { EventActionConfirmationFragment.newInstance(event, status) }
     override fun participantPickerTypeSelection(participantsIds: List<Long>) = FragmentScreen { ParticipantPickerTypeSelectionFragment.newInstance(participantsIds) }

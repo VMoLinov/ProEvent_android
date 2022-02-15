@@ -28,7 +28,7 @@ class ChatsPresenter(localRouter: Router) : BaseMvpPresenter<ChatsView>(localRou
         override fun bindView(view: IChatItemView) {
             val event = events[view.pos]
             view.setName(event.name)
-            view.setTime(formatDate(event.startDate, event.endDate))
+            //view.setTime(formatDate(event.startDate, event.endDate))
         }
 
         override fun onEditButtonClick(view: IChatItemView) {

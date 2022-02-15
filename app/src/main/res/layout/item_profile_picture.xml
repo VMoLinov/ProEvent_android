@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/ProEvent_white">
+    <ImageView
+        android:id="@+id/event_image_view"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="3dp"
+        android:contentDescription="@string/event_image"
+        android:src="@drawable/ic_event_image_placeholder" />
+
+    <TextView
+        android:id="@+id/edit_event_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/edit_event_image"
+        android:textAlignment="center"
+        android:textColor="@color/ProEvent_blue_600"
+        android:textSize="12sp" />
+</LinearLayout>

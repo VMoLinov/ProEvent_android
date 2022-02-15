@@ -6,10 +6,8 @@ import android.widget.Toast
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.databinding.FragmentParticipantPickerTypeSelectionBinding
-import ru.myproevent.domain.models.entities.Event
 import ru.myproevent.ui.BackButtonListener
 import ru.myproevent.ui.fragments.BaseMvpFragment
-import ru.myproevent.ui.fragments.events.event.EventFragment
 import ru.myproevent.ui.presenters.events.event.participant_pickers.ParticipantPickerTypeSelectionPresenter
 import ru.myproevent.ui.presenters.events.event.participant_pickers.ParticipantPickerTypeSelectionView
 import ru.myproevent.ui.presenters.main.RouterProvider

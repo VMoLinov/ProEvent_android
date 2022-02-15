@@ -160,8 +160,6 @@ data class EventDto(
     val name: String,
     val ownerUserId: Long,
     val eventStatus: String,
-    val startDate: String,
-    val endDate: String,
     val description: String?,
     val participantsUserIds: LongArray?,
     val city: String?,

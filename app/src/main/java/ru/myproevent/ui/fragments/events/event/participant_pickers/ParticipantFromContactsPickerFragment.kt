@@ -262,14 +262,14 @@ class ParticipantFromContactsPickerFragment :
             with(binding) {
                 if (contactsAdapter!!.itemCount == 0) {
                     progressBar.visibility = View.GONE
-                    scroll.visibility = View.VISIBLE
+                    contactsScroll.visibility = View.VISIBLE
                     noContacts.visibility = View.VISIBLE
                     noContactsText.visibility = View.VISIBLE
                 } else if (contactsAdapter!!.itemCount > 0) {
                     progressBar.visibility = View.GONE
                     noContacts.visibility = View.GONE
                     noContactsText.visibility = View.GONE
-                    scroll.visibility = View.VISIBLE
+                    contactsScroll.visibility = View.VISIBLE
                     rvContacts.visibility = View.VISIBLE
                 }
             }
