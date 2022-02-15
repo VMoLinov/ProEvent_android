@@ -134,7 +134,10 @@ class HeaderFilter @JvmOverloads constructor(
     }
 
     fun setItems(@ArrayRes items: Int, @ArrayRes headerTexts: Int) {
-        setItems(resources.getStringArray(items).toList(), resources.getStringArray(headerTexts).toList())
+        setItems(
+            resources.getStringArray(items).toList(),
+            resources.getStringArray(headerTexts).toList()
+        )
     }
 
     fun setItems(items: List<String>, headerTexts: List<String> = items) {

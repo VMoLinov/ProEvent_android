@@ -8,7 +8,7 @@ import ru.myproevent.ui.presenters.BaseMvpView
 interface ContactsView : BaseMvpView {
     fun init()
     fun hideConfirmationScreen()
-    fun showConfirmationScreen(action: Contact.Action, callBack: ((confirmed: Boolean) -> Unit)?)
+    fun showConfirmationScreen(message: String, callBack: ((confirmed: Boolean) -> Unit)?)
     fun updateContactsList()
     fun setProgressBarVisibility(visible: Boolean)
     fun hideNoContactsLayout()

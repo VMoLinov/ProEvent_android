@@ -10,7 +10,6 @@ import androidx.core.view.isVisible
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.R
-import ru.myproevent.databinding.FragmentChat1Binding
 import ru.myproevent.databinding.FragmentChatBinding
 import ru.myproevent.ui.fragments.BaseMvpFragment
 import ru.myproevent.ui.presenters.chat.ChatPresenter
@@ -39,9 +38,19 @@ class ChatFragment : BaseMvpFragment<FragmentChatBinding>(FragmentChatBinding::i
 
     private fun setAttachOptionsVisibility(isVisible: Boolean) = with(binding) {
         if (isVisible) {
-            attach.setColorFilter(ContextCompat.getColor(requireContext(), R.color.ProEvent_bright_orange_300), android.graphics.PorterDuff.Mode.SRC_IN)
+            attach.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.ProEvent_bright_orange_300
+                ), android.graphics.PorterDuff.Mode.SRC_IN
+            )
         } else {
-            attach.setColorFilter(ContextCompat.getColor(requireContext(), R.color.ProEvent_blue_600), android.graphics.PorterDuff.Mode.SRC_IN)
+            attach.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.ProEvent_blue_600
+                ), android.graphics.PorterDuff.Mode.SRC_IN
+            )
         }
         isAttachOptionsExpanded = isVisible
         shadow.isVisible = isVisible
@@ -54,7 +63,7 @@ class ChatFragment : BaseMvpFragment<FragmentChatBinding>(FragmentChatBinding::i
         }
     }
 
-    val router by lazy {(parentFragment as RouterProvider).router}
+    val router by lazy { (parentFragment as RouterProvider).router }
 
     companion object {
         fun newInstance() = ChatFragment()

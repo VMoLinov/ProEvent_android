@@ -29,4 +29,6 @@
     <color name="ProEvent_bright_orange_300">#FE3F19</color>
     <color name="ProEvent_orange_200">#FF9580</color>
     <color name="ProEvent_blue_800_opacity_20">#332D2D59</color>
+
+    <color name="PE_error_color_01">#FF6A4D</color>
 </resources>

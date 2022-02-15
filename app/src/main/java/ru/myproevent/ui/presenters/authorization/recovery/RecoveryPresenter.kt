@@ -2,6 +2,7 @@ package ru.myproevent.ui.presenters.authorization.recovery
 
 import com.github.terrakok.cicerone.Router
 import io.reactivex.observers.DisposableCompletableObserver
+import ru.myproevent.R
 import ru.myproevent.domain.models.repositories.internet_access_info.IInternetAccessInfoRepository
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
@@ -21,18 +22,18 @@ class RecoveryPresenter(localRouter: Router) : BaseMvpPresenter<RecoveryView>(lo
 
         override fun onError(error: Throwable) {
             error.printStackTrace()
-            if (error is retrofit2.adapter.rxjava2.HttpException) {
+            if (error is retrofit2.HttpException) {
                 when (error.code()) {
                     400 -> {
-                        viewState.showMessage("Неверный формат e-mail. У нас таких нет")
+                        viewState.showMessage(getString(R.string.invalid_email_format))
                         return
                     }
                     404 -> {
-                        viewState.showMessage("Для указанного e-mail нет аккаунта. Иди зарегистрируйся")
+                        viewState.showMessage(getString(R.string.no_account_for_this_email))
                         return
                     }
                 }
-                viewState.showMessage("Произошла ошибка: $error")
+                viewState.showMessage(getString(R.string.error_occurred, error))
                 return
             }
             interAccessInfoRepository
@@ -44,8 +45,8 @@ class RecoveryPresenter(localRouter: Router) : BaseMvpPresenter<RecoveryView>(lo
     }
 
     fun resetPassword(email: String) {
-        if (email.isNullOrBlank()) {
-            viewState.showMessage("Невалидный E-mail")
+        if (email.isBlank()) {
+            viewState.showMessage(getString(R.string.invalid_email))
             return
         }
         loginRepository

@@ -1,19 +1,16 @@
 package ru.myproevent.ui.fragments.settings
 
-import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.method.KeyListener
-import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -25,8 +22,8 @@ import ru.myproevent.ProEventApp
 import ru.myproevent.R
 import ru.myproevent.databinding.FragmentAccountBinding
 import ru.myproevent.domain.models.entities.Profile
-import ru.myproevent.domain.utils.PhoneTextWatcher
 import ru.myproevent.domain.utils.GlideLoader
+import ru.myproevent.domain.utils.PhoneTextWatcher
 import ru.myproevent.ui.fragments.BaseMvpFragment
 import ru.myproevent.ui.presenters.main.RouterProvider
 import ru.myproevent.ui.presenters.settings.account.AccountPresenter
@@ -90,7 +87,7 @@ class AccountFragment : BaseMvpFragment<FragmentAccountBinding>(FragmentAccountB
     private fun saveProfile(uuid: String?) = with(binding) {
         presenter.saveProfile(
             nameEdit.text.toString(),
-            if(phoneEdit.text.toString().isNotBlank()) "+7 ${phoneEdit.text.toString()}" else "",
+            if (phoneEdit.text.toString().isNotBlank()) "+7 ${phoneEdit.text.toString()}" else "",
             dateOfBirthEdit.text.toString(),
             positionEdit.text.toString(),
             roleEdit.text.toString(),

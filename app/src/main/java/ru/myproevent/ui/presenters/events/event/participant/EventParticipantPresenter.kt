@@ -5,7 +5,6 @@ import com.github.terrakok.cicerone.Router
 import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.utils.PARTICIPANT_ID_KEY
 import ru.myproevent.domain.utils.PARTICIPANT_TO_REMOVE_ID_RESULT_KEY
-import ru.myproevent.domain.utils.toContact
 import ru.myproevent.ui.presenters.BaseMvpPresenter
 
 class EventParticipantPresenter(localRouter: Router) :

@@ -142,7 +142,7 @@ class TabContainerFragment : Fragment(), RouterProvider, BackButtonListener {
 
     override val router: Router
         get() = cicerone.router
-    
+
     override fun onBackPressed(): Boolean {
         val fragment = childFragmentManager.findFragmentById(R.id.ftc_container)
         return if (fragment != null && fragment is BackButtonListener

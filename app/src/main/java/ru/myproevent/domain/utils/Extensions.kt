@@ -23,7 +23,7 @@ fun Profile.toProfile() =
     Profile(id, email, fullName, nickName, phone, position, birthdate, imgUri, description)
 
 fun ProfileMiniDto.toProfile() =
-    Profile(userId, null, fullName, nickName, null, null, null, imgUri, null)
+    Profile(userId, null, fullName, nickName, null, null, null, imgUri, description)
 
 fun Profile.toProfileDto() =
     Profile(id, email, fullName, nickName, phone, position, birthdate, imgUri, description)
@@ -32,7 +32,8 @@ fun Profile.toContact(status: Status?) =
     Contact(id, status, email, fullName, nickName, phone, position, birthdate, imgUri, description)
 
 fun Contact.toContactDto() = ContactDto(id, status.toString())
-fun EventDto.toEvent(datePattern: String = "yyyy-MM-dd'T'HH:mm:ss"): Event {
+
+fun EventDto.toEvent(datePattern: String): Event {
     val dateFormat = SimpleDateFormat(datePattern)
     dateFormat.timeZone = TimeZone.getTimeZone("GMT")
     return Event(
@@ -52,7 +53,7 @@ fun EventDto.toEvent(datePattern: String = "yyyy-MM-dd'T'HH:mm:ss"): Event {
     )
 }
 
-fun Event.toEventDto(datePattern: String = "yyyy-MM-dd'T'HH:mm:ss"): EventDto {
+fun Event.toEventDto(datePattern: String): EventDto {
     val dateFormat = SimpleDateFormat(datePattern)
     dateFormat.timeZone = TimeZone.getTimeZone("GMT")
     return EventDto(

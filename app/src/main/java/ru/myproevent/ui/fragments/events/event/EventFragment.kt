@@ -35,12 +35,11 @@ import com.google.android.material.textfield.TextInputLayout
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.R
+import ru.myproevent.databinding.DialogDateEditOptionsBinding
 import ru.myproevent.databinding.FragmentEventBinding
 import ru.myproevent.databinding.ItemContactBinding
-import ru.myproevent.domain.models.entities.Profile
-import ru.myproevent.domain.models.entities.Address
-import ru.myproevent.domain.models.entities.Contact
-import ru.myproevent.domain.models.entities.Event
+import ru.myproevent.databinding.ItemEventDateBinding
+import ru.myproevent.domain.models.entities.*
 import ru.myproevent.domain.utils.*
 import ru.myproevent.ui.BackButtonListener
 import ru.myproevent.ui.fragments.BaseMvpFragment
@@ -52,13 +51,9 @@ import ru.myproevent.ui.views.CenteredImageSpan
 import ru.myproevent.ui.views.CropImageHandler
 import ru.myproevent.ui.views.KeyboardAwareTextInputEditText
 import java.io.File
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.properties.Delegates
-import android.widget.*
-import ru.myproevent.databinding.DialogDateEditOptionsBinding
-import ru.myproevent.databinding.ItemEventDateBinding
-import ru.myproevent.domain.models.entities.TimeInterval
-import java.text.SimpleDateFormat
 
 
 // TODO: отрефакторить - разбить этот божественный класс на кастомные вьющки и утилиты
@@ -137,7 +132,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
     }
 
     companion object {
-        val EVENT_ARG = "EVENT"
+        const val EVENT_ARG = "EVENT"
         fun newInstance(event: Event? = null) = EventFragment().apply {
             arguments = Bundle().apply { putParcelable(EVENT_ARG, event) }
         }
@@ -697,19 +692,21 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
 
     private var isSaveAvailable = true
 
-    override fun addParticipantItemView(profile: Profile) {
-        Log.d("[REMOVE]", "addParticipantItemView profileDto id(${profile.id})")
+    override fun addParticipantItemView(profile: Profile) = with(profile) {
+        Log.d("[REMOVE]", "addParticipantItemView profileDto id($id)")
         val view = ItemContactBinding.inflate(layoutInflater)
-        profile.fullName?.let {
-            view.tvName.text = "#${profile.id} $it"
-        } ?: profile.nickName?.let {
-            view.tvName.text = "#${profile.id} $it"
-        } ?: run {
-            view.tvName.text = "#${profile.id}"
-        }
-        view.tvDescription.text = profile.description
+
+        view.tvName.text = getString(
+            R.string.participant_ItemView_name_template, id, when {
+                !fullName.isNullOrBlank() -> fullName
+                !nickName.isNullOrBlank() -> nickName
+                else -> ""
+            }
+        )
+
+        view.tvDescription.text = description
         view.root.setOnClickListener {
-            presenter.openParticipant(profile)
+            presenter.openParticipant(this)
         }
         binding.participantsContainer.addView(view.root)
         binding.noParticipants.isVisible = false
@@ -732,7 +729,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
         }
         val startDate = getDateTime(timeInterval.start)
         val endDate = getDateTime(timeInterval.end)
-        view.dateValue.text = "НАЧАЛО: ${startDate}\nКОНЕЦ: ${endDate}"
+        view.dateValue.text = getString(R.string.event_date_template, startDate, endDate)
         binding.datesContainer.addView(view.root, position + 1)
         binding.noDates.isVisible = false
     }
@@ -910,7 +907,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
                 if (datesContainer.visibility == VISIBLE && scrollY in datesBarDistance..(datesBarDistance + datesContainer.height)) {
                     if (isAbsoluteBarBarHidden) {
                         presenter.showAbsoluteBar(
-                            "Даты мероприятия",
+                            getString(R.string.event_dates),
                             R.drawable.ic_add,
                             null,
                             datesBarDistance,
@@ -921,7 +918,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
                 } else if (descriptionContainer.visibility == VISIBLE && scrollY in descriptionBarDistance..(descriptionBarDistance + descriptionContainer.height)) {
                     if (isAbsoluteBarBarHidden) {
                         presenter.showAbsoluteBar(
-                            "Описание",
+                            getString(R.string.description),
                             if (editDescription.visibility == VISIBLE) {
                                 R.drawable.ic_edit
                             } else {
@@ -936,7 +933,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
                 } else if (mapsContainer.visibility == VISIBLE && scrollY in mapsBarDistance..(mapsBarDistance + mapsContainer.height)) {
                     if (isAbsoluteBarBarHidden) {
                         presenter.showAbsoluteBar(
-                            "Карта мероприятия",
+                            getString(R.string.event_map),
                             R.drawable.ic_add,
                             null,
                             mapsBarDistance,
@@ -947,7 +944,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
                 } else if (pointsContainer.visibility == VISIBLE && scrollY in pointsBarDistance..(pointsBarDistance + pointsContainer.height)) {
                     if (isAbsoluteBarBarHidden) {
                         presenter.showAbsoluteBar(
-                            "Точки",
+                            getString(R.string.points),
                             R.drawable.ic_add,
                             null,
                             pointsBarDistance,
@@ -958,7 +955,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
                 } else if (participantsContainer.visibility == VISIBLE && scrollY in participantsBarDistance..(participantsBarDistance + participantsContainer.height)) {
                     if (isAbsoluteBarBarHidden) {
                         presenter.showAbsoluteBar(
-                            "Участники",
+                            getString(R.string.participants),
                             R.drawable.ic_add,
                             null,
                             participantsBarDistance,
@@ -1024,7 +1021,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
                 presenter.cancelEdit()
                 if (event != null) {
                     presenter.lockEdit()
-                    presenter.showMessage("Изменения отменены")
+                    presenter.showMessage(getString(R.string.changes_canceled))
                     presenter.hideEditOptions()
                 }
             }
@@ -1051,31 +1048,21 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
                 presenter.deleteEvent(event!!)
                 hideFilterOptions()
             }
-            setImageSpan(
-                noDates,
-                "Отсутствуют.\nНажмите + чтобы добавить.",
-                R.drawable.ic_add
-            )
+            // TODO: отрефакорить нужно передавать tint, а не использовать отдельный drawable
+            setImageSpan(noDates, getString(R.string.event_fragment_some_text), R.drawable.ic_add)
             setImageSpan(
                 noDescription,
-                "Отсутствует.\nНажмите / чтобы добавить.",
-                R.drawable.ic_edit_blue // TODO: отрефакорить нужно передавать tint, а не использовать отдельный drawable
+                getString(R.string.event_fragment_some_text_02),
+                R.drawable.ic_edit_blue
             )
-            setImageSpan(
-                noMaps,
-                "Отсутствует.\nНажмите + чтобы добавить.",
-                R.drawable.ic_add
-            )
-            setImageSpan(
-                noPoints,
-                "Отсутствуют.\nНажмите + чтобы добавить.",
-                R.drawable.ic_add
-            )
+            setImageSpan(noMaps, getString(R.string.event_fragment_some_text), R.drawable.ic_add)
+            setImageSpan(noPoints, getString(R.string.event_fragment_some_text), R.drawable.ic_add)
             setImageSpan(
                 noParticipants,
-                "Отсутствуют.\nНажмите + чтобы добавить.",
+                getString(R.string.event_fragment_some_text),
                 R.drawable.ic_add
             )
+
             editDescription.setOnClickListener {
                 if (!isDescriptionExpanded()) {
                     expandDescription.performClick()

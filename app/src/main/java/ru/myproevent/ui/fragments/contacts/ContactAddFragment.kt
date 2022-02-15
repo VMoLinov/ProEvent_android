@@ -7,6 +7,7 @@ import android.view.View.VISIBLE
 import android.widget.Toast
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
+import ru.myproevent.R
 import ru.myproevent.databinding.FragmentContactAddBinding
 import ru.myproevent.ui.fragments.BaseMvpFragment
 import ru.myproevent.ui.presenters.contacts.contact_add.ContactAddPresenter
@@ -34,7 +35,7 @@ class ContactAddFragment :
             } catch (e: NumberFormatException) {
                 Toast.makeText(
                     requireContext(),
-                    "Значение должно быть числом обозначающее id пользователя",
+                    getString(R.string.find_contact_error_message),
                     Toast.LENGTH_LONG
                 ).show()
             }
