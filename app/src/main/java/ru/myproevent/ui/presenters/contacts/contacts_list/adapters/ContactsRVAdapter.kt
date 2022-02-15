@@ -6,7 +6,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
 import ru.myproevent.R
 import ru.myproevent.databinding.ItemContactBinding
-import ru.myproevent.domain.models.entities.contact.Status
+import ru.myproevent.domain.models.entities.Contact
 import ru.myproevent.ui.presenters.contacts.contacts_list.IContactItemView
 import ru.myproevent.domain.utils.load
 
@@ -45,18 +45,18 @@ class ContactsRVAdapter(val presenter: IContactsListPresenter) :
             vb.ivImg.load(url)
         }
 
-        override fun setStatus(status: Status) = with(vb) {
+        override fun setStatus(status: Contact.Status) = with(vb) {
             requestStatus.setImageDrawable(
                 when (status) {
-                    Status.REQUESTED -> AppCompatResources.getDrawable(
+                    Contact.Status.REQUESTED -> AppCompatResources.getDrawable(
                         itemView.context,
                         R.drawable.ic_incomming_request
                     )
-                    Status.DECLINED -> AppCompatResources.getDrawable(
+                    Contact.Status.DECLINED -> AppCompatResources.getDrawable(
                         itemView.context,
                         R.drawable.ic_rejected_request
                     )
-                    Status.PENDING -> AppCompatResources.getDrawable(
+                    Contact.Status.PENDING -> AppCompatResources.getDrawable(
                         itemView.context,
                         R.drawable.ic_outgoing_request
                     )

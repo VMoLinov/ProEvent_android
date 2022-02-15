@@ -18,8 +18,6 @@ import ru.myproevent.domain.models.IProEventDataSource
 import ru.myproevent.domain.models.repositories.local_proevent_user_token.ITokenLocalRepository
 import javax.inject.Named
 import javax.inject.Singleton
-import ru.myproevent.BuildConfig
-
 
 @Module
 class ProEventApiModule {

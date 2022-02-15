@@ -4,7 +4,6 @@ import com.github.terrakok.cicerone.Screen
 import com.github.terrakok.cicerone.androidx.FragmentScreen
 import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.entities.Address
-import ru.myproevent.domain.models.entities.contact.Contact
 import ru.myproevent.domain.models.entities.Event
 import ru.myproevent.ui.fragments.*
 import ru.myproevent.ui.fragments.authorization.*

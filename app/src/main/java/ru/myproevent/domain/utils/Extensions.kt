@@ -8,8 +8,7 @@ import ru.myproevent.domain.models.ContactDto
 import ru.myproevent.domain.models.EventDto
 import ru.myproevent.domain.models.ProfileMiniDto
 import ru.myproevent.domain.models.entities.Address
-import ru.myproevent.domain.models.entities.contact.Contact
-import ru.myproevent.domain.models.entities.contact.Status
+import ru.myproevent.domain.models.entities.Contact
 import ru.myproevent.domain.models.entities.Event
 import ru.myproevent.domain.models.entities.Profile
 import java.text.SimpleDateFormat
@@ -28,7 +27,7 @@ fun ProfileMiniDto.toProfile() =
 fun Profile.toProfileDto() =
     Profile(id, email, fullName, nickName, phone, position, birthdate, imgUri, description)
 
-fun Profile.toContact(status: Status?) =
+fun Profile.toContact(status: Contact.Status?) =
     Contact(id, status, email, fullName, nickName, phone, position, birthdate, imgUri, description)
 
 fun Contact.toContactDto() = ContactDto(id, status.toString())

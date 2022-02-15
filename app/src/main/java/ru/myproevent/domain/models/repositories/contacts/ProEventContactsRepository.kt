@@ -4,7 +4,6 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import ru.myproevent.domain.models.IProEventDataSource
-import ru.myproevent.domain.models.Page
 import ru.myproevent.domain.models.entities.Contact
 import ru.myproevent.domain.models.entities.Contact.Status
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository

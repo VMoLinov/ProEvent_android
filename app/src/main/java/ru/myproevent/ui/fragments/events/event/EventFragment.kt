@@ -37,10 +37,6 @@ import ru.myproevent.ProEventApp
 import ru.myproevent.R
 import ru.myproevent.databinding.FragmentEventBinding
 import ru.myproevent.databinding.ItemContactBinding
-import ru.myproevent.domain.models.entities.Profile
-import ru.myproevent.domain.models.entities.Address
-import ru.myproevent.domain.models.entities.contact.Contact
-import ru.myproevent.domain.models.entities.Event
 import ru.myproevent.domain.utils.*
 import ru.myproevent.ui.BackButtonListener
 import ru.myproevent.ui.fragments.BaseMvpFragment
@@ -57,7 +53,7 @@ import kotlin.properties.Delegates
 import android.widget.*
 import ru.myproevent.databinding.DialogDateEditOptionsBinding
 import ru.myproevent.databinding.ItemEventDateBinding
-import ru.myproevent.domain.models.entities.TimeInterval
+import ru.myproevent.domain.models.entities.*
 import java.text.SimpleDateFormat
 
 
