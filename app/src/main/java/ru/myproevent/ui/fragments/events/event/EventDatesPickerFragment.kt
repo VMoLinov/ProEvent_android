@@ -41,9 +41,7 @@ import ru.myproevent.ui.presenters.events.event.datespicker.EventDatesPickerPres
 import ru.myproevent.ui.presenters.events.event.datespicker.EventDatesPickerView
 import ru.myproevent.ui.presenters.main.BottomNavigation
 import ru.myproevent.ui.presenters.main.RouterProvider
-import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.YearMonth
+import java.time.*
 import java.time.format.TextStyle
 import java.time.temporal.WeekFields
 import java.util.*
@@ -86,9 +84,7 @@ class EventDatesPickerFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.getParcelable<TimeInterval>(OLD_DATE_KEY)?.let {
-            timeIntervalInput = it
-        }
+        arguments?.getParcelable<TimeInterval>(OLD_DATE_KEY)?.let { timeIntervalInput = it }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -122,6 +118,7 @@ class EventDatesPickerFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
+        initDatesPosition()
         calculateCellsRadius()
         calendarSetFirstDay()
         calendarDayBinder()
@@ -129,6 +126,13 @@ class EventDatesPickerFragment :
         set24HourViewOnTimePickers()
         timePickersBehavior()
         saveButtonListener()
+    }
+
+    private fun initDatesPosition() {
+        timeIntervalInput?.let {
+            startDate = Instant.ofEpochMilli(it.start).atZone(ZoneId.systemDefault()).toLocalDate()
+            endDate = Instant.ofEpochMilli(it.end).atZone(ZoneId.systemDefault()).toLocalDate()
+        }
     }
 
     private fun set24HourViewOnTimePickers() {
@@ -164,16 +168,19 @@ class EventDatesPickerFragment :
                     DATE_PICKER_EDIT_RESULT_KEY,
                     Bundle().apply {
                         putParcelable(NEW_DATE_KEY, timeIntervalOutput)
-                        putParcelable(OLD_DATE_KEY, timeIntervalInput)
+                        putParcelable(OLD_DATE_KEY, it)
                     })
-                onBackPressed()
             }
-            timeIntervalOutput?.let {
-                parentFragmentManager.setFragmentResult(DATE_PICKER_ADD_RESULT_KEY, Bundle().apply {
-                    putParcelable(NEW_DATE_KEY, timeIntervalOutput)
-                })
-                onBackPressed()
+            if (timeIntervalInput == null) {
+                timeIntervalOutput?.let {
+                    parentFragmentManager.setFragmentResult(
+                        DATE_PICKER_ADD_RESULT_KEY,
+                        Bundle().apply {
+                            putParcelable(NEW_DATE_KEY, it)
+                        })
+                }
             }
+            onBackPressed()
         }
     }
 
@@ -184,7 +191,7 @@ class EventDatesPickerFragment :
         startDate?.let {
             startTime = GregorianCalendar(
                 it.year,
-                it.monthValue,
+                it.monthValue - 1,
                 it.dayOfMonth,
                 binding.timePickerStart.hour,
                 binding.timePickerEnd.minute
@@ -192,7 +199,7 @@ class EventDatesPickerFragment :
             if (endDate != null) {
                 endTime = GregorianCalendar(
                     endDate.year,
-                    endDate.monthValue,
+                    endDate.monthValue - 1,
                     endDate.dayOfMonth,
                     binding.timePickerEnd.hour,
                     binding.timePickerEnd.minute
@@ -200,7 +207,7 @@ class EventDatesPickerFragment :
             } else {
                 endTime = GregorianCalendar(
                     it.year,
-                    it.monthValue,
+                    it.monthValue - 1,
                     it.dayOfMonth,
                     binding.timePickerEnd.hour,
                     binding.timePickerEnd.minute
@@ -320,8 +327,6 @@ class EventDatesPickerFragment :
         (activity as BottomNavigation).showBottomNavigation()
         (activity as BottomNavigationActivity).setSupportActionBar(null)
     }
-
-    override fun onBackPressed(): Boolean = presenter.onBackPressed()
 
     private fun saveButtonEnabled() {
         // Enable save button if a day is selected or no date is selected.

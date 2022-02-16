@@ -130,7 +130,7 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
         localRouter.navigateTo(screens.participantPickerTypeSelection(pickedParticipantsIds))
     }
 
-    fun pickDates(timeInterval: TimeInterval?) {
+    fun pickDates() {
         Toast.makeText(ProEventApp.instance, "EventPresenter::pickDates call", Toast.LENGTH_LONG)
             .show()
     }
@@ -195,12 +195,12 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
         }
     }
 
-    fun datePicker(timeInterval: TimeInterval?){
+    fun datePickerFragment(timeInterval: TimeInterval?) {
         localRouter.navigateTo(screens.eventDatesPicker(timeInterval))
     }
 
-    fun addEventDate(timeInterval: TimeInterval?) {
-        localRouter.navigateTo(screens.eventDatesPicker(timeInterval))
+    fun addEventDate(timeInterval: TimeInterval) {
+        addDateItemView(timeInterval)
     }
 
     fun clearDates() {
