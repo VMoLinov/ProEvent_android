@@ -154,7 +154,8 @@ class EventDatesPickerFragment :
             timePickerStart.setOnTimeChangedListener { _, startHour, startMinute ->
                 if (endDate == null) {
                     hourSpinnerEnd.minValue = startHour
-                    minuteSpinnerEnd.minValue = startMinute
+                    minuteSpinnerEnd.minValue =
+                        if (hourSpinnerEnd.value == startHour) startMinute else 0
                 }
             }
         }

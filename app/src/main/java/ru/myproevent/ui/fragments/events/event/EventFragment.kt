@@ -634,10 +634,8 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             binding.noDates.isVisible = false
             presenter.showEditOptions()
             binding.datesContainer.isVisible = true
-            val new: TimeInterval? = bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)
-            val old: TimeInterval? = bundle.getParcelable<TimeInterval>(OLD_DATE_KEY)
-            presenter.removeDate(old!!)
-            presenter.addEventDate(new!!)
+            bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)?.let { presenter.addEventDate(it) }
+            bundle.getParcelable<TimeInterval>(OLD_DATE_KEY)?.let { presenter.removeDate(it) }
         }
 
         parentFragmentManager.setFragmentResultListener(
