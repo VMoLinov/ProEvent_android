@@ -41,7 +41,7 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
 
-    <style name="Example4ToolbarTheme" parent="ThemeOverlay.MaterialComponents.Light">
+    <style name="CalendarToolbarTheme" parent="ThemeOverlay.MaterialComponents.Light">
         <item name="colorControlNormal">@android:color/darker_gray</item>
         <item name="android:background">@color/ProEvent_blue_800</item>
     </style>

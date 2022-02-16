@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:theme="@style/Example4ToolbarTheme"
+            app:theme="@style/CalendarToolbarTheme"
             app:titleTextColor="@color/ProEvent_white"
             tools:background="@color/ProEvent_blue_800" />
 

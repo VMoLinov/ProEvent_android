@@ -55,16 +55,16 @@ class EventDatesPickerFragment :
     private var startDate: LocalDate? = null
     private var endDate: LocalDate? = null
     private val startBackground: GradientDrawable by lazy {
-        requireContext().getDrawableCompat(R.drawable.example_4_continuous_selected_bg_start) as GradientDrawable
+        requireContext().getDrawableCompat(R.drawable.dates_continuous_selected_bg_start) as GradientDrawable
     }
     private val endBackground: GradientDrawable by lazy {
-        requireContext().getDrawableCompat(R.drawable.example_4_continuous_selected_bg_end) as GradientDrawable
+        requireContext().getDrawableCompat(R.drawable.dates_continuous_selected_bg_end) as GradientDrawable
     }
     private val singleBackground: GradientDrawable by lazy {
-        requireContext().getDrawableCompat(R.drawable.example_4_single_selected_bg) as GradientDrawable
+        requireContext().getDrawableCompat(R.drawable.dates_single_selected_bg) as GradientDrawable
     }
     private val todayBackground: GradientDrawable by lazy {
-        requireContext().getDrawableCompat(R.drawable.example_4_today_bg) as GradientDrawable
+        requireContext().getDrawableCompat(R.drawable.dates_today_bg) as GradientDrawable
     }
     private val hourSpinnerEnd: NumberPicker by lazy {
         binding.timePickerEnd.findViewById(
@@ -260,7 +260,7 @@ class EventDatesPickerFragment :
                             }
                             startDate != null && endDate != null && (day.date > startDate && day.date < endDate) -> {
                                 textView.setTextColorRes(R.color.ProEvent_white)
-                                textView.setBackgroundResource(R.drawable.example_4_continuous_selected_bg_middle)
+                                textView.setBackgroundResource(R.drawable.dates_continuous_selected_bg_middle)
                             }
                             day.date == endDate -> {
                                 textView.setTextColorRes(R.color.ProEvent_white)
