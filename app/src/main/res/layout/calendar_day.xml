@@ -10,7 +10,7 @@
      since the view is not square in shape.
      So we set the background on this view which has a margin on all sides instead-->
     <TextView
-        android:id="@+id/exFourDayText"
+        android:id="@+id/dayText"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="2dp"

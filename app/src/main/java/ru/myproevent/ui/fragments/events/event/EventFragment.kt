@@ -294,19 +294,6 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             background.setOnClickListener { presenter.hideDateEditOptions() }
             editDate.setOnClickListener {
                 presenter.editDate(position)
-                // TODO: убрать этот пример
-                parentFragmentManager.setFragmentResult(
-                    DATE_PICKER_EDIT_RESULT_KEY,
-                    Bundle().apply {
-                        putParcelable(
-                            NEW_DATE_KEY,
-                            TimeInterval(12345, 12345)
-                        )
-                        putParcelableArray(
-                            OLD_DATES_KEY,
-                            arrayOf(presenter.pickedDates[position])
-                        )
-                    })
                 presenter.hideDateEditOptions()
             }
             removeDate.setOnClickListener {
@@ -610,6 +597,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
 //                        TimeInterval(6, 6)
                     )
                 )
+                binding.addDate.setOnClickListener { presenter.addEventDate(null) }
             }
         }
     }
@@ -636,8 +624,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             binding.noDates.isVisible = false
             presenter.showEditOptions()
             binding.datesContainer.isVisible = true
-            val newDate = bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)!!
-            presenter.addEventDate(newDate)
+            bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)
         }
 
         parentFragmentManager.setFragmentResultListener(
@@ -647,12 +634,8 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             binding.noDates.isVisible = false
             presenter.showEditOptions()
             binding.datesContainer.isVisible = true
-            bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)?.let { presenter.addEventDate(it) }
-            bundle.getParcelableArray(OLD_DATES_KEY)?.let {
-                for (date in it as Array<TimeInterval>) {
-                    presenter.removeDate(date)
-                }
-            }
+            bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)
+            bundle.getParcelable<TimeInterval>(OLD_DATE_KEY)?.let { presenter.removeDate(it) }
         }
 
         parentFragmentManager.setFragmentResultListener(
@@ -1080,16 +1063,6 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             addMap.setOnClickListener { showMessage("addMap\nДанная возможность пока не доступна") }
             addPoint.setOnClickListener { showMessage("addPoint\nДанная возможность пока не доступна") }
             addParticipant.setOnClickListener { presenter.pickParticipants() }
-            addDate.setOnClickListener {
-                // TODO: убрать этот пример
-                val timeInterval = TimeInterval(1643937476, 1643941090)
-                parentFragmentManager.setFragmentResult(DATE_PICKER_ADD_RESULT_KEY, Bundle().apply {
-                    putParcelable(
-                        NEW_DATE_KEY, timeInterval
-                    )
-                })
-                presenter.addEventDate(timeInterval)
-            }
         }
 
         view.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {

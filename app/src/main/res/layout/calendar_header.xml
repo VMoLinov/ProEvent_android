@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/exFourHeaderText"
+    android:id="@+id/headerText"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
@@ -10,6 +10,6 @@
     android:paddingEnd="16dp"
     android:paddingBottom="10dp"
     android:textColor="@color/ProEvent_blue_800"
-    android:textSize="21sp"
+    android:textSize="@dimen/calendar_month_text_size"
     tools:background="@color/ProEvent_white"
     tools:text="October 2022" />

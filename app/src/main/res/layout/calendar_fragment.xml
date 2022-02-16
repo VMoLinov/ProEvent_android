@@ -10,14 +10,14 @@
     android:theme="@style/Theme.Proevent">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/exFourAppBarLayout"
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/ProEvent_white"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/exFourToolbar"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay"
@@ -36,7 +36,7 @@
             tools:visibility="visible">
 
             <TextView
-                android:id="@+id/exFourStartDateText"
+                android:id="@+id/startDateText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="30dp"
@@ -45,13 +45,13 @@
                 android:textColor="@android:color/darker_gray"
                 android:textSize="26sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/exFourHeaderDivider"
+                app:layout_constraintEnd_toStartOf="@id/headerDivider"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Mon 22 Apr" />
 
             <View
-                android:id="@+id/exFourHeaderDivider"
+                android:id="@+id/headerDivider"
                 android:layout_width="1.5dp"
                 android:layout_height="0dp"
                 android:background="#EAEAEA"
@@ -62,7 +62,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/exFourEndDateText"
+                android:id="@+id/dateText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
@@ -72,7 +72,7 @@
                 android:textSize="26sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/exFourHeaderDivider"
+                app:layout_constraintStart_toEndOf="@id/headerDivider"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Thu 9 May" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -92,11 +92,11 @@
         android:layout_gravity="center_horizontal">
 
         <com.kizitonwose.calendarview.CalendarView
-            android:id="@+id/exFourCalendar"
+            android:id="@+id/calendar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
-            android:paddingHorizontal="30dp"
+            android:paddingHorizontal="@dimen/calendar_padding_horizontal"
             android:paddingBottom="100dp"
             app:cv_dayViewResource="@layout/calendar_day"
             app:cv_monthHeaderResource="@layout/calendar_header" />
@@ -125,7 +125,7 @@
                         android:gravity="center"
                         android:text="@string/dates_start"
                         android:textColor="@color/ProEvent_blue_800"
-                        android:textSize="22sp"
+                        android:textSize="@dimen/time_pickers_header_text_size"
                         android:textStyle="normal" />
 
                     <TextView
@@ -135,7 +135,7 @@
                         android:gravity="center"
                         android:text="@string/dates_end"
                         android:textColor="@color/ProEvent_blue_800"
-                        android:textSize="22sp"
+                        android:textSize="@dimen/time_pickers_header_text_size"
                         android:textStyle="normal" />
                 </LinearLayout>
 
@@ -167,7 +167,7 @@
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/exFourSaveButton"
+                android:id="@+id/saveButton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_gravity="bottom"

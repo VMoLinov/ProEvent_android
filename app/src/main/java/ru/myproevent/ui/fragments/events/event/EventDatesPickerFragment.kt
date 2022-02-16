@@ -1,10 +1,15 @@
 package ru.myproevent.ui.fragments.events.event
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.util.TypedValue
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
@@ -12,21 +17,28 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.core.view.children
-import androidx.fragment.app.Fragment
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.model.DayOwner
 import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
+import moxy.ktx.moxyPresenter
+import ru.myproevent.ProEventApp
 import ru.myproevent.R
 import ru.myproevent.databinding.CalendarDayBinding
 import ru.myproevent.databinding.CalendarFragmentBinding
 import ru.myproevent.databinding.CalendarHeaderBinding
 import ru.myproevent.domain.models.entities.TimeInterval
+import ru.myproevent.domain.utils.DATE_PICKER_ADD_RESULT_KEY
+import ru.myproevent.domain.utils.DATE_PICKER_EDIT_RESULT_KEY
 import ru.myproevent.domain.utils.NEW_DATE_KEY
+import ru.myproevent.domain.utils.OLD_DATE_KEY
 import ru.myproevent.ui.BackButtonListener
 import ru.myproevent.ui.activity.BottomNavigationActivity
+import ru.myproevent.ui.fragments.BaseMvpFragment
+import ru.myproevent.ui.presenters.events.event.datespicker.EventDatesPickerPresenter
+import ru.myproevent.ui.presenters.events.event.datespicker.EventDatesPickerView
 import ru.myproevent.ui.presenters.main.BottomNavigation
 import ru.myproevent.ui.presenters.main.RouterProvider
 import java.time.DayOfWeek
@@ -36,19 +48,17 @@ import java.time.format.TextStyle
 import java.time.temporal.WeekFields
 import java.util.*
 
-class EventDatesPickerFragment : Fragment(), BackButtonListener {
-
-    private var _binding: CalendarFragmentBinding? = null
-    private val binding get() = _binding!!
-    private val timeIntervalOutput: MutableList<TimeInterval> = mutableListOf()
+class EventDatesPickerFragment :
+    BaseMvpFragment<CalendarFragmentBinding>(CalendarFragmentBinding::inflate),
+    EventDatesPickerView, BackButtonListener {
+    private var timeIntervalInput: TimeInterval? = null
+    private var timeIntervalOutput: TimeInterval? = null
     private val today = LocalDate.now()
     private var startDate: LocalDate? = null
     private var endDate: LocalDate? = null
-    private val router by lazy { (parentFragment as RouterProvider).router }
     private val startBackground: GradientDrawable by lazy {
         requireContext().getDrawableCompat(R.drawable.example_4_continuous_selected_bg_start) as GradientDrawable
     }
-
     private val endBackground: GradientDrawable by lazy {
         requireContext().getDrawableCompat(R.drawable.example_4_continuous_selected_bg_end) as GradientDrawable
     }
@@ -58,53 +68,150 @@ class EventDatesPickerFragment : Fragment(), BackButtonListener {
     private val todayBackground: GradientDrawable by lazy {
         requireContext().getDrawableCompat(R.drawable.example_4_today_bg) as GradientDrawable
     }
+    private val hourSpinnerEnd: NumberPicker by lazy {
+        binding.timePickerEnd.findViewById(
+            Resources.getSystem().getIdentifier("hour", "id", "android")
+        )
+    }
+    private val minuteSpinnerEnd: NumberPicker by lazy {
+        binding.timePickerEnd.findViewById(
+            Resources.getSystem().getIdentifier("minute", "id", "android")
+        )
+    }
+    override val presenter by moxyPresenter {
+        EventDatesPickerPresenter((parentFragment as RouterProvider).router).apply {
+            ProEventApp.instance.appComponent.inject(this)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.getParcelable<TimeInterval>(NEW_DATE_KEY)?.let {
-            timeIntervalOutput.add(it)
+        arguments?.getParcelable<TimeInterval>(OLD_DATE_KEY)?.let {
+            timeIntervalInput = it
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.calendar_menu, menu)
-        menu.getItem(menu.size() - 1).icon.apply {
+        menu.findItem(R.id.menuItemDelete).icon.apply {
             colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
                 resources.getColor(R.color.ProEvent_white, activity?.theme),
                 BlendModeCompat.SRC_ATOP
             )
         }
-        menu.findItem(R.id.menuItemDelete).setOnMenuItemClickListener {
-            startDate = null
-            endDate = null
-            binding.exFourCalendar.notifyCalendarChanged()
-            saveButtonEnabled()
-            true
-        }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = CalendarFragmentBinding.inflate(inflater, container, false)
-        setHasOptionsMenu(true)
-        return binding.root
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+            R.id.menuItemDelete -> {
+                startDate = null
+                endDate = null
+                timePickersBehavior()
+                binding.calendar.notifyCalendarChanged()
+                saveButtonEnabled()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
         calculateCellsRadius()
         calendarSetFirstDay()
-        binding.timePickerStart.setIs24HourView(true)
-        binding.timePickerEnd.setIs24HourView(true)
         calendarDayBinder()
         calendarMonthHeader()
+        set24HourViewOnTimePickers()
+        timePickersBehavior()
+        saveButtonListener()
+    }
+
+    private fun set24HourViewOnTimePickers() {
+        with(binding) {
+            timePickerStart.setIs24HourView(true)
+            timePickerEnd.setIs24HourView(true)
+        }
+    }
+
+    private fun timePickersBehavior() {
+        with(binding) {
+            minuteSpinnerEnd.minValue = 0
+            hourSpinnerEnd.minValue = if (endDate == null) {
+                if (hourSpinnerEnd.value <= timePickerEnd.hour) {
+                    minuteSpinnerEnd.minValue = timePickerStart.minute
+                }
+                timePickerStart.hour
+            } else 0
+            timePickerStart.setOnTimeChangedListener { _, startHour, startMinute ->
+                if (endDate == null) {
+                    hourSpinnerEnd.minValue = startHour
+                    minuteSpinnerEnd.minValue = startMinute
+                }
+            }
+        }
+    }
+
+    private fun saveButtonListener() {
+        binding.saveButton.setOnClickListener {
+            collectData()
+            timeIntervalInput?.let {
+                parentFragmentManager.setFragmentResult(
+                    DATE_PICKER_EDIT_RESULT_KEY,
+                    Bundle().apply {
+                        putParcelable(NEW_DATE_KEY, timeIntervalOutput)
+                        putParcelable(OLD_DATE_KEY, timeIntervalInput)
+                    })
+                onBackPressed()
+            }
+            timeIntervalOutput?.let {
+                parentFragmentManager.setFragmentResult(DATE_PICKER_ADD_RESULT_KEY, Bundle().apply {
+                    putParcelable(NEW_DATE_KEY, timeIntervalOutput)
+                })
+                onBackPressed()
+            }
+        }
+    }
+
+    private fun collectData() {
+        val endDate = endDate
+        val startTime: Long?
+        val endTime: Long?
+        startDate?.let {
+            startTime = GregorianCalendar(
+                it.year,
+                it.monthValue,
+                it.dayOfMonth,
+                binding.timePickerStart.hour,
+                binding.timePickerEnd.minute
+            ).timeInMillis
+            if (endDate != null) {
+                endTime = GregorianCalendar(
+                    endDate.year,
+                    endDate.monthValue,
+                    endDate.dayOfMonth,
+                    binding.timePickerEnd.hour,
+                    binding.timePickerEnd.minute
+                ).timeInMillis
+            } else {
+                endTime = GregorianCalendar(
+                    it.year,
+                    it.monthValue,
+                    it.dayOfMonth,
+                    binding.timePickerEnd.hour,
+                    binding.timePickerEnd.minute
+                ).timeInMillis
+            }
+            timeIntervalOutput = TimeInterval(startTime, endTime)
+        }
     }
 
     private fun calendarMonthHeader() {
-        binding.exFourCalendar.monthHeaderBinder = object :
+        binding.calendar.monthHeaderBinder = object :
             MonthHeaderFooterBinder<MonthViewContainer> {
             override fun create(view: View) = MonthViewContainer(view)
             override fun bind(container: MonthViewContainer, month: CalendarMonth) {
@@ -120,11 +227,11 @@ class EventDatesPickerFragment : Fragment(), BackButtonListener {
     }
 
     private fun calendarDayBinder() {
-        binding.exFourCalendar.dayBinder = object : DayBinder<DayViewContainer> {
+        binding.calendar.dayBinder = object : DayBinder<DayViewContainer> {
             override fun create(view: View) = DayViewContainer(view)
             override fun bind(container: DayViewContainer, day: CalendarDay) {
                 container.day = day
-                val textView = container.binding.exFourDayText
+                val textView = container.binding.dayText
                 textView.text = null
                 textView.background = null
                 val startDate = startDate
@@ -164,8 +271,8 @@ class EventDatesPickerFragment : Fragment(), BackButtonListener {
     }
 
     private fun calculateCellsRadius() {
-        binding.exFourCalendar.post {
-            val radius = ((binding.exFourCalendar.width / COLUMNS_COUNT) / RADIUS_RATIO).toFloat()
+        binding.calendar.post {
+            val radius = ((binding.calendar.width / COLUMNS_COUNT) / RADIUS_RATIO).toFloat()
             startBackground.setCornerRadius(topLeft = radius, bottomLeft = radius)
             endBackground.setCornerRadius(topRight = radius, bottomRight = radius)
             singleBackground.cornerRadius = radius
@@ -183,10 +290,10 @@ class EventDatesPickerFragment : Fragment(), BackButtonListener {
             }
         }
         val currentMonth = YearMonth.now()
-        binding.exFourCalendar.setup(
+        binding.calendar.setup(
             currentMonth, currentMonth.plusMonths(MONTH_TO_GO), daysOfWeek.first()
         )
-        binding.exFourCalendar.scrollToMonth(currentMonth)
+        binding.calendar.scrollToMonth(currentMonth)
     }
 
     override fun onStart() {
@@ -199,7 +306,7 @@ class EventDatesPickerFragment : Fragment(), BackButtonListener {
         }
         (activity as BottomNavigation).hideBottomNavigation()
         (activity as BottomNavigationActivity).apply {
-            setSupportActionBar(binding.exFourToolbar)
+            setSupportActionBar(binding.toolbar)
             supportActionBar?.apply {
                 setDisplayHomeAsUpEnabled(true)
                 setHomeAsUpIndicator(closeIndicator)
@@ -208,45 +315,21 @@ class EventDatesPickerFragment : Fragment(), BackButtonListener {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
+    override fun onStop() {
+        super.onStop()
         (activity as BottomNavigation).showBottomNavigation()
         (activity as BottomNavigationActivity).setSupportActionBar(null)
     }
 
-    override fun onBackPressed(): Boolean {
-        router.exit()
-        return true
-    }
-
-
-//    private fun constraintsPickerDialog(dialogBinding: DialogDatePickerBinding) {
-//        with(dialogBinding) {
-//            val calendar: Calendar = Calendar.getInstance(Locale.getDefault())
-////            datePicker.minDate = calendar.timeInMillis
-//            calendar.add(Calendar.YEAR, YEARS_TO_GO)
-////            datePicker.maxDate = calendar.timeInMillis
-//            val is24hours = android.text.format.DateFormat.is24HourFormat(requireContext())
-////            timePicker.setIs24HourView(is24hours)
-//        }
-//    private fun convertLongToString(timeStamp: Long): String {
-//        val date = Date(timeStamp)
-//        val formatter: DateFormat = SimpleDateFormat("dd MMMM yyyy HH:mm", Locale.getDefault())
-//        formatter.timeZone = TimeZone.getTimeZone("UTC")
-//        return formatter.format(date)
-//    private fun onDateSet(dayOfMonth: Int, month: Int, year: Int, hour: Int, minute: Int): Long {
-//        val calendar: Calendar = GregorianCalendar(year, month, dayOfMonth, hour, minute)
-//        return calendar.timeInMillis
+    override fun onBackPressed(): Boolean = presenter.onBackPressed()
 
     private fun saveButtonEnabled() {
         // Enable save button if a day is selected or no date is selected.
-        binding.exFourSaveButton.isEnabled = startDate != null
+        binding.saveButton.isEnabled = startDate != null
     }
 
     inner class DayViewContainer(view: View) : ViewContainer(view) {
         lateinit var day: CalendarDay // Will be set when this container is bound.
-
         val binding = CalendarDayBinding.bind(view)
 
         init {
@@ -260,13 +343,15 @@ class EventDatesPickerFragment : Fragment(), BackButtonListener {
                         if (date < startDate || endDate != null) {
                             startDate = date
                             endDate = null
+                            timePickersBehavior()
                         } else if (date != startDate) {
                             endDate = date
+                            timePickersBehavior()
                         }
                     } else {
                         startDate = date
                     }
-                    this@EventDatesPickerFragment.binding.exFourCalendar.notifyCalendarChanged()
+                    this@EventDatesPickerFragment.binding.calendar.notifyCalendarChanged()
                     saveButtonEnabled()
                 }
             }
@@ -274,7 +359,7 @@ class EventDatesPickerFragment : Fragment(), BackButtonListener {
     }
 
     inner class MonthViewContainer(view: View) : ViewContainer(view) {
-        val textView = CalendarHeaderBinding.bind(view).exFourHeaderText
+        val textView = CalendarHeaderBinding.bind(view).headerText
     }
 
     companion object {
@@ -284,7 +369,7 @@ class EventDatesPickerFragment : Fragment(), BackButtonListener {
         private const val YEARS_TO_GO = 5L
         private const val MONTH_TO_GO = 12L * YEARS_TO_GO
         fun newInstance(dates: TimeInterval?) = EventDatesPickerFragment().apply {
-            arguments = Bundle().apply { putParcelable(NEW_DATE_KEY, dates) }
+            arguments = Bundle().apply { putParcelable(OLD_DATE_KEY, dates) }
         }
     }
 
@@ -295,14 +380,6 @@ class EventDatesPickerFragment : Fragment(), BackButtonListener {
 
     private fun TextView.setTextColorRes(@ColorRes color: Int) =
         setTextColor(context.getColorCompat(color))
-
-    private fun View.makeVisible() {
-        visibility = View.VISIBLE
-    }
-
-    private fun View.makeInVisible() {
-        visibility = View.INVISIBLE
-    }
 
     private fun GradientDrawable.setCornerRadius(
         topLeft: Float = 0F,
