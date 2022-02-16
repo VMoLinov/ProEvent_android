@@ -294,6 +294,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             background.setOnClickListener { presenter.hideDateEditOptions() }
             editDate.setOnClickListener {
                 presenter.editDate(position)
+                presenter.datePickerFragment(presenter.pickedDates[position])
                 presenter.hideDateEditOptions()
             }
             removeDate.setOnClickListener {
@@ -597,7 +598,6 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
 //                        TimeInterval(6, 6)
                     )
                 )
-                binding.addDate.setOnClickListener { presenter.addEventDate(null) }
             }
         }
     }
@@ -624,7 +624,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             binding.noDates.isVisible = false
             presenter.showEditOptions()
             binding.datesContainer.isVisible = true
-            bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)
+            bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)?.let { presenter.addEventDate(it) }
         }
 
         parentFragmentManager.setFragmentResultListener(
@@ -634,7 +634,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             binding.noDates.isVisible = false
             presenter.showEditOptions()
             binding.datesContainer.isVisible = true
-            bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)
+            bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)?.let { presenter.addEventDate(it) }
             bundle.getParcelable<TimeInterval>(OLD_DATE_KEY)?.let { presenter.removeDate(it) }
         }
 
@@ -693,21 +693,19 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
         binding.noParticipants.isVisible = false
     }
 
-    private fun getDateTime(timestamp: Long): String? {
-        try {
-            val sdf = SimpleDateFormat("dd.MM (E) HH:mm")
-            val netDate = Date(timestamp * 1000)
-            return sdf.format(netDate).uppercase()
+    private fun getDateTime(timestamp: Long): String {
+        return try {
+            val sdf = SimpleDateFormat("dd.MM (E) HH:mm", Locale.getDefault())
+            val netDate = Date(timestamp)
+            sdf.format(netDate).uppercase()
         } catch (e: Exception) {
-            return e.toString()
+            e.toString()
         }
     }
 
     override fun addDateItemView(timeInterval: TimeInterval, position: Int) {
         val view = ItemEventDateBinding.inflate(layoutInflater)
-        view.editDate.setOnClickListener {
-            presenter.openDateEditOptions(timeInterval)
-        }
+        view.editDate.setOnClickListener { presenter.openDateEditOptions(timeInterval) }
         val startDate = getDateTime(timeInterval.start)
         val endDate = getDateTime(timeInterval.end)
         view.dateValue.text = getString(R.string.event_date_template, startDate, endDate)
@@ -887,6 +885,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             }
             datesBar.setOnClickListener { expandDates.performClick() }
             datesBarHitArea.setOnClickListener { datesBar.performClick() }
+            addDate.setOnClickListener { presenter.datePickerFragment(null) }
 
             scroll.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
                 Log.d("[MYLOG]", "setOnScrollChangeListener")

@@ -184,7 +184,7 @@ class EventDatesPickerFragment :
         startDate?.let {
             startTime = GregorianCalendar(
                 it.year,
-                it.monthValue,
+                it.monthValue - 1,
                 it.dayOfMonth,
                 binding.timePickerStart.hour,
                 binding.timePickerEnd.minute
@@ -192,7 +192,7 @@ class EventDatesPickerFragment :
             if (endDate != null) {
                 endTime = GregorianCalendar(
                     endDate.year,
-                    endDate.monthValue,
+                    endDate.monthValue - 1,
                     endDate.dayOfMonth,
                     binding.timePickerEnd.hour,
                     binding.timePickerEnd.minute
@@ -200,7 +200,7 @@ class EventDatesPickerFragment :
             } else {
                 endTime = GregorianCalendar(
                     it.year,
-                    it.monthValue,
+                    it.monthValue - 1,
                     it.dayOfMonth,
                     binding.timePickerEnd.hour,
                     binding.timePickerEnd.minute
