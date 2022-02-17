@@ -49,23 +49,37 @@ import java.util.*
 class EventDatesPickerFragment :
     BaseMvpFragment<CalendarFragmentBinding>(CalendarFragmentBinding::inflate),
     EventDatesPickerView, BackButtonListener {
+
+    companion object {
+        private const val CELL_TEXT_SIZE = 15f
+        private const val COLUMNS_COUNT = 7
+        private const val RADIUS_RATIO = 20
+        private const val YEARS_TO_GO = 5L
+        private const val MONTH_TO_GO = 12L * YEARS_TO_GO
+        fun newInstance(dates: TimeInterval?) = EventDatesPickerFragment().apply {
+            arguments = Bundle().apply { putParcelable(OLD_DATE_KEY, dates) }
+        }
+    }
+
+    override val presenter by moxyPresenter {
+        EventDatesPickerPresenter((parentFragment as RouterProvider).router).apply {
+            ProEventApp.instance.appComponent.inject(this)
+        }
+    }
+
     private var timeIntervalInput: TimeInterval? = null
     private var timeIntervalOutput: TimeInterval? = null
     private val today = LocalDate.now()
     private var startDate: LocalDate? = null
     private var endDate: LocalDate? = null
-    private val startBackground: GradientDrawable by lazy {
-        requireContext().getDrawableCompat(R.drawable.dates_continuous_selected_bg_start) as GradientDrawable
-    }
-    private val endBackground: GradientDrawable by lazy {
-        requireContext().getDrawableCompat(R.drawable.dates_continuous_selected_bg_end) as GradientDrawable
-    }
-    private val singleBackground: GradientDrawable by lazy {
-        requireContext().getDrawableCompat(R.drawable.dates_single_selected_bg) as GradientDrawable
-    }
-    private val todayBackground: GradientDrawable by lazy {
-        requireContext().getDrawableCompat(R.drawable.dates_today_bg) as GradientDrawable
-    }
+    private val startBackground: GradientDrawable by
+    lazy { requireContext().getDrawableCompat(R.drawable.dates_continuous_selected_bg_start) as GradientDrawable }
+    private val endBackground: GradientDrawable by
+    lazy { requireContext().getDrawableCompat(R.drawable.dates_continuous_selected_bg_end) as GradientDrawable }
+    private val singleBackground: GradientDrawable by
+    lazy { requireContext().getDrawableCompat(R.drawable.dates_single_selected_bg) as GradientDrawable }
+    private val todayBackground: GradientDrawable by
+    lazy { requireContext().getDrawableCompat(R.drawable.dates_today_bg) as GradientDrawable }
     private val hourSpinnerEnd: NumberPicker by lazy {
         binding.timePickerEnd.findViewById(
             Resources.getSystem().getIdentifier("hour", "id", "android")
@@ -76,15 +90,24 @@ class EventDatesPickerFragment :
             Resources.getSystem().getIdentifier("minute", "id", "android")
         )
     }
-    override val presenter by moxyPresenter {
-        EventDatesPickerPresenter((parentFragment as RouterProvider).router).apply {
-            ProEventApp.instance.appComponent.inject(this)
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.getParcelable<TimeInterval>(OLD_DATE_KEY)?.let { timeIntervalInput = it }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
+        initDatesPosition()
+        calculateCellsRadius()
+        calendarSetFirstDay()
+        calendarDayBinder()
+        calendarMonthHeader()
+        set24HourViewOnTimePickers()
+        timePickersNotify()
+        timePickersListeners()
+        saveButtonListener()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -97,6 +120,25 @@ class EventDatesPickerFragment :
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        val closeIndicator = requireContext().getDrawableCompat(R.drawable.ic_close)?.apply {
+            colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
+                resources.getColor(R.color.ProEvent_white, activity?.theme),
+                BlendModeCompat.SRC_ATOP
+            )
+        }
+        (activity as BottomNavigation).hideBottomNavigation()
+        (activity as BottomNavigationActivity).apply {
+            setSupportActionBar(binding.toolbar)
+            supportActionBar?.apply {
+                setDisplayHomeAsUpEnabled(true)
+                setHomeAsUpIndicator(closeIndicator)
+                title = getString(R.string.dates_range_pick)
+            }
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
@@ -106,32 +148,111 @@ class EventDatesPickerFragment :
             R.id.menuItemDelete -> {
                 startDate = null
                 endDate = null
-                timePickersBehavior()
+                timePickersNotify()
                 binding.calendar.notifyCalendarChanged()
-                saveButtonEnabled()
+                saveButtonCheckEnable()
                 return true
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setHasOptionsMenu(true)
-        initDatesPosition()
-        calculateCellsRadius()
-        calendarSetFirstDay()
-        calendarDayBinder()
-        calendarMonthHeader()
-        set24HourViewOnTimePickers()
-        timePickersBehavior()
-        saveButtonListener()
+    override fun onStop() {
+        super.onStop()
+        (activity as BottomNavigation).showBottomNavigation()
+        (activity as BottomNavigationActivity).setSupportActionBar(null)
     }
 
     private fun initDatesPosition() {
         timeIntervalInput?.let {
             startDate = Instant.ofEpochMilli(it.start).atZone(ZoneId.systemDefault()).toLocalDate()
             endDate = Instant.ofEpochMilli(it.end).atZone(ZoneId.systemDefault()).toLocalDate()
+        }
+    }
+
+    private fun calculateCellsRadius() {
+        binding.calendar.post {
+            val radius = ((binding.calendar.width / COLUMNS_COUNT) / RADIUS_RATIO).toFloat()
+            startBackground.setCornerRadius(topLeft = radius, bottomLeft = radius)
+            endBackground.setCornerRadius(topRight = radius, bottomRight = radius)
+            singleBackground.cornerRadius = radius
+            todayBackground.cornerRadius = radius
+        }
+    }
+
+    private fun calendarSetFirstDay() {
+        // Set the First day of week depending on Locale
+        val daysOfWeek = daysOfWeekFromLocale()
+        binding.legendLayout.root.children.forEachIndexed { index, currentView ->
+            (currentView as TextView).apply {
+                text = daysOfWeek[index].getDisplayName(TextStyle.SHORT, Locale.getDefault())
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, CELL_TEXT_SIZE)
+            }
+        }
+        val currentMonth = YearMonth.now()
+        binding.calendar.setup(
+            currentMonth, currentMonth.plusMonths(MONTH_TO_GO), daysOfWeek.first()
+        )
+        binding.calendar.scrollToMonth(currentMonth)
+    }
+
+    private fun calendarDayBinder() {
+        binding.calendar.dayBinder = object : DayBinder<DayViewContainer> {
+            override fun create(view: View) = DayViewContainer(view)
+            override fun bind(container: DayViewContainer, day: CalendarDay) {
+                container.day = day
+                val textView = container.binding.dayText
+                textView.text = null
+                textView.background = null
+                val startDate = startDate
+                val endDate = endDate
+                if (day.owner == DayOwner.THIS_MONTH) {
+                    textView.text = day.day.toString()
+                    if (day.date.isBefore(today)) {
+                        textView.setTextColorRes(R.color.ProEvent_blue_300)
+                    } else {
+                        when {
+                            startDate == day.date && endDate == null -> {
+                                textView.setTextColorRes(R.color.ProEvent_white)
+                                textView.background = singleBackground
+                            }
+                            day.date == startDate -> {
+                                textView.setTextColorRes(R.color.ProEvent_white)
+                                textView.background = startBackground
+                            }
+                            startDate != null && endDate != null && (day.date > startDate && day.date < endDate) -> {
+                                textView.setTextColorRes(R.color.ProEvent_white)
+                                textView.setBackgroundResource(R.drawable.dates_continuous_selected_bg_middle)
+                            }
+                            day.date == endDate -> {
+                                textView.setTextColorRes(R.color.ProEvent_white)
+                                textView.background = endBackground
+                            }
+                            day.date == today -> {
+                                textView.setTextColorRes(R.color.ProEvent_blue_600)
+                                textView.background = todayBackground
+                            }
+                            else -> textView.setTextColorRes(R.color.ProEvent_blue_600)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun calendarMonthHeader() {
+        binding.calendar.monthHeaderBinder = object :
+            MonthHeaderFooterBinder<MonthViewContainer> {
+            override fun create(view: View) = MonthViewContainer(view)
+            override fun bind(container: MonthViewContainer, month: CalendarMonth) {
+                val monthTitle =
+                    if (month.year == today.year) {
+                        resources.getStringArray(R.array.dates_months)[month.month]
+                    } else {
+                        "${resources.getStringArray(R.array.dates_months)[month.month]} ${month.year}"
+                    }
+                container.textView.text = monthTitle
+            }
         }
     }
 
@@ -142,7 +263,7 @@ class EventDatesPickerFragment :
         }
     }
 
-    private fun timePickersBehavior() {
+    private fun timePickersNotify() {
         with(binding) {
             minuteSpinnerEnd.minValue = 0
             hourSpinnerEnd.minValue = if (endDate == null) {
@@ -151,12 +272,21 @@ class EventDatesPickerFragment :
                 }
                 timePickerStart.hour
             } else 0
+        }
+    }
+
+    private fun timePickersListeners() {
+        with(binding) {
             timePickerStart.setOnTimeChangedListener { _, startHour, startMinute ->
                 if (endDate == null) {
                     hourSpinnerEnd.minValue = startHour
                     minuteSpinnerEnd.minValue =
                         if (hourSpinnerEnd.value == startHour) startMinute else 0
                 }
+            }
+            timePickerEnd.setOnTimeChangedListener { _, endHour, _ ->
+                minuteSpinnerEnd.minValue =
+                    if (endHour == timePickerStart.hour) timePickerStart.minute else 0
             }
         }
     }
@@ -218,118 +348,7 @@ class EventDatesPickerFragment :
         }
     }
 
-    private fun calendarMonthHeader() {
-        binding.calendar.monthHeaderBinder = object :
-            MonthHeaderFooterBinder<MonthViewContainer> {
-            override fun create(view: View) = MonthViewContainer(view)
-            override fun bind(container: MonthViewContainer, month: CalendarMonth) {
-                val monthTitle =
-                    if (month.year == today.year) {
-                        resources.getStringArray(R.array.dates_months)[month.month]
-                    } else {
-                        "${resources.getStringArray(R.array.dates_months)[month.month]} ${month.year}"
-                    }
-                container.textView.text = monthTitle
-            }
-        }
-    }
-
-    private fun calendarDayBinder() {
-        binding.calendar.dayBinder = object : DayBinder<DayViewContainer> {
-            override fun create(view: View) = DayViewContainer(view)
-            override fun bind(container: DayViewContainer, day: CalendarDay) {
-                container.day = day
-                val textView = container.binding.dayText
-                textView.text = null
-                textView.background = null
-                val startDate = startDate
-                val endDate = endDate
-                if (day.owner == DayOwner.THIS_MONTH) {
-                    textView.text = day.day.toString()
-                    if (day.date.isBefore(today)) {
-                        textView.setTextColorRes(R.color.ProEvent_blue_300)
-                    } else {
-                        when {
-                            startDate == day.date && endDate == null -> {
-                                textView.setTextColorRes(R.color.ProEvent_white)
-                                textView.background = singleBackground
-                            }
-                            day.date == startDate -> {
-                                textView.setTextColorRes(R.color.ProEvent_white)
-                                textView.background = startBackground
-                            }
-                            startDate != null && endDate != null && (day.date > startDate && day.date < endDate) -> {
-                                textView.setTextColorRes(R.color.ProEvent_white)
-                                textView.setBackgroundResource(R.drawable.dates_continuous_selected_bg_middle)
-                            }
-                            day.date == endDate -> {
-                                textView.setTextColorRes(R.color.ProEvent_white)
-                                textView.background = endBackground
-                            }
-                            day.date == today -> {
-                                textView.setTextColorRes(R.color.ProEvent_blue_600)
-                                textView.background = todayBackground
-                            }
-                            else -> textView.setTextColorRes(R.color.ProEvent_blue_600)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun calculateCellsRadius() {
-        binding.calendar.post {
-            val radius = ((binding.calendar.width / COLUMNS_COUNT) / RADIUS_RATIO).toFloat()
-            startBackground.setCornerRadius(topLeft = radius, bottomLeft = radius)
-            endBackground.setCornerRadius(topRight = radius, bottomRight = radius)
-            singleBackground.cornerRadius = radius
-            todayBackground.cornerRadius = radius
-        }
-    }
-
-    private fun calendarSetFirstDay() {
-        // Set the First day of week depending on Locale
-        val daysOfWeek = daysOfWeekFromLocale()
-        binding.legendLayout.root.children.forEachIndexed { index, currentView ->
-            (currentView as TextView).apply {
-                text = daysOfWeek[index].getDisplayName(TextStyle.SHORT, Locale.getDefault())
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, CELL_TEXT_SIZE)
-            }
-        }
-        val currentMonth = YearMonth.now()
-        binding.calendar.setup(
-            currentMonth, currentMonth.plusMonths(MONTH_TO_GO), daysOfWeek.first()
-        )
-        binding.calendar.scrollToMonth(currentMonth)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val closeIndicator = requireContext().getDrawableCompat(R.drawable.ic_close)?.apply {
-            colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                resources.getColor(R.color.ProEvent_white, activity?.theme),
-                BlendModeCompat.SRC_ATOP
-            )
-        }
-        (activity as BottomNavigation).hideBottomNavigation()
-        (activity as BottomNavigationActivity).apply {
-            setSupportActionBar(binding.toolbar)
-            supportActionBar?.apply {
-                setDisplayHomeAsUpEnabled(true)
-                setHomeAsUpIndicator(closeIndicator)
-                title = getString(R.string.dates_range_pick)
-            }
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        (activity as BottomNavigation).showBottomNavigation()
-        (activity as BottomNavigationActivity).setSupportActionBar(null)
-    }
-
-    private fun saveButtonEnabled() {
+    private fun saveButtonCheckEnable() {
         // Enable save button if a day is selected or no date is selected.
         binding.saveButton.isEnabled = startDate != null
     }
@@ -349,16 +368,16 @@ class EventDatesPickerFragment :
                         if (date < startDate || endDate != null) {
                             startDate = date
                             endDate = null
-                            timePickersBehavior()
+                            timePickersNotify()
                         } else if (date != startDate) {
                             endDate = date
-                            timePickersBehavior()
+                            timePickersNotify()
                         }
                     } else {
                         startDate = date
                     }
                     this@EventDatesPickerFragment.binding.calendar.notifyCalendarChanged()
-                    saveButtonEnabled()
+                    saveButtonCheckEnable()
                 }
             }
         }
@@ -366,17 +385,6 @@ class EventDatesPickerFragment :
 
     inner class MonthViewContainer(view: View) : ViewContainer(view) {
         val textView = CalendarHeaderBinding.bind(view).headerText
-    }
-
-    companion object {
-        private const val CELL_TEXT_SIZE = 15f
-        private const val COLUMNS_COUNT = 7
-        private const val RADIUS_RATIO = 20
-        private const val YEARS_TO_GO = 5L
-        private const val MONTH_TO_GO = 12L * YEARS_TO_GO
-        fun newInstance(dates: TimeInterval?) = EventDatesPickerFragment().apply {
-            arguments = Bundle().apply { putParcelable(OLD_DATE_KEY, dates) }
-        }
     }
 
     private fun Context.getDrawableCompat(@DrawableRes drawable: Int) =
