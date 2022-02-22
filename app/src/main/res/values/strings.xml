@@ -163,8 +163,8 @@
     <string name="code_must_contain_4_digits">Код должен содержать 4 цифры</string>
     <string name="code_must_contain_only_digits">Код должен содержать только цифровые символы</string>
     <string name="error_occurred">Произошла ошибка: %s</string>
-    <string name="password_requirements_01">Пароль должен содержать минимум одну кириллическую букву, одну цифру, иметь длину не менее 6 символов.\n</string>
-    <string name="password_requirements_02">Пароль должен содержать:\n• минимум одну кириллическую букву\n• одну цифру\n• иметь длину не менее 6 символов.</string>
+    <string name="password_requirements_01">Пароль должен содержать минимум одну латинскую букву, одну цифру, иметь длину не менее 6 символов и не содержать кириллических букв.\n</string>
+    <string name="password_requirements_02">Пароль должен содержать:\n• минимум одну латинскую букву\n• одну цифру\n• иметь длину не менее 6 символов\n• не содержать кириллических букв.</string>
     <string name="find_contact_error_message">Значение должно быть числом обозначающее id пользователя</string>
     <string name="default_map_location">Красная площадь</string>
     <string name="geolocation_access_message">Для опредления вашего местоположения нужен доступ к геолокации</string>

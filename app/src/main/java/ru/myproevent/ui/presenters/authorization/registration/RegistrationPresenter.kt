@@ -16,8 +16,10 @@ import javax.inject.Inject
 val VALID_EMAIL_ADDRESS_REGEX: Pattern =
     Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE)
 val VALID_PASSWORD_REGEX: Pattern =
-    Pattern.compile("^(?=.*[0-9])(?=.*[а-яё])(?=\\S+\$).{6,}\$", Pattern.CASE_INSENSITIVE)
-
+    Pattern.compile(
+        "^(?=.*[0-9])(?=.*[a-z])(?=\\S+\$)(?!.*[А-ЯЁа-яё]).{6,}\$",
+        Pattern.CASE_INSENSITIVE
+    )
 class RegistrationPresenter(localRouter: Router) : BaseMvpPresenter<RegistrationView>(localRouter) {
     private inner class SignupObserver : DisposableCompletableObserver() {
         override fun onComplete() {
