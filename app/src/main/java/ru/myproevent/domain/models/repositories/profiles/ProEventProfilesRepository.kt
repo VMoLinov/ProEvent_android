@@ -10,14 +10,12 @@ import ru.myproevent.domain.models.ProfileIdListDto
 import ru.myproevent.domain.models.entities.Contact
 import ru.myproevent.domain.models.entities.Contact.Status
 import ru.myproevent.domain.models.entities.Profile
-import ru.myproevent.domain.models.repositories.images.IImagesRepository
 import ru.myproevent.domain.utils.toContact
 import ru.myproevent.domain.utils.toProfile
 import javax.inject.Inject
 
 class ProEventProfilesRepository @Inject constructor(
-    private val api: IProEventDataSource,
-    private val imagesRepository: IImagesRepository
+    private val api: IProEventDataSource
 ) : IProEventProfilesRepository {
 
     override fun getProfile(id: Long): Single<Profile?> = Single.fromCallable {

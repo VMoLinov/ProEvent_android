@@ -195,6 +195,10 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
         }
     }
 
+    fun datePickerFragment(timeInterval: TimeInterval?) {
+        localRouter.navigateTo(screens.eventDatesPicker(timeInterval))
+    }
+
     fun addEventDate(timeInterval: TimeInterval) {
         addDateItemView(timeInterval)
     }

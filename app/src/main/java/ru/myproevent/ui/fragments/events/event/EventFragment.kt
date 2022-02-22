@@ -55,7 +55,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.properties.Delegates
 
-
 // TODO: отрефакторить - разбить этот божественный класс на кастомные вьющки и утилиты
 class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding::inflate),
     EventView, BackButtonListener {
@@ -86,14 +85,14 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
         with(binding) {
             //searchEdit.hideKeyBoard() // TODO: нужно вынести это в вызов предществующий данному, чтобы тень при скрытии клавиатуры отображалась корректно
             shadow.visibility = VISIBLE
-            copyEvent.visibility = VISIBLE
+            eventBar.copy.visibility = VISIBLE
             if (event!!.ownerUserId == presenter.loginRepository.getLocalId()) {
                 if (event!!.status != Event.Status.CANCELLED && event!!.status != Event.Status.COMPLETED) {
                     // TODO: появляется только если прошла последняя дата проведения, данные об этом получать с сервера
                     // finishEvent.visibility = VISIBLE
-                    cancelEvent.visibility = VISIBLE
+                    eventBar.cancelBar.visibility = VISIBLE
                 } else {
-                    deleteEvent.visibility = VISIBLE
+                    eventBar.deleteBar.visibility = VISIBLE
                 }
             }
         }
@@ -103,10 +102,10 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
         isFilterOptionsExpanded = false
         with(binding) {
             shadow.visibility = GONE
-            copyEvent.visibility = GONE
-            finishEvent.visibility = GONE
-            cancelEvent.visibility = GONE
-            deleteEvent.visibility = GONE
+            eventBar.copy.visibility = GONE
+            eventBar.finish.visibility = GONE
+            eventBar.cancelBar.visibility = GONE
+            eventBar.deleteBar.visibility = GONE
         }
     }
 
@@ -210,14 +209,14 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
     }
 
     // TODO: отрефакторить так чтобы showEditOptions вызывался только из presenter-a
-    override fun showEditOptions() = with(binding) {
+    override fun showEditOptions() = with(binding.eventBar) {
         save.visibility = VISIBLE
         saveHitArea.visibility = VISIBLE
         cancel.visibility = VISIBLE
         cancelHitArea.visibility = VISIBLE
     }
 
-    override fun hideEditOptions() = with(binding) {
+    override fun hideEditOptions() = with(binding.eventBar) {
         save.visibility = GONE
         saveHitArea.visibility = GONE
         cancel.visibility = GONE
@@ -273,7 +272,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
         }
     }
 
-    override fun showActionOptions() = with(binding) {
+    override fun showActionOptions() = with(binding.eventBar) {
         actionMenu.visibility = VISIBLE
     }
 
@@ -295,20 +294,8 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             background.setOnClickListener { presenter.hideDateEditOptions() }
             editDate.setOnClickListener {
                 presenter.editDate(position)
-                // TODO: убрать этот пример
-                parentFragmentManager.setFragmentResult(
-                    DATE_PICKER_EDIT_RESULT_KEY,
-                    Bundle().apply {
-                        putParcelable(
-                            NEW_DATE_KEY,
-                            TimeInterval(12345, 12345)
-                        )
-                        putParcelableArray(
-                            OLD_DATES_KEY,
-                            arrayOf(presenter.pickedDates[position])
-                        )
-                    })
                 presenter.hideDateEditOptions()
+                presenter.datePickerFragment(presenter.pickedDates[position])
             }
             removeDate.setOnClickListener {
                 presenter.removeDate(position)
@@ -316,7 +303,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             }
         }
 
-        dateEditOptionsDialogView!!.dateEditOptions.post {
+        dateEditOptionsDialogView!!.dateEditOptions.run {
             val dateEditOptionsPosition = IntArray(2)
             with(binding.datesContainer.getChildAt(position + 1)) {
                 getLocationOnScreen(dateEditOptionsPosition)
@@ -425,7 +412,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
 
     override fun cancelEdit(): Unit = with(binding) {
         if (event == null) {
-            back.performClick()
+            eventBar.back.performClick()
         } else {
             noDates.isVisible = true
             noParticipants.isVisible = true
@@ -637,8 +624,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             binding.noDates.isVisible = false
             presenter.showEditOptions()
             binding.datesContainer.isVisible = true
-            val newDate = bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)!!
-            presenter.addEventDate(newDate)
+            bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)?.let { presenter.addEventDate(it) }
         }
 
         parentFragmentManager.setFragmentResultListener(
@@ -649,11 +635,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             presenter.showEditOptions()
             binding.datesContainer.isVisible = true
             bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)?.let { presenter.addEventDate(it) }
-            bundle.getParcelableArray(OLD_DATES_KEY)?.let {
-                for (date in it as Array<TimeInterval>) {
-                    presenter.removeDate(date)
-                }
-            }
+            bundle.getParcelable<TimeInterval>(OLD_DATE_KEY)?.let { presenter.removeDate(it) }
         }
 
         parentFragmentManager.setFragmentResultListener(
@@ -686,7 +668,6 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             presenter.showEditOptions()
         }
 
-
         arguments?.getParcelable<Event>(EVENT_ARG)?.let { event = it }
     }
 
@@ -712,21 +693,19 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
         binding.noParticipants.isVisible = false
     }
 
-    private fun getDateTime(timestamp: Long): String? {
-        try {
-            val sdf = SimpleDateFormat("dd.MM (E) HH:mm")
-            val netDate = Date(timestamp * 1000)
-            return sdf.format(netDate).uppercase()
+    private fun getDateTime(timestamp: Long): String {
+        return try {
+            val sdf = SimpleDateFormat("dd.MM (E) HH:mm", Locale.getDefault())
+            val netDate = Date(timestamp)
+            sdf.format(netDate).uppercase()
         } catch (e: Exception) {
-            return e.toString()
+            e.toString()
         }
     }
 
     override fun addDateItemView(timeInterval: TimeInterval, position: Int) {
         val view = ItemEventDateBinding.inflate(layoutInflater)
-        view.editDate.setOnClickListener {
-            presenter.openDateEditOptions(timeInterval)
-        }
+        view.editDate.setOnClickListener { presenter.openDateEditOptions(timeInterval) }
         val startDate = getDateTime(timeInterval.start)
         val endDate = getDateTime(timeInterval.end)
         view.dateValue.text = getString(R.string.event_date_template, startDate, endDate)
@@ -758,12 +737,12 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
 
     private fun saveCallback(successEvent: Event?) {
         isSaveAvailable = true
-        binding.save.setTextColor(resources.getColor(R.color.ProEvent_bright_orange_500))
+        binding.eventBar.save.setTextColor(resources.getColor(R.color.ProEvent_bright_orange_500))
         if (successEvent == null) {
             return
         }
         event = successEvent
-        binding.title.text = successEvent.name
+        binding.eventBar.title.text = successEvent.name
         presenter.cancelEdit()
         presenter.lockEdit()
         presenter.hideEditOptions()
@@ -786,7 +765,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             viewOnClick = binding.editEventImage,
             pickImageCallback = { pickImageActivityContract, cropActivityResultLauncher ->
                 registerForActivityResult(pickImageActivityContract) {
-                    it.let { uri -> cropActivityResultLauncher.launch(uri) }
+                    it?.let { uri -> cropActivityResultLauncher.launch(uri) }
                 }
             },
             cropCallback = { cropActivityContract ->
@@ -824,8 +803,13 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
         statusBarHeight = extractStatusBarHeight()
         initImageCrop()
         with(binding) {
-            event?.let { title.text = it.name }
-            title.setOnClickListener {
+            event?.let {
+                eventBar.title.text = it.name
+            }
+            if (event == null) {
+                eventBar.title.text = resources.getString(R.string.event_new_event)
+            }
+            eventBar.title.setOnClickListener {
                 // TODO: отрефакторить
                 // https://github.com/terrakok/Cicerone/issues/106
                 val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
@@ -835,19 +819,19 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
                 }
                 ft.addToBackStack(null)
                 val newFragment: DialogFragment =
-                    ProEventMessageDialog.newInstance(title.text.toString())
+                    ProEventMessageDialog.newInstance(eventBar.title.text.toString())
                 newFragment.show(ft, "dialog")
             }
-            actionMenu.setOnClickListener {
+            eventBar.actionMenu.setOnClickListener {
                 if (!isFilterOptionsExpanded) {
                     showFilterOptions()
                 } else {
                     hideFilterOptions()
                 }
             }
-            actionMenuHitArea.setOnClickListener {
-                if (actionMenu.isVisible) {
-                    actionMenu.performClick()
+            eventBar.actionMenuHitArea.setOnClickListener {
+                if (eventBar.actionMenu.isVisible) {
+                    eventBar.actionMenu.performClick()
                 }
             }
             shadow.setOnClickListener { hideFilterOptions() }
@@ -901,6 +885,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             }
             datesBar.setOnClickListener { expandDates.performClick() }
             datesBarHitArea.setOnClickListener { datesBar.performClick() }
+            addDate.setOnClickListener { presenter.datePickerFragment(null) }
 
             scroll.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
                 Log.d("[MYLOG]", "setOnScrollChangeListener")
@@ -967,12 +952,12 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
                     presenter.hideAbsoluteBar()
                 }
             }
-            save.setOnClickListener {
+            eventBar.save.setOnClickListener {
                 if (!isSaveAvailable) {
                     return@setOnClickListener
                 }
                 isSaveAvailable = false
-                save.setTextColor(resources.getColor(R.color.PE_blue_gray_03))
+                eventBar.save.setTextColor(resources.getColor(R.color.PE_blue_gray_03))
                 val editedEvent = event?.copy()
                 editedEvent?.let { it ->
                     it.name = nameEdit.text.toString()
@@ -982,7 +967,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
                     presenter.editEvent(it, ::saveCallback)
                 } ?: run { addEvent(null) }
             }
-            saveHitArea.setOnClickListener { save.performClick() }
+            eventBar.saveHitArea.setOnClickListener { eventBar.save.performClick() }
             defaultKeyListener = nameEdit.keyListener
             if (event != null) {
                 setViewValues(event!!)
@@ -993,7 +978,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
                     showKeyBoard(nameEdit)
                 }
                 nameEdit.addTextChangedListener {
-                    title.text = it
+                    eventBar.title.text = it
                 }
                 lockEdit(
                     locationInput, locationEdit,
@@ -1015,36 +1000,36 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
                 showEditOptions()
                 unlockLocationEdit()
             }
-            back.setOnClickListener { presenter.onBackPressed() }
-            backHitArea.setOnClickListener { back.performClick() }
-            cancel.setOnClickListener {
+            eventBar.back.setOnClickListener { presenter.onBackPressed() }
+            eventBar.backHitArea.setOnClickListener { eventBar.back.performClick() }
+            eventBar.cancel.setOnClickListener {
                 presenter.cancelEdit()
                 if (event != null) {
                     presenter.lockEdit()
-                    presenter.showMessage(getString(R.string.changes_canceled))
+                    presenter.showMessage("Изменения отменены")
                     presenter.hideEditOptions()
                 }
             }
-            cancelHitArea.setOnClickListener { cancel.performClick() }
-            copyEvent.setOnTouchListener(filterOptionTouchListener)
-            copyEvent.setOnClickListener {
+            eventBar.cancelHitArea.setOnClickListener { eventBar.cancel.performClick() }
+            eventBar.copy.setOnTouchListener(filterOptionTouchListener)
+            eventBar.copy.setOnClickListener {
                 event?.let {
                     presenter.copyEvent(it)
                 }
                 hideFilterOptions()
             }
-            finishEvent.setOnTouchListener(filterOptionTouchListener)
-            finishEvent.setOnClickListener {
+            eventBar.finish.setOnTouchListener(filterOptionTouchListener)
+            eventBar.finish.setOnClickListener {
                 presenter.finishEvent(event!!)
                 hideFilterOptions()
             }
-            cancelEvent.setOnTouchListener(filterOptionTouchListener)
-            cancelEvent.setOnClickListener {
+            eventBar.cancelBar.setOnTouchListener(filterOptionTouchListener)
+            eventBar.cancelBar.setOnClickListener {
                 presenter.cancelEvent(event!!)
                 hideFilterOptions()
             }
-            deleteEvent.setOnTouchListener(filterOptionTouchListener)
-            deleteEvent.setOnClickListener {
+            eventBar.deleteBar.setOnTouchListener(filterOptionTouchListener)
+            eventBar.deleteBar.setOnClickListener {
                 presenter.deleteEvent(event!!)
                 hideFilterOptions()
             }
@@ -1062,7 +1047,6 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
                 getString(R.string.event_fragment_some_text),
                 R.drawable.ic_add
             )
-
             editDescription.setOnClickListener {
                 if (!isDescriptionExpanded()) {
                     expandDescription.performClick()
@@ -1078,15 +1062,6 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             addMap.setOnClickListener { showMessage("addMap\nДанная возможность пока не доступна") }
             addPoint.setOnClickListener { showMessage("addPoint\nДанная возможность пока не доступна") }
             addParticipant.setOnClickListener { presenter.pickParticipants() }
-            addDate.setOnClickListener {
-                presenter.pickDates()
-                // TODO: убрать этот пример
-                parentFragmentManager.setFragmentResult(DATE_PICKER_ADD_RESULT_KEY, Bundle().apply {
-                    putParcelable(
-                        NEW_DATE_KEY, TimeInterval(1643937476, 1643941090)
-                    )
-                })
-            }
         }
 
         view.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {

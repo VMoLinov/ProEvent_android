@@ -16,4 +16,7 @@
     <dimen name="progress_bar_height">100dp</dimen>
     <dimen name="progress_bar_width">100dp</dimen>
     <dimen name="email_padding_left">16dp</dimen>
+    <dimen name="calendar_padding_horizontal">30dp</dimen>
+    <dimen name="calendar_month_text_size">21sp</dimen>
+    <dimen name="time_pickers_header_text_size">22sp</dimen>
 </resources>

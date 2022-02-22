@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ProEvent_white">
+
+    <include
+        android:id="@+id/datesBar"
+        layout="@layout/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_max="360dp" />
+
+    <LinearLayout
+        android:id="@+id/nameInputContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="16dp"
+        android:maxWidth="320dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/datesBar">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="4dp"
+            android:text="@string/dates_start"
+            android:textColor="@color/ProEvent_bright_orange_500"
+            android:textSize="16sp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/beginInput"
+            style="@style/ProEventRWTextInputLayoutStyle"
+            app:endIconDrawable="@drawable/ic_calendar"
+            app:endIconMode="custom">
+
+            <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
+                android:id="@+id/beginEdit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:maxLength="320"
+                android:textColorHint="@color/ProEvent_blue_600"
+                android:textIsSelectable="true"
+                tools:text="29 января в 10:00" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="4dp"
+            android:text="@string/dates_end"
+            android:textColor="@color/ProEvent_bright_orange_500"
+            android:textSize="16sp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/endInput"
+            style="@style/ProEventRWTextInputLayoutStyle"
+            app:endIconDrawable="@drawable/ic_calendar"
+            app:endIconMode="custom">
+
+            <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
+                android:id="@+id/endEdit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:maxLength="320"
+                android:textColorHint="@color/ProEvent_blue_600"
+                android:textIsSelectable="true"
+                tools:text="30 января в 02:00" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/repeatText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="4dp"
+                android:labelFor="@id/repeatEdit"
+                android:textColor="@color/ProEvent_bright_orange_500"
+                android:textSize="16sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/repeatInput"
+                style="@style/ProEventAutoCompleteTextStyle">
+
+                <AutoCompleteTextView
+                    android:id="@+id/repeatEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:ellipsize="end"
+                    android:inputType="none"
+                    android:maxLines="1"
+                    tools:text="Не повторять" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/repeatContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="4dp"
+                android:textColor="@color/ProEvent_bright_orange_500"
+                android:textSize="16sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/repeatStartInput"
+                style="@style/ProEventRWTextInputLayoutStyle"
+                app:endIconDrawable="@drawable/ic_calendar"
+                app:endIconMode="custom">
+
+                <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
+                    android:id="@+id/repeatStartEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clickable="false"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:maxLength="320"
+                    android:textColorHint="@color/ProEvent_blue_600"
+                    android:textIsSelectable="true"
+                    tools:text="2 февраля" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="4dp"
+                android:textColor="@color/ProEvent_bright_orange_500"
+                android:textSize="16sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/repeatEndInput"
+                style="@style/ProEventRWTextInputLayoutStyle"
+                app:endIconDrawable="@drawable/ic_calendar"
+                app:endIconMode="custom">
+
+                <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
+                    android:id="@+id/repeatEndEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clickable="false"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:maxLength="320"
+                    android:textColorHint="@color/ProEvent_blue_600"
+                    android:textIsSelectable="true"
+                    tools:text="6 февраля" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
