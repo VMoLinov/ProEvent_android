@@ -53,6 +53,7 @@ class ContactAddPresenter(localRouter: Router) : BaseMvpPresenter<ContactAddView
     private var isSearchMode = true
 
     fun findContact(email: String) {
+        val email = email.trim()
         if (!emailIsCorrect(email)) {
             viewState.showMessage(getString(R.string.incorrect_email))
             return
