@@ -1,5 +1,6 @@
 package ru.myproevent.domain.models.repositories.profiles
 
+import android.util.Log
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -52,6 +53,14 @@ class ProEventProfilesRepository @Inject constructor(
                     .toContact(Status.fromString(contactDto.status))
             }
             throw HttpException(response)
+        }.subscribeOn(Schedulers.io())
+    }
+
+    override fun searchProfiles(search: String): Single<List<Profile>> {
+        return Single.fromCallable {
+            val response = api.searchProfiles(search).execute()
+            if (!response.isSuccessful) throw HttpException(response)
+            return@fromCallable response.body()!!.map {it.toProfile()}
         }.subscribeOn(Schedulers.io())
     }
 
