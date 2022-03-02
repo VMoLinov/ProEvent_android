@@ -124,6 +124,11 @@ class ProEventLoginRepository @Inject constructor(
         api.setNewPassword(NewPasswordBody(code, email.lowercase(Locale.getDefault()), password))
             .subscribeOn(Schedulers.io())
 
+
+    override fun inviteUser(email: String): Completable {
+        return api.inviteUser(email).subscribeOn(Schedulers.io())
+    }
+
     private fun decodeJWT(str: String): String {
         val decodedBytes: ByteArray = Base64.decode(str, Base64.URL_SAFE)
         return String(decodedBytes, Charsets.UTF_8)

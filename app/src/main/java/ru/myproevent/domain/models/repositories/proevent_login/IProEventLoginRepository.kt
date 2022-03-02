@@ -16,4 +16,5 @@ interface IProEventLoginRepository {
     fun setNewPassword(code: Int, email: String, password: String): Completable
     fun saveFirebaseToken(token: String): Completable
     fun deleteFirebaseToken(token: String): Completable
+    fun inviteUser(email: String): Completable
 }

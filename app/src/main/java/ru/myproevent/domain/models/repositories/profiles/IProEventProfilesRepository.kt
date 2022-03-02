@@ -11,4 +11,5 @@ interface IProEventProfilesRepository {
     fun saveProfile(profile: Profile): Completable
     fun getProfile(id: Long): Single<Profile?>
     fun getContact(contactDto: ContactDto): Single<Contact>
+    fun searchProfiles(search: String): Single<List<Profile>>
 }
