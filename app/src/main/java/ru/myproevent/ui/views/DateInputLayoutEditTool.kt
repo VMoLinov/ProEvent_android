@@ -8,37 +8,39 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import ru.myproevent.ProEventApp
 import ru.myproevent.R
-import ru.myproevent.domain.utils.GlideLoader
 import ru.myproevent.ui.fragments.settings.ProEventDatePickerDialog
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DateInputLayoutEditTool:TextInputLayoutEditTool {
+class DateInputLayoutEditTool : TextInputLayoutEditTool {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     private val calendar: Calendar = Calendar.getInstance()
     var currYear: Int = calendar.get(Calendar.YEAR)
     var currMonth: Int = calendar.get(Calendar.MONTH)
     var currDay: Int = calendar.get(Calendar.DAY_OF_MONTH)
     private var dateEditClickListener: OnClickListener? = null
-    var firstTime=true
+    var firstTime = true
 
-    override fun setRedacting(){
+    override fun setRedacting() {
         textEdit?.isFocusableInTouchMode = false
         textEdit?.requestFocus()
         textEdit?.setOnClickListener(dateEditClickListener)
-        if(firstTime || endIconDrawable?.isVisible?:false) textEdit?.performClick()
-        firstTime=false
+        if (firstTime || endIconDrawable?.isVisible ?: false) textEdit?.performClick()
+        firstTime = false
         textEdit?.visibility = VISIBLE
         endIconMode = END_ICON_NONE
     }
 
-    fun setDialogDate(parentFragmentManager:FragmentManager):View.OnClickListener{
-         val dateEditClickListener = View.OnClickListener {
+    fun setDialogDate(parentFragmentManager: FragmentManager): View.OnClickListener {
+        val dateEditClickListener = View.OnClickListener {
             // TODO: отрефакторить
             // https://github.com/terrakok/Cicerone/issues/106
 
@@ -78,17 +80,17 @@ class DateInputLayoutEditTool:TextInputLayoutEditTool {
                     }
                 }
             newFragment.show(ft, "dialog")
-             endIconMode = END_ICON_NONE
+            endIconMode = END_ICON_NONE
         }
-        this.dateEditClickListener=dateEditClickListener
+        this.dateEditClickListener = dateEditClickListener
         return dateEditClickListener
     }
 
-     override fun setRedacting(isEdited:Boolean):TextInputLayoutEditTool{
-        if(isEdited) {
-                setRedacting()
-        }else {
-            firstTime=true
+    override fun setRedacting(isEdited: Boolean): TextInputLayoutEditTool {
+        if (isEdited) {
+            setRedacting()
+        } else {
+            firstTime = true
             setEditListeners(textEdit!!, actOnClick!!)
         }
         return this

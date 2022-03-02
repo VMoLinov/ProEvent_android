@@ -8,28 +8,32 @@ import android.view.inputmethod.InputMethodManager
 import com.google.android.material.textfield.TextInputLayout
 import ru.myproevent.R
 
-open class TextInputLayoutEditTool: TextInputLayout {
+open class TextInputLayoutEditTool : TextInputLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
-    private var defaultKeyListener: KeyListener?=null
-    protected var textEdit: KeyboardAwareTextInputEditText?=null
-    protected var actOnClick:((id:Int)->Unit)?=null
+    private var defaultKeyListener: KeyListener? = null
+    protected var textEdit: KeyboardAwareTextInputEditText? = null
+    protected var actOnClick: ((id: Int) -> Unit)? = null
 
-    fun setEditListeners(textEdit: KeyboardAwareTextInputEditText, actOnClick:(id:Int)->Unit) {
+    fun setEditListeners(textEdit: KeyboardAwareTextInputEditText, actOnClick: (id: Int) -> Unit) {
         this.actOnClick = actOnClick
-        this.textEdit=textEdit
+        this.textEdit = textEdit
         endIconMode = END_ICON_CUSTOM
         endIconDrawable = context.getDrawable(R.drawable.ic_edit)
         textEdit.isFocusableInTouchMode = false
-        defaultKeyListener=textEdit.keyListener
+        defaultKeyListener = textEdit.keyListener
         textEdit.keyListener = null
-        setEndIconOnClickListener {actOnClick(id)}
+        setEndIconOnClickListener { actOnClick(id) }
     }
 
-    protected open fun setRedacting(){
-        textEdit?.let {textEdit->
+    protected open fun setRedacting() {
+        textEdit?.let { textEdit ->
             textEdit.isFocusableInTouchMode = true
             textEdit.keyListener = defaultKeyListener
             textEdit.requestFocus()
@@ -47,12 +51,12 @@ open class TextInputLayoutEditTool: TextInputLayout {
         imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
     }
 
-    open fun setRedacting(isEdited:Boolean):TextInputLayoutEditTool{
-        if(isEdited) {
+    open fun setRedacting(isEdited: Boolean): TextInputLayoutEditTool {
+        if (isEdited) {
             if (textEdit?.keyListener == null)
                 setRedacting()
-        }else if(textEdit?.keyListener != null)
-            setEditListeners(textEdit!!,actOnClick!!)
+        } else if (textEdit?.keyListener != null)
+            setEditListeners(textEdit!!, actOnClick!!)
         return this
     }
 }

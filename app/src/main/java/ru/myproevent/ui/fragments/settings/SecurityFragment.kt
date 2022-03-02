@@ -15,13 +15,12 @@ import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.R
 import ru.myproevent.databinding.FragmentSecurityBinding
-import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.Suggestion
+import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.ui.fragments.BaseMvpFragment
 import ru.myproevent.ui.presenters.main.RouterProvider
 import ru.myproevent.ui.presenters.settings.security.SecurityPresenter
 import ru.myproevent.ui.presenters.settings.security.SecurityView
-import ru.myproevent.ui.views.KeyboardAwareTextInputEditText
 
 // TODO: рефакторинг: Данный фрагмент во многом копирует AccountFragment. Вынести общее в абстрактынй класс
 class SecurityFragment : BaseMvpFragment<FragmentSecurityBinding>(FragmentSecurityBinding::inflate),

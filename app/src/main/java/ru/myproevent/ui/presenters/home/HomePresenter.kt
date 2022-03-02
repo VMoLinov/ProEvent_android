@@ -12,4 +12,13 @@ class HomePresenter(localRouter: Router) : BaseMvpPresenter<HomeView>(localRoute
     fun getId(): String = loginRepository.getLocalId().toString()
 
     fun getToken(): String = loginRepository.getLocalToken().toString()
+
+    fun registerToken(token: String?) {
+        token?.let {
+            loginRepository.saveFirebaseToken(token)
+                .observeOn(uiScheduler)
+                .subscribe()
+                .disposeOnDestroy()
+        }
+    }
 }

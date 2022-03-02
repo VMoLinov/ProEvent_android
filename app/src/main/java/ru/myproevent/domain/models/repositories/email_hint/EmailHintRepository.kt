@@ -4,7 +4,6 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import ru.myproevent.domain.models.HintRequest
 import ru.myproevent.domain.models.IEmailHintDataSource
-import ru.myproevent.domain.models.IProEventDataSource
 import ru.myproevent.domain.models.Suggestion
 import javax.inject.Inject
 

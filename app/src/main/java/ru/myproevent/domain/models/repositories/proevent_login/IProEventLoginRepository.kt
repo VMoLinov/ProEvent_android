@@ -1,8 +1,6 @@
 package ru.myproevent.domain.models.repositories.proevent_login
 
 import io.reactivex.Completable
-import io.reactivex.Single
-import ru.myproevent.domain.models.Suggestion
 
 interface IProEventLoginRepository {
     fun getLocalToken(): String?
@@ -16,5 +14,6 @@ interface IProEventLoginRepository {
     fun refreshCheckCode(email: String): Completable
     fun resetPassword(email: String): Completable
     fun setNewPassword(code: Int, email: String, password: String): Completable
-
+    fun saveFirebaseToken(token: String): Completable
+    fun deleteFirebaseToken(token: String): Completable
 }
