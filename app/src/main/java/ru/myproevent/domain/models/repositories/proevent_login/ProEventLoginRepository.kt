@@ -2,7 +2,6 @@ package ru.myproevent.domain.models.repositories.proevent_login
 
 import android.util.Base64
 import io.reactivex.Completable
-import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import ru.myproevent.R
 import ru.myproevent.domain.models.*
@@ -134,4 +133,10 @@ class ProEventLoginRepository @Inject constructor(
         val decodedBytes: ByteArray = Base64.decode(str, Base64.URL_SAFE)
         return String(decodedBytes, Charsets.UTF_8)
     }
+
+    override fun saveFirebaseToken(token: String) = api.registerFirebaseToken(TokenBody(token))
+        .subscribeOn(Schedulers.io())
+
+    override fun deleteFirebaseToken(token: String) =
+        api.deleteFirebaseToken(TokenBody(token)).subscribeOn(Schedulers.io())
 }

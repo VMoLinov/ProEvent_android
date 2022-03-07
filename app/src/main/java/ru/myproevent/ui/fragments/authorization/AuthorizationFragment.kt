@@ -11,6 +11,7 @@ import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.R
 import ru.myproevent.databinding.FragmentAuthorizationBinding
+import ru.myproevent.domain.models.Suggestion
 import ru.myproevent.domain.utils.pxValue
 import ru.myproevent.ui.fragments.BaseMvpFragment
 import ru.myproevent.ui.presenters.authorization.authorization.AuthorizationPresenter
@@ -18,7 +19,6 @@ import ru.myproevent.ui.presenters.authorization.authorization.AuthorizationView
 import ru.myproevent.ui.presenters.main.BottomNavigation
 import ru.myproevent.ui.presenters.main.RouterProvider
 import ru.myproevent.ui.presenters.main.Tab
-import ru.myproevent.domain.models.Suggestion
 
 class AuthorizationFragment :
     BaseMvpFragment<FragmentAuthorizationBinding>(FragmentAuthorizationBinding::inflate),

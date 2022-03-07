@@ -1,6 +1,5 @@
 package ru.myproevent.ui.presenters.settings.account
 
-import moxy.viewstate.strategy.alias.AddToEnd
 import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.Skip
 import ru.myproevent.domain.models.entities.Profile
