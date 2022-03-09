@@ -14,10 +14,7 @@ import ru.myproevent.domain.models.entities.Contact
 import ru.myproevent.domain.models.entities.Event
 import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.entities.TimeInterval
-import ru.myproevent.domain.utils.CONTACTS_KEY
-import ru.myproevent.domain.utils.PARTICIPANTS_PICKER_RESULT_KEY
-import ru.myproevent.domain.utils.PARTICIPANT_ID_KEY
-import ru.myproevent.domain.utils.PARTICIPANT_TO_REMOVE_ID_RESULT_KEY
+import ru.myproevent.domain.utils.*
 import ru.myproevent.ui.BackButtonListener
 import ru.myproevent.ui.fragments.BaseMvpFragment
 import ru.myproevent.ui.adapters.event_items.EventScreenRVAdapter
@@ -47,6 +44,27 @@ class EventFragmentNew : BaseMvpFragment<FragmentEventBinding>(FragmentEventBind
             this
         ) { _, bundle ->
             presenter.removeParticipant(bundle.getLong(PARTICIPANT_ID_KEY))
+        }
+
+        parentFragmentManager.setFragmentResultListener(
+            DATE_PICKER_ADD_RESULT_KEY,
+            this
+        ) { _, bundle ->
+//            binding.noDates.isVisible = false
+//            presenter.showEditOptions()
+//            binding.datesContainer.isVisible = true
+            bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)?.let { presenter.addEventDate(it) }
+        }
+
+        parentFragmentManager.setFragmentResultListener(
+            DATE_PICKER_EDIT_RESULT_KEY,
+            this
+        ) { _, bundle ->
+//            binding.noDates.isVisible = false
+//            presenter.showEditOptions()
+//            binding.datesContainer.isVisible = true
+            bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)?.let { presenter.addEventDate(it) }
+            bundle.getParcelable<TimeInterval>(OLD_DATE_KEY)?.let { presenter.removeDate(it) }
         }
     }
 

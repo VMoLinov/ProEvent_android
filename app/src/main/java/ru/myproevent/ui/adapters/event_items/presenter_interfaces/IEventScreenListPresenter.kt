@@ -8,7 +8,7 @@ interface IEventScreenListPresenter {
     val proeventTextFormItemPresenter: IItemPresenter<IProeventTextFormItemView>
     val proeventFormsHeaderItemPresenter: IFormsHeaderItemPresenter
     val participantItemPresenter: IItemPresenter<IParticipantItemView>
-    val eventDateItemPresenter: IItemPresenter<IEventDateItemView>
+    val eventDateItemPresenter: IEventDateItemPresenter
     val noItemsPlaceholderItemPresenter: IItemPresenter<INoItemsPlaceholderItemView>
     val textBoxPresenter: IItemPresenter<ITextBoxItemView>
     fun getCount(): Int

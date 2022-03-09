@@ -5,4 +5,6 @@ import ru.myproevent.ui.presenters.IItemView
 interface IEventDateItemView: IItemView {
     fun setStartDate(timestamp: Long)
     fun setEndDate(timestamp: Long)
+    fun setAsExpired(isExpired: Boolean)
+    fun setEditOption(isEditAvailable: Boolean)
 }
