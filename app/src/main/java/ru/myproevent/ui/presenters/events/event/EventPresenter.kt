@@ -8,6 +8,11 @@ import com.github.terrakok.cicerone.Router
 import ru.myproevent.ProEventApp
 import ru.myproevent.R
 import ru.myproevent.domain.models.entities.*
+import ru.myproevent.R
+import ru.myproevent.domain.models.entities.Address
+import ru.myproevent.domain.models.entities.Event
+import ru.myproevent.domain.models.entities.Profile
+import ru.myproevent.domain.models.entities.TimeInterval
 import ru.myproevent.domain.models.repositories.events.IProEventEventsRepository
 import ru.myproevent.domain.models.repositories.images.IImagesRepository
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
@@ -628,12 +633,12 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
             .observeOn(uiScheduler)
             .subscribe({
                 callback?.invoke(it)
-                viewState.showMessage("Мероприятие создано")
+                viewState.showMessage(getString(R.string.event_created))
                 viewState.hideEditOptions()
                 viewState.enableActionOptions()
             }, {
                 callback?.invoke(null)
-                viewState.showMessage("ПРОИЗОШЛА ОШИБКА: ${it.message}")
+                viewState.showMessage(getString(R.string.error_occurred, it.message))
             }).disposeOnDestroy()
     }
 
@@ -644,10 +649,10 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
             .observeOn(uiScheduler)
             .subscribe({
                 callback?.invoke(event)
-                viewState.showMessage("Изменения сохранены")
+                viewState.showMessage(getString(R.string.changes_saved))
             }, {
                 callback?.invoke(null)
-                viewState.showMessage("ПРОИЗОШЛА ОШИБКА: ${it.message}")
+                viewState.showMessage(getString(R.string.error_occurred, it.message))
             }).disposeOnDestroy()
     }
 
@@ -691,7 +696,7 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
             .subscribe({
                 localRouter.navigateTo(screens.event(it))
             }, {
-                viewState.showMessage("ПРОИЗОШЛА ОШИБКА: ${it.message}")
+                viewState.showMessage(getString(R.string.error_occurred, it.message))
             }).disposeOnDestroy()
     }
 
@@ -800,6 +805,10 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
         }
         viewState.updateEventScreenList()
         viewState.showEditOptions()
+    }
+
+    fun datePickerFragment(timeInterval: TimeInterval?) {
+        localRouter.navigateTo(screens.eventDatesPicker(timeInterval))
     }
 
     fun addEventDate(timeInterval: TimeInterval) {

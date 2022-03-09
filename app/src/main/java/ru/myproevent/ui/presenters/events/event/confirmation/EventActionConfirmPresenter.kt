@@ -1,6 +1,7 @@
 package ru.myproevent.ui.presenters.events.event.confirmation
 
 import com.github.terrakok.cicerone.Router
+import ru.myproevent.R
 import ru.myproevent.domain.models.entities.Event
 import ru.myproevent.domain.models.repositories.events.IProEventEventsRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
@@ -19,13 +20,13 @@ class EventActionConfirmPresenter(localRouter: Router) :
             .observeOn(uiScheduler)
             .subscribe({
                 when (status) {
-                    Event.Status.COMPLETED -> viewState.showMessage("Мероприятие завершено")
-                    Event.Status.CANCELLED -> viewState.showMessage("Мероприятие отменено")
+                    Event.Status.COMPLETED -> viewState.showMessage(getString(R.string.event_finished))
+                    Event.Status.CANCELLED -> viewState.showMessage(getString(R.string.event_canceled))
                 }
                 event.status = status
                 onBackPressed()
             }, {
-                viewState.showMessage("ПРОИЗОШЛА ОШИБКА: ${it.message}")
+                viewState.showMessage(getString(R.string.error_occurred, it.message))
             }).disposeOnDestroy()
         event.status = originalStatus
     }
@@ -35,10 +36,10 @@ class EventActionConfirmPresenter(localRouter: Router) :
             .deleteEvent(event)
             .observeOn(uiScheduler)
             .subscribe({
-                viewState.showMessage("Мероприятие удалено")
+                viewState.showMessage(getString(R.string.event_deleted))
                 localRouter.newRootScreen(screens.events())
             }, {
-                viewState.showMessage("ПРОИЗОШЛА ОШИБКА: ${it.message}")
+                viewState.showMessage(getString(R.string.error_occurred, it.message))
             }).disposeOnDestroy()
     }
 }

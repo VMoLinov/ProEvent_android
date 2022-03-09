@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import ru.myproevent.databinding.DialogProEventMessageBinding
 
-class ProEventMessageDialog:
+class ProEventMessageDialog :
     DialogFragment() {
     private var _view: DialogProEventMessageBinding? = null
     private val view get() = _view!!

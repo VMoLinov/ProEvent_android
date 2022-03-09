@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.widget.Toast
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.databinding.FragmentContactAddBinding
@@ -29,15 +28,10 @@ class ContactAddFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
         super.onViewCreated(view, savedInstanceState)
         searchContact.setOnClickListener {
-            try {
-                presenter.addContact(emailEdit.text.toString().toLong())
-            } catch (e: NumberFormatException) {
-                Toast.makeText(
-                    requireContext(),
-                    "Значение должно быть числом обозначающее id пользователя",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
+            presenter.findContact(emailEdit.text.toString())
+        }
+        inviteContact.setOnClickListener {
+            presenter.inviteContact(emailEdit.text.toString())
         }
         titleButton.setOnClickListener { presenter.onBackPressed() }
     }

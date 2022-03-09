@@ -1,6 +1,7 @@
 package ru.myproevent.ui.presenters.chat.chats_list
 
 import com.github.terrakok.cicerone.Router
+import ru.myproevent.R
 import ru.myproevent.domain.models.entities.Event
 import ru.myproevent.domain.models.repositories.events.IProEventEventsRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
@@ -99,7 +100,12 @@ class ChatsPresenter(localRouter: Router) : BaseMvpPresenter<ChatsView>(localRou
                 viewState.setNoEventsLayoutVisibility(data.isEmpty())
                 eventsListPresenter.setData(data)
             }, {
-                viewState.showMessage("ПРОИЗОШЛА ОШИБКА: ${it.message}")
+                viewState.showMessage(
+                    getString(
+                        R.string.error_occurred,
+                        it.message
+                    )
+                )
             }).disposeOnDestroy()
     }
 

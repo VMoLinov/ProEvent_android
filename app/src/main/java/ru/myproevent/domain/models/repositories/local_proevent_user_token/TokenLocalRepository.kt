@@ -2,10 +2,13 @@ package ru.myproevent.domain.models.repositories.local_proevent_user_token
 
 import android.content.Context
 import ru.myproevent.ProEventApp
+import ru.myproevent.R
+import ru.myproevent.domain.models.repositories.resourceProvider.IResourceProvider
 import javax.inject.Inject
 
-class TokenLocalRepository @Inject constructor() : ITokenLocalRepository {
-    private val localTokenAlias = "ru.proevent_USER_TOKEN"
+class TokenLocalRepository @Inject constructor(private val resourceProvider: IResourceProvider) :
+    ITokenLocalRepository {
+    private val localTokenAlias = resourceProvider.getString(R.string.local_token_alias)
 
     // TODO: SharedPreferences иногда ведёт себя не предсказуемо, может терять значения после закрытия приложения.
     //              Но при этом вновь начинает работать если перезагрузить телефон.
@@ -13,7 +16,7 @@ class TokenLocalRepository @Inject constructor() : ITokenLocalRepository {
     //              не нашёл информации был ли исправлен этот баг в текущей SharedPreferences, поэтому возможно
     //              стоит как-то динамически генерировать имя файла, чтобы оно было уникальным для каждой установки приложения
     val sharedPref = ProEventApp.instance.applicationContext.getSharedPreferences(
-        "ru.proevent_PREFERENCE_FILE", Context.MODE_PRIVATE
+        resourceProvider.getString(R.string.sharedPreference_file), Context.MODE_PRIVATE
     )
 
     private val editor = sharedPref.edit()

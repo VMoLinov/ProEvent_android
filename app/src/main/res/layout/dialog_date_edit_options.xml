@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_gravity="right"
         android:id="@+id/date_edit_options"
         android:layout_width="wrap_content"
         android:layout_height="100dp"
+        android:layout_gravity="end"
         android:background="@drawable/background_rounded"
         android:elevation="10dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/edit_date"
-            fontPath="@string/default_font_bold_path"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="?android:attr/selectableItemBackground"
@@ -24,15 +26,14 @@
             android:insetTop="0dp"
             android:insetRight="0dp"
             android:insetBottom="0dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="60dp"
-            android:text="Изменить"
+            android:paddingStart="20dp"
+            android:paddingEnd="60dp"
+            android:text="@string/event_date_menu_edit"
             android:textColor="@color/ProEvent_blue_800"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/remove_date"
-            fontPath="@string/default_font_bold_path"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="?android:attr/selectableItemBackground"
@@ -42,8 +43,8 @@
             android:insetRight="0dp"
             android:insetBottom="0dp"
             android:paddingHorizontal="20dp"
-            android:text="Удалить"
+            android:text="@string/event_date_menu_delete"
             android:textColor="@color/ProEvent_blue_800"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
     </LinearLayout>
 </FrameLayout>

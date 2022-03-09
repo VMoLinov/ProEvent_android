@@ -2,7 +2,6 @@ package ru.myproevent.ui.fragments.authorization
 
 import android.os.Bundle
 import android.view.View
-import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
@@ -25,10 +24,10 @@ class LoginFragment : BaseMvpFragment<FragmentLoginBinding>(FragmentLoginBinding
             bodySpace.layoutParams = bodySpace.layoutParams.apply { height = availableHeight }
             body.post {
                 val difference = body.height - availableHeight
-                if(difference > pxValue(0f)){
+                if (difference > pxValue(0f)) {
                     logo.isVisible = false
                 }
-                if(difference > pxValue(80f + 48f)){
+                if (difference > pxValue(80f + 48f)) {
                     formTitle.isVisible = false
                 }
             }

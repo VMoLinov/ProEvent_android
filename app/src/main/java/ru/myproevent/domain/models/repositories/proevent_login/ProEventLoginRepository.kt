@@ -4,12 +4,18 @@ import android.util.Base64
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import ru.myproevent.R
 import ru.myproevent.domain.models.*
 import ru.myproevent.domain.models.repositories.local_proevent_user_token.ITokenLocalRepository
-import ru.myproevent.domain.models.repositories.local_proevent_user_token.TokenLocalRepository
+import ru.myproevent.domain.models.repositories.resourceProvider.IResourceProvider
+import java.util.*
 import javax.inject.Inject
 
-class ProEventLoginRepository @Inject constructor(private val api: IProEventDataSource) :
+class ProEventLoginRepository @Inject constructor(
+    private val api: IProEventDataSource,
+    private val tokenLocalRepository: ITokenLocalRepository,
+    private val resourceProvider: IResourceProvider
+) :
     IProEventLoginRepository {
     private var localToken: String? = null
         set(value) {
@@ -28,9 +34,6 @@ class ProEventLoginRepository @Inject constructor(private val api: IProEventData
 
     private var rememberMe = true
 
-    // TODO: вынести в Dagger
-    private val tokenLocalRepository: ITokenLocalRepository = TokenLocalRepository()
-
     override fun getLocalToken(): String? {
         if (localToken != null) {
             return localToken
@@ -46,7 +49,7 @@ class ProEventLoginRepository @Inject constructor(private val api: IProEventData
         var end = token.indexOf('.', start)
         val jSonStr = decodeJWT(token.substring(start, end))
 
-        start = jSonStr.indexOf("sub\":\"") + 6
+        start = jSonStr.indexOf(resourceProvider.getString(R.string.token_sub)) + 6
         end = jSonStr.indexOf(',', start) - 1
 
         return jSonStr.substring(start, end)
@@ -69,7 +72,7 @@ class ProEventLoginRepository @Inject constructor(private val api: IProEventData
         var end = token.indexOf('.', start)
         val jSonStr = decodeJWT(token.substring(start, end))
 
-        start = jSonStr.indexOf("id\":") + 4
+        start = jSonStr.indexOf(resourceProvider.getString(R.string.token_id)) + 4
         end = jSonStr.indexOf(',', start)
         return jSonStr.substring(start, end).toLong()
     }
@@ -77,7 +80,7 @@ class ProEventLoginRepository @Inject constructor(private val api: IProEventData
     // TODO: убрать toLowerCase() для email, когда на сервере пофиксят баг с email чувствительным к регистру
     override fun login(email: String, password: String, rememberMe: Boolean): Completable {
         this.rememberMe = rememberMe
-        return api.login(LoginBody(email.toLowerCase(), password))
+        return api.login(LoginBody(email.lowercase(Locale.getDefault()), password))
             .flatMapCompletable { body ->
                 this.localToken = body.token
                 this.localEmail = email
@@ -94,7 +97,7 @@ class ProEventLoginRepository @Inject constructor(private val api: IProEventData
 
     // TODO: убрать toLowerCase() для email, когда на сервере пофиксят баг с email чувствительным к регистру
     override fun signup(agreement: Boolean, email: String, password: String) =
-        api.signup(SignupBody(agreement, email.toLowerCase(), password))
+        api.signup(SignupBody(agreement, email.lowercase(Locale.getDefault()), password))
             .flatMapCompletable { body ->
                 this.localEmail = email
                 this.localPassword = password
@@ -104,23 +107,28 @@ class ProEventLoginRepository @Inject constructor(private val api: IProEventData
 
     // TODO: убрать toLowerCase() для email, когда на сервере пофиксят баг с email чувствительным к регистру
     override fun verificate(email: String, code: Int) =
-        api.verificate(VerificationBody(code, email.toLowerCase()))
+        api.verificate(VerificationBody(code, email.lowercase(Locale.getDefault())))
             .subscribeOn(Schedulers.io())
 
     // TODO: убрать toLowerCase() для email, когда на сервере пофиксят баг с email чувствительным к регистру
     override fun refreshCheckCode(email: String) =
-        api.refreshCheckCode(RefreshBody(email.toLowerCase()))
+        api.refreshCheckCode(RefreshBody(email.lowercase(Locale.getDefault())))
             .subscribeOn(Schedulers.io())
 
     // TODO: убрать toLowerCase() для email, когда на сервере пофиксят баг с email чувствительным к регистру
     override fun resetPassword(email: String): Completable =
-        api.resetPassword(ResetPasswordBody(email.toLowerCase()))
+        api.resetPassword(ResetPasswordBody(email.lowercase(Locale.getDefault())))
             .subscribeOn(Schedulers.io())
 
     // TODO: убрать toLowerCase() для email, когда на сервере пофиксят баг с email чувствительным к регистру
     override fun setNewPassword(code: Int, email: String, password: String) =
-        api.setNewPassword(NewPasswordBody(code, email.toLowerCase(), password))
+        api.setNewPassword(NewPasswordBody(code, email.lowercase(Locale.getDefault()), password))
             .subscribeOn(Schedulers.io())
+
+
+    override fun inviteUser(email: String): Completable {
+        return api.inviteUser(email).subscribeOn(Schedulers.io())
+    }
 
     private fun decodeJWT(str: String): String {
         val decodedBytes: ByteArray = Base64.decode(str, Base64.URL_SAFE)

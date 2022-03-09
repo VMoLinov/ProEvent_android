@@ -2,6 +2,7 @@ package ru.myproevent.ui.screens
 
 import com.github.terrakok.cicerone.Screen
 import com.github.terrakok.cicerone.androidx.FragmentScreen
+import ru.myproevent.domain.models.entities.*
 import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.entities.Address
 import ru.myproevent.domain.models.entities.Event
@@ -38,15 +39,18 @@ class Screens : IScreens {
     override fun chat() = FragmentScreen { ChatFragment.newInstance() }
     override fun chat1() = FragmentScreen { Chat1Fragment.newInstance() }
     override fun chats() = FragmentScreen { ChatsFragment.newInstance() }
-    override fun events() = FragmentScreen { EventsFragment.newInstance() }
-    override fun event() = FragmentScreen("EVENT") { EventFragmentNew.newInstance() }
-    override fun event(event: Event) = FragmentScreen("EVENT") { EventFragmentNew.newInstance(event) }
     override fun currentlyOpenEventScreen() = FragmentScreen("EVENT") { throw RuntimeException("В текущем стеке нет экрана Screens.event") }
-    override fun eventActionConfirmation(event: Event, status: Event.Status?) = FragmentScreen { EventActionConfirmationFragment.newInstance(event, status) }
     override fun participantPickerTypeSelection(participantsIds: List<Long>) = FragmentScreen { ParticipantPickerTypeSelectionFragment.newInstance(participantsIds) }
     override fun participantFromContactsPicker(participantsIds: List<Long>) = FragmentScreen { ParticipantFromContactsPickerFragment.newInstance(participantsIds) }
     override fun participantByEmailPicker() = FragmentScreen { ParticipantByEmailPickerFragment.newInstance() }
     override fun addEventPlace(address: Address?): Screen = FragmentScreen { AddEventPlaceFragment.newInstance(address)}
-    override fun eventParticipant(profile: Profile) = FragmentScreen { EventParticipantFragment.newInstance(profile) }
     override fun newPassword(email: String) = FragmentScreen { NewPasswordFragment.newInstance(email) }
+
+    // Events screens
+    override fun eventDatesPicker(dates: TimeInterval?) = FragmentScreen { EventDatesPickerFragment.newInstance(dates) }
+    override fun eventParticipant(profile: Profile) = FragmentScreen { EventParticipantFragment.newInstance(profile) }
+    override fun eventActionConfirmation(event: Event, status: Event.Status?) = FragmentScreen { EventActionConfirmationFragment.newInstance(event, status) }
+    override fun events() = FragmentScreen { EventsFragment.newInstance() }
+    override fun event() = FragmentScreen("EVENT") { EventFragmentNew.newInstance() }
+    override fun event(event: Event) = FragmentScreen("EVENT") { EventFragmentNew.newInstance(event) }
 }

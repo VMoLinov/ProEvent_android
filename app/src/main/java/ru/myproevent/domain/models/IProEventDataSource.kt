@@ -24,6 +24,9 @@ interface IProEventDataSource {
     @POST("auth/refreshCheckCode")
     fun refreshCheckCode(@Body refreshBody: RefreshBody): Completable
 
+    @GET("auth/invite")
+    fun inviteUser(@Query("email") email: String): Completable
+
     @POST("profiles")
     fun createProfile(@Body profile: Profile): Call<Profile>
 
@@ -35,6 +38,9 @@ interface IProEventDataSource {
 
     @POST("profiles/list")
     fun getMiniProfiles(@Body ids: ProfileIdListDto): Call<List<ProfileMiniDto>>
+
+    @GET("profiles/search")
+    fun searchProfiles(@Query("search") search: String): Call<List<ProfileMiniDto>>
 
     @GET("contacts")
     fun getContacts(
@@ -122,10 +128,11 @@ data class UUIDBody(val uuid: String)
 //)
 
 data class ProfileMiniDto(
-    var userId: Long,
-    var fullName: String? = null,
-    var nickName: String? = null,
-    var imgUri: String? = null
+    val userId: Long,
+    val fullName: String? = null,
+    val nickName: String? = null,
+    val imgUri: String? = null,
+    val description: String? = null
 )
 
 data class ContactDto(val id: Long, val status: String)

@@ -25,7 +25,8 @@ class ProEventContactsRepository @Inject constructor(
             val contactDtos = data.content
             profilesRepository.getMiniProfiles(contactDtos.map { it.id }).map { profiles ->
                 profiles.map { profile ->
-                    val status = Status.fromString(contactDtos.find { it.id == profile.id }!!.status)
+                    val status =
+                        Status.fromString(contactDtos.find { it.id == profile.id }!!.status)
                     profile.toContact(status)
                 }
             }

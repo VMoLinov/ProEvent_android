@@ -12,9 +12,10 @@ import ru.myproevent.ui.presenters.events.event.participant_pickers.ParticipantP
 import ru.myproevent.ui.presenters.events.event.participant_pickers.ParticipantPickerTypeSelectionView
 import ru.myproevent.ui.presenters.main.RouterProvider
 
-class ParticipantPickerTypeSelectionFragment : BaseMvpFragment<FragmentParticipantPickerTypeSelectionBinding>(
-    FragmentParticipantPickerTypeSelectionBinding::inflate
-),
+class ParticipantPickerTypeSelectionFragment :
+    BaseMvpFragment<FragmentParticipantPickerTypeSelectionBinding>(
+        FragmentParticipantPickerTypeSelectionBinding::inflate
+    ),
     ParticipantPickerTypeSelectionView,
     BackButtonListener {
     override val presenter by moxyPresenter {
@@ -25,17 +26,29 @@ class ParticipantPickerTypeSelectionFragment : BaseMvpFragment<FragmentParticipa
 
     companion object {
         const val PARTICIPANTS_IDS_ARG = "PARTICIPANTS_IDS"
-        fun newInstance(participantsIds: List<Long>) = ParticipantPickerTypeSelectionFragment().apply {
-            arguments = Bundle().apply { putLongArray(PARTICIPANTS_IDS_ARG, participantsIds.toLongArray()) }
-        }
+        fun newInstance(participantsIds: List<Long>) =
+            ParticipantPickerTypeSelectionFragment().apply {
+                arguments = Bundle().apply {
+                    putLongArray(
+                        PARTICIPANTS_IDS_ARG,
+                        participantsIds.toLongArray()
+                    )
+                }
+            }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        with(binding){
+        with(binding) {
             back.setOnClickListener { presenter.onBackPressed() }
             backHitArea.setOnClickListener { back.performClick() }
-            pickFromContacts.setOnClickListener { presenter.pickFromContacts(requireArguments().getLongArray(PARTICIPANTS_IDS_ARG)!!.toList()) }
+            pickFromContacts.setOnClickListener {
+                presenter.pickFromContacts(
+                    requireArguments().getLongArray(
+                        PARTICIPANTS_IDS_ARG
+                    )!!.toList()
+                )
+            }
             pickByEmail.setOnClickListener { presenter.pickByEmail() }
         }
     }

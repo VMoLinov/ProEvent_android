@@ -3,6 +3,8 @@ package ru.myproevent.domain.models.providers.internet_access_info
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import ru.myproevent.R
+import ru.myproevent.domain.models.repositories.resourceProvider.IResourceProvider
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
@@ -15,7 +17,10 @@ class InternetAccessInfoProvider @Inject constructor() : IInternetAccessInfoProv
                 // Connect to Google DNS to check for connection
                 val timeoutMs = 1500
                 val socket = Socket()
-                val socketAddress = InetSocketAddress("8.8.8.8", 53)
+                val socketAddress = InetSocketAddress(
+                    resourceProvider.getString(R.string.check_internet_enabled_ip),
+                    53
+                )
 
                 socket.connect(socketAddress, timeoutMs)
                 socket.close()

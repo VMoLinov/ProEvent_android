@@ -35,8 +35,11 @@
 //import moxy.ktx.moxyPresenter
 //import ru.myproevent.ProEventApp
 //import ru.myproevent.R
+//import ru.myproevent.databinding.DialogDateEditOptionsBinding
 //import ru.myproevent.databinding.FragmentEventBinding
 //import ru.myproevent.databinding.ItemContactBinding
+//import ru.myproevent.databinding.ItemEventDateBinding
+//import ru.myproevent.domain.models.entities.*
 //import ru.myproevent.domain.utils.*
 //import ru.myproevent.ui.BackButtonListener
 //import ru.myproevent.ui.fragments.BaseMvpFragment
@@ -48,17 +51,9 @@
 //import ru.myproevent.ui.views.CropImageHandler
 //import ru.myproevent.ui.views.KeyboardAwareTextInputEditText
 //import java.io.File
+//import java.text.SimpleDateFormat
 //import java.util.*
 //import kotlin.properties.Delegates
-//import android.widget.*
-//import androidx.recyclerview.widget.LinearLayoutManager
-//import ru.myproevent.databinding.DialogDateEditOptionsBinding
-//import ru.myproevent.databinding.ItemEventDateBinding
-//import ru.myproevent.domain.models.entities.*
-//import ru.myproevent.ui.fragments.events.event.adapter.EventScreenRVAdapter
-//import ru.myproevent.ui.presenters.contacts.contacts_list.adapters.ContactsRVAdapter
-//import java.text.SimpleDateFormat
-//
 //
 //// TODO: отрефакторить - разбить этот божественный класс на кастомные вьющки и утилиты
 //class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding::inflate),
@@ -90,14 +85,14 @@
 //        with(binding) {
 //            //searchEdit.hideKeyBoard() // TODO: нужно вынести это в вызов предществующий данному, чтобы тень при скрытии клавиатуры отображалась корректно
 //            shadow.visibility = VISIBLE
-//            copyEvent.visibility = VISIBLE
+//            eventBar.copy.visibility = VISIBLE
 //            if (event!!.ownerUserId == presenter.loginRepository.getLocalId()) {
 //                if (event!!.status != Event.Status.CANCELLED && event!!.status != Event.Status.COMPLETED) {
 //                    // TODO: появляется только если прошла последняя дата проведения, данные об этом получать с сервера
 //                    // finishEvent.visibility = VISIBLE
-//                    cancelEvent.visibility = VISIBLE
+//                    eventBar.cancelBar.visibility = VISIBLE
 //                } else {
-//                    deleteEvent.visibility = VISIBLE
+//                    eventBar.deleteBar.visibility = VISIBLE
 //                }
 //            }
 //        }
@@ -107,10 +102,10 @@
 //        isFilterOptionsExpanded = false
 //        with(binding) {
 //            shadow.visibility = GONE
-//            copyEvent.visibility = GONE
-//            finishEvent.visibility = GONE
-//            cancelEvent.visibility = GONE
-//            deleteEvent.visibility = GONE
+//            eventBar.copy.visibility = GONE
+//            eventBar.finish.visibility = GONE
+//            eventBar.cancelBar.visibility = GONE
+//            eventBar.deleteBar.visibility = GONE
 //        }
 //    }
 //
@@ -136,7 +131,7 @@
 //    }
 //
 //    companion object {
-//        val EVENT_ARG = "EVENT"
+//        const val EVENT_ARG = "EVENT"
 //        fun newInstance(event: Event? = null) = EventFragment().apply {
 //            arguments = Bundle().apply { putParcelable(EVENT_ARG, event) }
 //        }
@@ -189,8 +184,8 @@
 //            absoluteBarHitArea.setOnClickListener { absoluteBar.performClick() }
 //            absoluteBarEdit.setOnClickListener { onEdit() }
 //            absoluteBarExpand.setOnClickListener {
-//                binding.rvBody.scrollTo(0, onCollapseScroll)
-//                binding.rvBody.fling(0)
+//                binding.scroll.scrollTo(0, onCollapseScroll)
+//                binding.scroll.fling(0)
 //                isAbsoluteBarBarHidden = true
 //                onCollapse()
 //                presenter.hideAbsoluteBar()
@@ -214,14 +209,14 @@
 //    }
 //
 //    // TODO: отрефакторить так чтобы showEditOptions вызывался только из presenter-a
-//    override fun showEditOptions() = with(binding) {
+//    override fun showEditOptions() = with(binding.eventBar) {
 //        save.visibility = VISIBLE
 //        saveHitArea.visibility = VISIBLE
 //        cancel.visibility = VISIBLE
 //        cancelHitArea.visibility = VISIBLE
 //    }
 //
-//    override fun hideEditOptions() = with(binding) {
+//    override fun hideEditOptions() = with(binding.eventBar) {
 //        save.visibility = GONE
 //        saveHitArea.visibility = GONE
 //        cancel.visibility = GONE
@@ -277,7 +272,7 @@
 //        }
 //    }
 //
-//    override fun showActionOptions() = with(binding) {
+//    override fun showActionOptions() = with(binding.eventBar) {
 //        actionMenu.visibility = VISIBLE
 //    }
 //
@@ -299,20 +294,8 @@
 //            background.setOnClickListener { presenter.hideDateEditOptions() }
 //            editDate.setOnClickListener {
 //                presenter.editDate(position)
-//                // TODO: убрать этот пример
-//                parentFragmentManager.setFragmentResult(
-//                    DATE_PICKER_EDIT_RESULT_KEY,
-//                    Bundle().apply {
-//                        putParcelable(
-//                            NEW_DATE_KEY,
-//                            TimeInterval(12345, 12345)
-//                        )
-//                        putParcelableArray(
-//                            OLD_DATES_KEY,
-//                            arrayOf(presenter.pickedDates[position])
-//                        )
-//                    })
 //                presenter.hideDateEditOptions()
+//                presenter.datePickerFragment(presenter.pickedDates[position])
 //            }
 //            removeDate.setOnClickListener {
 //                presenter.removeDate(position)
@@ -320,7 +303,7 @@
 //            }
 //        }
 //
-//        dateEditOptionsDialogView!!.dateEditOptions.post {
+//        dateEditOptionsDialogView!!.dateEditOptions.run {
 //            val dateEditOptionsPosition = IntArray(2)
 //            with(binding.datesContainer.getChildAt(position + 1)) {
 //                getLocationOnScreen(dateEditOptionsPosition)
@@ -429,7 +412,7 @@
 //
 //    override fun cancelEdit(): Unit = with(binding) {
 //        if (event == null) {
-//            back.performClick()
+//            eventBar.back.performClick()
 //        } else {
 //            noDates.isVisible = true
 //            noParticipants.isVisible = true
@@ -641,8 +624,7 @@
 //            binding.noDates.isVisible = false
 //            presenter.showEditOptions()
 //            binding.datesContainer.isVisible = true
-//            val newDate = bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)!!
-//            presenter.addEventDate(newDate)
+//            bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)?.let { presenter.addEventDate(it) }
 //        }
 //
 //        parentFragmentManager.setFragmentResultListener(
@@ -653,11 +635,7 @@
 //            presenter.showEditOptions()
 //            binding.datesContainer.isVisible = true
 //            bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)?.let { presenter.addEventDate(it) }
-//            bundle.getParcelableArray(OLD_DATES_KEY)?.let {
-//                for (date in it as Array<TimeInterval>) {
-//                    presenter.removeDate(date)
-//                }
-//            }
+//            bundle.getParcelable<TimeInterval>(OLD_DATE_KEY)?.let { presenter.removeDate(it) }
 //        }
 //
 //        parentFragmentManager.setFragmentResultListener(
@@ -690,48 +668,47 @@
 //            presenter.showEditOptions()
 //        }
 //
-//
 //        arguments?.getParcelable<Event>(EVENT_ARG)?.let { event = it }
 //    }
 //
 //    private var isSaveAvailable = true
 //
-//    override fun addParticipantItemView(profile: Profile) {
-//        Log.d("[REMOVE]", "addParticipantItemView profileDto id(${profile.id})")
+//    override fun addParticipantItemView(profile: Profile) = with(profile) {
+//        Log.d("[REMOVE]", "addParticipantItemView profileDto id($id)")
 //        val view = ItemContactBinding.inflate(layoutInflater)
-//        profile.fullName?.let {
-//            view.tvName.text = "#${profile.id} $it"
-//        } ?: profile.nickName?.let {
-//            view.tvName.text = "#${profile.id} $it"
-//        } ?: run {
-//            view.tvName.text = "#${profile.id}"
-//        }
-//        view.tvDescription.text = profile.description
+//
+//        view.tvName.text = getString(
+//            R.string.participant_ItemView_name_template, id, when {
+//                !fullName.isNullOrBlank() -> fullName
+//                !nickName.isNullOrBlank() -> nickName
+//                else -> ""
+//            }
+//        )
+//
+//        view.tvDescription.text = description
 //        view.root.setOnClickListener {
-//            presenter.openParticipant(profile)
+//            presenter.openParticipant(this)
 //        }
 //        binding.participantsContainer.addView(view.root)
 //        binding.noParticipants.isVisible = false
 //    }
 //
-//    private fun getDateTime(timestamp: Long): String? {
-//        try {
-//            val sdf = SimpleDateFormat("dd.MM (E) HH:mm")
-//            val netDate = Date(timestamp * 1000)
-//            return sdf.format(netDate).uppercase()
+//    private fun getDateTime(timestamp: Long): String {
+//        return try {
+//            val sdf = SimpleDateFormat("dd.MM (E) HH:mm", Locale.getDefault())
+//            val netDate = Date(timestamp)
+//            sdf.format(netDate).uppercase()
 //        } catch (e: Exception) {
-//            return e.toString()
+//            e.toString()
 //        }
 //    }
 //
 //    override fun addDateItemView(timeInterval: TimeInterval, position: Int) {
 //        val view = ItemEventDateBinding.inflate(layoutInflater)
-//        view.editDate.setOnClickListener {
-//            presenter.openDateEditOptions(timeInterval)
-//        }
+//        view.editDate.setOnClickListener { presenter.openDateEditOptions(timeInterval) }
 //        val startDate = getDateTime(timeInterval.start)
 //        val endDate = getDateTime(timeInterval.end)
-//        view.dateValue.text = "НАЧАЛО: ${startDate}\nКОНЕЦ: ${endDate}"
+//        view.dateValue.text = getString(R.string.event_date_template, startDate, endDate)
 //        binding.datesContainer.addView(view.root, position + 1)
 //        binding.noDates.isVisible = false
 //    }
@@ -760,12 +737,12 @@
 //
 //    private fun saveCallback(successEvent: Event?) {
 //        isSaveAvailable = true
-//        binding.save.setTextColor(resources.getColor(R.color.ProEvent_bright_orange_500))
+//        binding.eventBar.save.setTextColor(resources.getColor(R.color.ProEvent_bright_orange_500))
 //        if (successEvent == null) {
 //            return
 //        }
 //        event = successEvent
-//        binding.title.text = successEvent.name
+//        binding.eventBar.title.text = successEvent.name
 //        presenter.cancelEdit()
 //        presenter.lockEdit()
 //        presenter.hideEditOptions()
@@ -788,7 +765,7 @@
 //            viewOnClick = binding.editEventImage,
 //            pickImageCallback = { pickImageActivityContract, cropActivityResultLauncher ->
 //                registerForActivityResult(pickImageActivityContract) {
-//                    it.let { uri -> cropActivityResultLauncher.launch(uri) }
+//                    it?.let { uri -> cropActivityResultLauncher.launch(uri) }
 //                }
 //            },
 //            cropCallback = { cropActivityContract ->
@@ -826,8 +803,13 @@
 //        statusBarHeight = extractStatusBarHeight()
 //        initImageCrop()
 //        with(binding) {
-//            event?.let { title.text = it.name }
-//            title.setOnClickListener {
+//            event?.let {
+//                eventBar.title.text = it.name
+//            }
+//            if (event == null) {
+//                eventBar.title.text = resources.getString(R.string.event_new_event)
+//            }
+//            eventBar.title.setOnClickListener {
 //                // TODO: отрефакторить
 //                // https://github.com/terrakok/Cicerone/issues/106
 //                val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
@@ -837,19 +819,19 @@
 //                }
 //                ft.addToBackStack(null)
 //                val newFragment: DialogFragment =
-//                    ProEventMessageDialog.newInstance(title.text.toString())
+//                    ProEventMessageDialog.newInstance(eventBar.title.text.toString())
 //                newFragment.show(ft, "dialog")
 //            }
-//            actionMenu.setOnClickListener {
+//            eventBar.actionMenu.setOnClickListener {
 //                if (!isFilterOptionsExpanded) {
 //                    showFilterOptions()
 //                } else {
 //                    hideFilterOptions()
 //                }
 //            }
-//            actionMenuHitArea.setOnClickListener {
-//                if (actionMenu.isVisible) {
-//                    actionMenu.performClick()
+//            eventBar.actionMenuHitArea.setOnClickListener {
+//                if (eventBar.actionMenu.isVisible) {
+//                    eventBar.actionMenu.performClick()
 //                }
 //            }
 //            shadow.setOnClickListener { hideFilterOptions() }
@@ -903,13 +885,14 @@
 //            }
 //            datesBar.setOnClickListener { expandDates.performClick() }
 //            datesBarHitArea.setOnClickListener { datesBar.performClick() }
+//            addDate.setOnClickListener { presenter.datePickerFragment(null) }
 //
 //            scroll.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
 //                Log.d("[MYLOG]", "setOnScrollChangeListener")
 //                if (datesContainer.visibility == VISIBLE && scrollY in datesBarDistance..(datesBarDistance + datesContainer.height)) {
 //                    if (isAbsoluteBarBarHidden) {
 //                        presenter.showAbsoluteBar(
-//                            "Даты мероприятия",
+//                            getString(R.string.event_dates),
 //                            R.drawable.ic_add,
 //                            null,
 //                            datesBarDistance,
@@ -920,7 +903,7 @@
 //                } else if (descriptionContainer.visibility == VISIBLE && scrollY in descriptionBarDistance..(descriptionBarDistance + descriptionContainer.height)) {
 //                    if (isAbsoluteBarBarHidden) {
 //                        presenter.showAbsoluteBar(
-//                            "Описание",
+//                            getString(R.string.description),
 //                            if (editDescription.visibility == VISIBLE) {
 //                                R.drawable.ic_edit
 //                            } else {
@@ -935,7 +918,7 @@
 //                } else if (mapsContainer.visibility == VISIBLE && scrollY in mapsBarDistance..(mapsBarDistance + mapsContainer.height)) {
 //                    if (isAbsoluteBarBarHidden) {
 //                        presenter.showAbsoluteBar(
-//                            "Карта мероприятия",
+//                            getString(R.string.event_map),
 //                            R.drawable.ic_add,
 //                            null,
 //                            mapsBarDistance,
@@ -946,7 +929,7 @@
 //                } else if (pointsContainer.visibility == VISIBLE && scrollY in pointsBarDistance..(pointsBarDistance + pointsContainer.height)) {
 //                    if (isAbsoluteBarBarHidden) {
 //                        presenter.showAbsoluteBar(
-//                            "Точки",
+//                            getString(R.string.points),
 //                            R.drawable.ic_add,
 //                            null,
 //                            pointsBarDistance,
@@ -957,7 +940,7 @@
 //                } else if (participantsContainer.visibility == VISIBLE && scrollY in participantsBarDistance..(participantsBarDistance + participantsContainer.height)) {
 //                    if (isAbsoluteBarBarHidden) {
 //                        presenter.showAbsoluteBar(
-//                            "Участники",
+//                            getString(R.string.participants),
 //                            R.drawable.ic_add,
 //                            null,
 //                            participantsBarDistance,
@@ -969,12 +952,12 @@
 //                    presenter.hideAbsoluteBar()
 //                }
 //            }
-//            save.setOnClickListener {
+//            eventBar.save.setOnClickListener {
 //                if (!isSaveAvailable) {
 //                    return@setOnClickListener
 //                }
 //                isSaveAvailable = false
-//                save.setTextColor(resources.getColor(R.color.PE_blue_gray_03))
+//                eventBar.save.setTextColor(resources.getColor(R.color.PE_blue_gray_03))
 //                val editedEvent = event?.copy()
 //                editedEvent?.let { it ->
 //                    it.name = nameEdit.text.toString()
@@ -984,7 +967,7 @@
 //                    presenter.editEvent(it, ::saveCallback)
 //                } ?: run { addEvent(null) }
 //            }
-//            saveHitArea.setOnClickListener { save.performClick() }
+//            eventBar.saveHitArea.setOnClickListener { eventBar.save.performClick() }
 //            defaultKeyListener = nameEdit.keyListener
 //            if (event != null) {
 //                setViewValues(event!!)
@@ -995,7 +978,7 @@
 //                    showKeyBoard(nameEdit)
 //                }
 //                nameEdit.addTextChangedListener {
-//                    title.text = it
+//                    eventBar.title.text = it
 //                }
 //                lockEdit(
 //                    locationInput, locationEdit,
@@ -1017,9 +1000,9 @@
 //                showEditOptions()
 //                unlockLocationEdit()
 //            }
-//            back.setOnClickListener { presenter.onBackPressed() }
-//            backHitArea.setOnClickListener { back.performClick() }
-//            cancel.setOnClickListener {
+//            eventBar.back.setOnClickListener { presenter.onBackPressed() }
+//            eventBar.backHitArea.setOnClickListener { eventBar.back.performClick() }
+//            eventBar.cancel.setOnClickListener {
 //                presenter.cancelEdit()
 //                if (event != null) {
 //                    presenter.lockEdit()
@@ -1027,52 +1010,41 @@
 //                    presenter.hideEditOptions()
 //                }
 //            }
-//            cancelHitArea.setOnClickListener { cancel.performClick() }
-//            copyEvent.setOnTouchListener(filterOptionTouchListener)
-//            copyEvent.setOnClickListener {
+//            eventBar.cancelHitArea.setOnClickListener { eventBar.cancel.performClick() }
+//            eventBar.copy.setOnTouchListener(filterOptionTouchListener)
+//            eventBar.copy.setOnClickListener {
 //                event?.let {
 //                    presenter.copyEvent(it)
 //                }
 //                hideFilterOptions()
 //            }
-//            finishEvent.setOnTouchListener(filterOptionTouchListener)
-//            finishEvent.setOnClickListener {
+//            eventBar.finish.setOnTouchListener(filterOptionTouchListener)
+//            eventBar.finish.setOnClickListener {
 //                presenter.finishEvent(event!!)
 //                hideFilterOptions()
 //            }
-//            cancelEvent.setOnTouchListener(filterOptionTouchListener)
-//            cancelEvent.setOnClickListener {
+//            eventBar.cancelBar.setOnTouchListener(filterOptionTouchListener)
+//            eventBar.cancelBar.setOnClickListener {
 //                presenter.cancelEvent(event!!)
 //                hideFilterOptions()
 //            }
-//            deleteEvent.setOnTouchListener(filterOptionTouchListener)
-//            deleteEvent.setOnClickListener {
+//            eventBar.deleteBar.setOnTouchListener(filterOptionTouchListener)
+//            eventBar.deleteBar.setOnClickListener {
 //                presenter.deleteEvent(event!!)
 //                hideFilterOptions()
 //            }
-//            setImageSpan(
-//                noDates,
-//                "Отсутствуют.\nНажмите + чтобы добавить.",
-//                R.drawable.ic_add
-//            )
+//            // TODO: отрефакорить нужно передавать tint, а не использовать отдельный drawable
+//            setImageSpan(noDates, getString(R.string.event_fragment_some_text), R.drawable.ic_add)
 //            setImageSpan(
 //                noDescription,
-//                "Отсутствует.\nНажмите / чтобы добавить.",
-//                R.drawable.ic_edit_blue // TODO: отрефакорить нужно передавать tint, а не использовать отдельный drawable
+//                getString(R.string.event_fragment_some_text_02),
+//                R.drawable.ic_edit_blue
 //            )
-//            setImageSpan(
-//                noMaps,
-//                "Отсутствует.\nНажмите + чтобы добавить.",
-//                R.drawable.ic_add
-//            )
-//            setImageSpan(
-//                noPoints,
-//                "Отсутствуют.\nНажмите + чтобы добавить.",
-//                R.drawable.ic_add
-//            )
+//            setImageSpan(noMaps, getString(R.string.event_fragment_some_text), R.drawable.ic_add)
+//            setImageSpan(noPoints, getString(R.string.event_fragment_some_text), R.drawable.ic_add)
 //            setImageSpan(
 //                noParticipants,
-//                "Отсутствуют.\nНажмите + чтобы добавить.",
+//                getString(R.string.event_fragment_some_text),
 //                R.drawable.ic_add
 //            )
 //            editDescription.setOnClickListener {
@@ -1090,15 +1062,6 @@
 //            addMap.setOnClickListener { showMessage("addMap\nДанная возможность пока не доступна") }
 //            addPoint.setOnClickListener { showMessage("addPoint\nДанная возможность пока не доступна") }
 //            addParticipant.setOnClickListener { presenter.pickParticipants() }
-//            addDate.setOnClickListener {
-//                presenter.pickDates()
-//                // TODO: убрать этот пример
-//                parentFragmentManager.setFragmentResult(DATE_PICKER_ADD_RESULT_KEY, Bundle().apply {
-//                    putParcelable(
-//                        NEW_DATE_KEY, TimeInterval(1643937476, 1643941090)
-//                    )
-//                })
-//            }
 //        }
 //
 //        view.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
@@ -1144,18 +1107,5 @@
 //
 //    override fun showMessage(message: String) {
 //        Toast.makeText(ProEventApp.instance, message, Toast.LENGTH_LONG).show()
-//    }
-//
-//
-//    var adapter: ContactsRVAdapter? = null
-//
-//    override fun init() = with(binding) {
-//        rvBody.layoutManager = LinearLayoutManager(context)
-//        adapter = EventScreenRVAdapter(presenter.eventScreenListPresenter)
-//        rvBody.adapter = adapter
-//    }
-//
-//    override fun updateEventScreenList() {
-//        adapter?.notifyDataSetChanged()
 //    }
 //}

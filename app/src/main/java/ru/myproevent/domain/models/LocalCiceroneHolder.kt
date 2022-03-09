@@ -2,7 +2,6 @@ package ru.myproevent.domain.models
 
 import com.github.terrakok.cicerone.Cicerone
 import com.github.terrakok.cicerone.Router
-import java.util.HashMap
 
 class LocalCiceroneHolder {
     private val containers = HashMap<String, Cicerone<Router>>()
@@ -12,7 +11,7 @@ class LocalCiceroneHolder {
             Cicerone.create()
         }
 
-    fun clear(){
+    fun clear() {
         containers.clear()
     }
 }

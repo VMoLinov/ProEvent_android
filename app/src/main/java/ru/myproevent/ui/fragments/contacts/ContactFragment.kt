@@ -7,7 +7,6 @@ import moxy.MvpView
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.databinding.FragmentContactBinding
-import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.ui.fragments.BaseMvpFragment
 import ru.myproevent.ui.presenters.contacts.contact.ContactPresenter
 import ru.myproevent.ui.presenters.contacts.contact.ContactView
@@ -35,7 +34,9 @@ class ContactFragment : BaseMvpFragment<FragmentContactBinding>(FragmentContactB
         arguments?.getLong(BUNDLE_PROFILE_ID)?.let { presenter.loadProfile(it) }
     }
 
-    override fun setTitle(str: String) = binding.titleButton.setText(str)
+    override fun setTitle(str: String) {
+        binding.titleButton.text = str
+    }
 
     override fun setBirthDate(str: String) = with(binding) {
         dateOfBirthTitle.visibility = VISIBLE

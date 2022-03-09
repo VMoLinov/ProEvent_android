@@ -4,6 +4,7 @@ import android.widget.Toast
 import com.github.terrakok.cicerone.Router
 import io.reactivex.observers.DisposableCompletableObserver
 import ru.myproevent.ProEventApp
+import ru.myproevent.R
 import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.providers.internet_access_info.IInternetAccessInfoProvider
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
@@ -64,7 +65,7 @@ class LoginPresenter(localRouter: Router) : BaseMvpPresenter<LoginView>(localRou
         if (loginRepository.getLocalEmail() == null || loginRepository.getLocalPassword() == null) {
             Toast.makeText(
                 ProEventApp.instance,
-                "Этого не должно было произойти: loginRepository.getLocalEmail() == null || loginRepository.getLocalPassword() == null",
+                getString(R.string.impossible_error_01),
                 Toast.LENGTH_LONG
             ).show()
             return

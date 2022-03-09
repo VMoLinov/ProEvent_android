@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="ProEventRWTextInputLayoutStyle" parent="ProEventTextInputLayoutStyle">
         <item name="endIconMode">custom</item>
         <item name="endIconDrawable">@drawable/ic_edit</item>
