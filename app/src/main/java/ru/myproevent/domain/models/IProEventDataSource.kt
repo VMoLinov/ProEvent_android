@@ -8,7 +8,6 @@ import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
-import ru.myproevent.BuildConfig
 import ru.myproevent.domain.models.entities.Profile
 
 interface IProEventDataSource {
@@ -23,6 +22,12 @@ interface IProEventDataSource {
 
     @POST("auth/refreshCheckCode")
     fun refreshCheckCode(@Body refreshBody: RefreshBody): Completable
+
+    @POST("auth/firebase")
+    fun registerFirebaseToken(@Body token: TokenBody): Completable
+
+    @DELETE("auth/firebase")
+    fun deleteFirebaseToken(@Body token: TokenBody): Completable
 
     @GET("auth/invite")
     fun inviteUser(@Query("email") email: String): Completable
@@ -98,6 +103,8 @@ interface IProEventDataSource {
     @DELETE("storage/{uuid}")
     fun deleteImage(@Path("uuid") uuid: String): Completable
 }
+
+data class TokenBody(val token: String)
 
 data class LoginBody(val email: String, val password: String)
 data class LoginResponse(val token: String)

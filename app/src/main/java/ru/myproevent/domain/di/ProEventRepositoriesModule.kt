@@ -54,7 +54,7 @@ interface ProEventRepositoriesModule {
 
     @Singleton
     @Binds
-    fun bindResorceProvider(resourceProvider: ResourceProvider): IResourceProvider
+    fun bindResourceProvider(resourceProvider: ResourceProvider): IResourceProvider
 
     @Singleton
     @Binds

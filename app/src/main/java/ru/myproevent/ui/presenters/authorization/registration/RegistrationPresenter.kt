@@ -1,12 +1,10 @@
 package ru.myproevent.ui.presenters.authorization.registration
 
-import android.annotation.SuppressLint
 import android.util.Log
 import com.github.terrakok.cicerone.Router
 import io.reactivex.observers.DisposableCompletableObserver
 import ru.myproevent.domain.models.providers.internet_access_info.IInternetAccessInfoProvider
 import ru.myproevent.R
-import retrofit2.HttpException
 import ru.myproevent.domain.models.repositories.email_hint.IEmailHintRepository
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
@@ -20,6 +18,7 @@ val VALID_PASSWORD_REGEX: Pattern =
         "^(?=.*[0-9])(?=.*[a-z])(?=\\S+\$)(?!.*[А-ЯЁа-яё]).{6,}\$",
         Pattern.CASE_INSENSITIVE
     )
+
 class RegistrationPresenter(localRouter: Router) : BaseMvpPresenter<RegistrationView>(localRouter) {
     private inner class SignupObserver : DisposableCompletableObserver() {
         override fun onComplete() {
