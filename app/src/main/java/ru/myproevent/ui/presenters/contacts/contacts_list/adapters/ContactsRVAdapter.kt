@@ -10,7 +10,6 @@ import ru.myproevent.domain.models.entities.Contact.Status
 import ru.myproevent.ui.presenters.contacts.contacts_list.IContactItemView
 import ru.myproevent.domain.utils.load
 
-
 class ContactsRVAdapter(val presenter: IContactsListPresenter) :
     RecyclerView.Adapter<ContactsRVAdapter.ViewHolder>() {
 
@@ -45,18 +44,18 @@ class ContactsRVAdapter(val presenter: IContactsListPresenter) :
             vb.ivImg.load(url)
         }
 
-        override fun setStatus(status: Contact.Status) = with(vb) {
+        override fun setStatus(status: Status) = with(vb) {
             requestStatus.setImageDrawable(
                 when (status) {
-                    Contact.Status.REQUESTED -> AppCompatResources.getDrawable(
+                    Status.REQUESTED -> AppCompatResources.getDrawable(
                         itemView.context,
                         R.drawable.ic_incomming_request
                     )
-                    Contact.Status.DECLINED -> AppCompatResources.getDrawable(
+                    Status.DECLINED -> AppCompatResources.getDrawable(
                         itemView.context,
                         R.drawable.ic_rejected_request
                     )
-                    Contact.Status.PENDING -> AppCompatResources.getDrawable(
+                    Status.PENDING -> AppCompatResources.getDrawable(
                         itemView.context,
                         R.drawable.ic_outgoing_request
                     )

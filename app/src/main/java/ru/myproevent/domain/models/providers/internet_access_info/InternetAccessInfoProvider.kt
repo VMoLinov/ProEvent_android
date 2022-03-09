@@ -10,7 +10,7 @@ import java.net.InetSocketAddress
 import java.net.Socket
 import javax.inject.Inject
 
-class InternetAccessInfoProvider @Inject constructor() : IInternetAccessInfoProvider {
+class InternetAccessInfoProvider @Inject constructor(private val resourceProvider: IResourceProvider) : IInternetAccessInfoProvider {
     override fun hasInternetConnection(): Single<Boolean> {
         return Single.fromCallable {
             try {

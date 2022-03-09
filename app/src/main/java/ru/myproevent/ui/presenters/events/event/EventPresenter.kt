@@ -1,13 +1,9 @@
 package ru.myproevent.ui.presenters.events.event
 
 import android.util.Log
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import com.github.terrakok.cicerone.Router
 import ru.myproevent.ProEventApp
-import ru.myproevent.R
-import ru.myproevent.domain.models.entities.*
 import ru.myproevent.R
 import ru.myproevent.domain.models.entities.Address
 import ru.myproevent.domain.models.entities.Event
