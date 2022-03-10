@@ -527,24 +527,32 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
         }
     }
 
-    override fun expandDates() = with(binding) {
-        fun isDatesExpanded() = datesContainer.visibility == VISIBLE
-        if (!isDatesExpanded()) {
-            expandDates.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.ProEvent_bright_orange_300
-                ), android.graphics.PorterDuff.Mode.SRC_IN
-            )
-            datesContainer.visibility = VISIBLE
-        } else {
-            expandDates.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.ProEvent_blue_800
-                ), android.graphics.PorterDuff.Mode.SRC_IN
-            )
-            datesContainer.visibility = GONE
+    override fun expandDates() {
+        with(binding) {
+            fun isDatesExpanded() = datesContainer.visibility == VISIBLE
+            if (!isDatesExpanded()) {
+                expandDates.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.ProEvent_bright_orange_300
+                    ), android.graphics.PorterDuff.Mode.SRC_IN
+                )
+                datesContainer.visibility = VISIBLE
+                scroll.post {
+                    scroll.smoothScrollTo(0, datesBarDistance)
+                }
+                noDates.visibility =
+                    if (event?.dates?.size == 0) VISIBLE
+                    else GONE
+            } else {
+                expandDates.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.ProEvent_blue_800
+                    ), android.graphics.PorterDuff.Mode.SRC_IN
+                )
+                datesContainer.visibility = GONE
+            }
         }
     }
 
@@ -783,7 +791,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
     private fun addEvent(uuid: String?) {
         presenter.addEvent(
             binding.nameEdit.text.toString(),
-            TreeSet(event?.dates),
+            event?.dates ?: TreeSet(),
             address,
             binding.descriptionText.text.toString(),
             uuid,
@@ -874,14 +882,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             }
             participantsBar.setOnClickListener { expandParticipants.performClick() }
             participantsBarHitArea.setOnClickListener { participantsBar.performClick() }
-            expandDates.setOnClickListener {
-                presenter.expandDates()
-                if (datesContainer.isVisible) {
-                    scroll.post {
-                        scroll.smoothScrollTo(0, datesBarDistance)
-                    }
-                }
-            }
+            expandDates.setOnClickListener { presenter.expandDates() }
             datesBar.setOnClickListener { expandDates.performClick() }
             datesBarHitArea.setOnClickListener { datesBar.performClick() }
             addDate.setOnClickListener { presenter.datePickerFragment(null) }
