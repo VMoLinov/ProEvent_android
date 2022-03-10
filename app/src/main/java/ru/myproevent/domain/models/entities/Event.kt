@@ -1,6 +1,7 @@
 package ru.myproevent.domain.models.entities
 
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 import java.util.*
 
@@ -10,8 +11,7 @@ data class Event(
     var name: String,
     var ownerUserId: Long,
     var status: Status,
-    var startDate: Date,
-    var endDate: Date,
+    var dates: TreeSet<TimeInterval?>,
     var description: String?,
     var participantsUserIds: LongArray?,
     var city: String?,

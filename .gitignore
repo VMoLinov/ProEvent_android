@@ -16,3 +16,4 @@
 local.properties
 gradlew
 gradlew.bat
+/app/src/google-services.json

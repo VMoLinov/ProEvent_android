@@ -6,6 +6,7 @@ import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*
 import ru.myproevent.domain.models.entities.Profile
+import ru.myproevent.domain.models.entities.TimeInterval
 
 interface IProEventDataSource {
     @POST("auth/login")
@@ -161,7 +162,7 @@ data class Pageable(
     val pageSize: Int,
     val paged: Boolean,
     val sort: Sort,
-    val unpaged: Boolean
+    val unPaged: Boolean
 )
 
 data class Sort(val empty: Boolean, val sorted: Boolean, val unsorted: Boolean)
@@ -171,8 +172,7 @@ data class EventDto(
     val name: String,
     val ownerUserId: Long,
     val eventStatus: String,
-    val startDate: String,
-    val endDate: String,
+    val eventDates: List<TimeInterval?>?,
     val description: String?,
     val participantsUserIds: LongArray?,
     val city: String?,

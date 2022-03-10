@@ -110,7 +110,6 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
     }
 
     private var statusBarHeight by Delegates.notNull<Int>()
-
     private var descriptionBarDistance by Delegates.notNull<Int>()
     private var mapsBarDistance by Delegates.notNull<Int>()
     private var pointsBarDistance by Delegates.notNull<Int>()
@@ -248,11 +247,15 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
 
 
     override fun removeDate(date: TimeInterval, pickedDates: List<TimeInterval>) = with(binding) {
-        pickedDates.indexOf(date).let {
+        pickedDates.indexOf(date).let { it ->
             if (it == -1) {
                 return@with
             }
             datesContainer.removeViewAt(it + 1)
+            event?.let { event ->
+                event.dates.remove(date)
+                presenter.editEvent(event)
+            }
             if (pickedDates.size == 1) {
                 noDates.isVisible = true
             }
@@ -585,20 +588,8 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
                 binding.noParticipants.isVisible = false
                 presenter.initParticipantsProfiles(participantsUserIds!!)
             }
-            if (startDate != null) {
-                binding.noDates.isVisible = false
-                presenter.initDates(
-                    listOf(
-                        TimeInterval(1643977614, 1643977614 + 3600)
-//                        TimeInterval(5, 5),
-//                        TimeInterval(2, 2),
-//                        TimeInterval(1, 1),
-//                        TimeInterval(3, 3),
-//                        TimeInterval(4, 4),
-//                        TimeInterval(6, 6)
-                    )
-                )
-            }
+            binding.noDates.isVisible = false
+            presenter.initDates(event.dates)
         }
     }
 
@@ -624,7 +615,10 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             binding.noDates.isVisible = false
             presenter.showEditOptions()
             binding.datesContainer.isVisible = true
-            bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)?.let { presenter.addEventDate(it) }
+            bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)?.let {
+                event?.dates?.add(it)
+                presenter.addEventDate(it)
+            }
         }
 
         parentFragmentManager.setFragmentResultListener(
@@ -634,8 +628,14 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             binding.noDates.isVisible = false
             presenter.showEditOptions()
             binding.datesContainer.isVisible = true
-            bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)?.let { presenter.addEventDate(it) }
-            bundle.getParcelable<TimeInterval>(OLD_DATE_KEY)?.let { presenter.removeDate(it) }
+            bundle.getParcelable<TimeInterval>(OLD_DATE_KEY)?.let {
+                event?.dates?.remove(it)
+                presenter.removeDate(it)
+            }
+            bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)?.let {
+                event?.dates?.add(it)
+                presenter.addEventDate(it)
+            }
         }
 
         parentFragmentManager.setFragmentResultListener(
@@ -783,8 +783,7 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
     private fun addEvent(uuid: String?) {
         presenter.addEvent(
             binding.nameEdit.text.toString(),
-            Calendar.getInstance().time,
-            Calendar.getInstance().time,
+            TreeSet(event?.dates),
             address,
             binding.descriptionText.text.toString(),
             uuid,
@@ -959,12 +958,10 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
                 isSaveAvailable = false
                 eventBar.save.setTextColor(resources.getColor(R.color.PE_blue_gray_03))
                 val editedEvent = event?.copy()
-                editedEvent?.let { it ->
-                    it.name = nameEdit.text.toString()
-                    it.startDate = Calendar.getInstance().time
-                    it.endDate = Calendar.getInstance().time
-                    it.description = descriptionText.text.toString()
-                    presenter.editEvent(it, ::saveCallback)
+                editedEvent?.let { event ->
+                    event.name = nameEdit.text.toString()
+                    event.description = descriptionText.text.toString()
+                    presenter.editEvent(event, ::saveCallback)
                 } ?: run { addEvent(null) }
             }
             eventBar.saveHitArea.setOnClickListener { eventBar.save.performClick() }
@@ -1082,24 +1079,24 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
                 //              Желательно разобраться почему это происходит и использовать здесь viewBinding
 
                 descriptionBarDistance =
-                    (calculateRectOnScreen(view.findViewById(R.id.description_bar)).top - calculateRectOnScreen(
-                        view.findViewById(R.id.scroll_child)
+                    (calculateRectOnScreen(view.findViewById(R.id.descriptionBar)).top - calculateRectOnScreen(
+                        view.findViewById(R.id.scrollChild)
                     ).top).toInt()
                 mapsBarDistance =
-                    (calculateRectOnScreen(view.findViewById(R.id.maps_bar)).top - calculateRectOnScreen(
-                        view.findViewById(R.id.scroll_child)
+                    (calculateRectOnScreen(view.findViewById(R.id.mapsBar)).top - calculateRectOnScreen(
+                        view.findViewById(R.id.scrollChild)
                     ).top).toInt()
                 pointsBarDistance =
-                    (calculateRectOnScreen(view.findViewById(R.id.points_bar)).top - calculateRectOnScreen(
-                        view.findViewById(R.id.scroll_child)
+                    (calculateRectOnScreen(view.findViewById(R.id.pointsBar)).top - calculateRectOnScreen(
+                        view.findViewById(R.id.scrollChild)
                     ).top).toInt()
                 participantsBarDistance =
-                    (calculateRectOnScreen(view.findViewById(R.id.participants_bar)).top - calculateRectOnScreen(
-                        view.findViewById(R.id.scroll_child)
+                    (calculateRectOnScreen(view.findViewById(R.id.participantsBar)).top - calculateRectOnScreen(
+                        view.findViewById(R.id.scrollChild)
                     ).top).toInt()
                 datesBarDistance =
-                    (calculateRectOnScreen(view.findViewById(R.id.dates_bar)).top - calculateRectOnScreen(
-                        view.findViewById(R.id.scroll_child)
+                    (calculateRectOnScreen(view.findViewById(R.id.datesBar)).top - calculateRectOnScreen(
+                        view.findViewById(R.id.scrollChild)
                     ).top).toInt()
             }
         })
