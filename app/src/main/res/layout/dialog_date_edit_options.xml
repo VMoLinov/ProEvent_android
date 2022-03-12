@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/date_edit_options"
+        android:id="@+id/dateEditOptions"
         android:layout_width="wrap_content"
         android:layout_height="100dp"
         android:layout_gravity="end"
@@ -15,9 +15,8 @@
         android:orientation="vertical"
         tools:ignore="UselessParent">
 
-
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/edit_date"
+            android:id="@+id/editDate"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="?android:attr/selectableItemBackground"
@@ -33,7 +32,7 @@
             android:textSize="20sp" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/remove_date"
+            android:id="@+id/removeDate"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="?android:attr/selectableItemBackground"

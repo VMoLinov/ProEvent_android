@@ -38,8 +38,7 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
 
     fun addEvent(
         name: String,
-        startDate: Date,
-        endDate: Date,
+        dates: TreeSet<TimeInterval?>,
         address: Address?,
         description: String,
         uuid: String?,
@@ -52,8 +51,7 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
                     name = name,
                     ownerUserId = loginRepository.getLocalId()!!,
                     status = Event.Status.ACTUAL,
-                    startDate = startDate,
-                    endDate = endDate,
+                    dates = dates,
                     description = description,
                     participantsUserIds = pickedParticipantsIds.toLongArray(),
                     city = null,
@@ -149,7 +147,7 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
     }
 
     private fun addDateItemView(timeInterval: TimeInterval) {
-        var datePosition =
+        val datePosition =
             pickedDates.indexOfLast { currTimeInterval -> return@indexOfLast currTimeInterval.start <= timeInterval.start } + 1
         viewState.addDateItemView(
             timeInterval,
@@ -179,13 +177,13 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
         }
     }
 
-    fun initDates(dates: List<TimeInterval>) {
+    fun initDates(dates: TreeSet<TimeInterval?>) {
         if (isDatesInitialized) {
             return
         }
         isDatesInitialized = true
         for (date in dates) {
-            addDateItemView(date)
+            date?.let { addDateItemView(it) }
         }
     }
 

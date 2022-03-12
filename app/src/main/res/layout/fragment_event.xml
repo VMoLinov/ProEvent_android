@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/root_container"
+    android:id="@+id/rootContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/ProEvent_white">
@@ -22,11 +22,11 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/event_bar"
+            app:layout_constraintTop_toBottomOf="@id/eventBar"
             app:layout_constraintWidth_max="360dp">
 
             <LinearLayout
-                android:id="@+id/scroll_child"
+                android:id="@+id/scrollChild"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -34,7 +34,7 @@
                 android:scrollbars="vertical">
 
                 <ImageView
-                    android:id="@+id/event_image_view"
+                    android:id="@+id/eventImageView"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:layout_gravity="center_horizontal"
@@ -43,7 +43,7 @@
                     android:src="@drawable/ic_event_image_placeholder" />
 
                 <TextView
-                    android:id="@+id/edit_event_image"
+                    android:id="@+id/editEventImage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -55,7 +55,7 @@
                     android:textSize="12sp" />
 
                 <LinearLayout
-                    android:id="@+id/name_input_container"
+                    android:id="@+id/nameInputContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
@@ -64,7 +64,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/name_input_title"
+                        android:id="@+id/nameInputTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
@@ -74,14 +74,14 @@
                         android:textSize="16sp" />
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/name_input"
+                        android:id="@+id/nameInput"
                         style="@style/ProEventRWTextInputLayoutStyle"
                         android:clickable="true"
                         android:focusable="true"
                         app:endIconMode="none">
 
                         <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
-                            android:id="@+id/name_edit"
+                            android:id="@+id/nameEdit"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:hint="@string/event_name_input_hint"
@@ -93,7 +93,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/location_input_container"
+                    android:id="@+id/locationInputContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
@@ -102,7 +102,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/location_input_title"
+                        android:id="@+id/locationInputTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
@@ -112,14 +112,14 @@
                         android:textSize="16sp" />
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/location_input"
+                        android:id="@+id/locationInput"
                         style="@style/ProEventRWTextInputLayoutStyle"
                         android:clickable="true"
                         android:focusable="true"
                         app:endIconMode="none">
 
                         <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
-                            android:id="@+id/location_edit"
+                            android:id="@+id/locationEdit"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:hint="@string/location_input_hint"
@@ -135,7 +135,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/dates_bar"
+                        android:id="@+id/datesBar"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_marginTop="20dp"
@@ -149,51 +149,51 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <View
-                        android:id="@+id/dates_bar_hit_area"
+                        android:id="@+id/datesBarHitArea"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        app:layout_constraintBottom_toBottomOf="@id/dates_bar"
-                        app:layout_constraintLeft_toLeftOf="@id/dates_bar"
-                        app:layout_constraintRight_toRightOf="@id/dates_bar"
-                        app:layout_constraintTop_toTopOf="@id/dates_bar" />
+                        app:layout_constraintBottom_toBottomOf="@id/datesBar"
+                        app:layout_constraintLeft_toLeftOf="@id/datesBar"
+                        app:layout_constraintRight_toRightOf="@id/datesBar"
+                        app:layout_constraintTop_toTopOf="@id/datesBar" />
 
                     <ImageView
-                        android:id="@+id/add_date"
+                        android:id="@+id/addDate"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginStart="7dp"
                         android:contentDescription="@string/event_add_date"
                         android:scaleType="center"
                         android:src="@drawable/ic_add"
-                        app:layout_constraintBottom_toBottomOf="@id/dates_bar"
+                        app:layout_constraintBottom_toBottomOf="@id/datesBar"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/dates_bar" />
+                        app:layout_constraintTop_toTopOf="@id/datesBar" />
 
                     <ImageView
-                        android:id="@+id/expand_dates"
+                        android:id="@+id/expandDates"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginStart="7dp"
                         android:contentDescription="@string/event_expand_dates"
                         android:scaleType="center"
                         android:src="@drawable/ic_expand"
-                        app:layout_constraintBottom_toBottomOf="@id/dates_bar"
+                        app:layout_constraintBottom_toBottomOf="@id/datesBar"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/dates_bar"
+                        app:layout_constraintTop_toTopOf="@id/datesBar"
                         app:tint="@color/ProEvent_blue_800" />
 
                     <LinearLayout
-                        android:id="@+id/dates_container"
+                        android:id="@+id/datesContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:visibility="gone"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/dates_bar">
+                        app:layout_constraintTop_toBottomOf="@id/datesBar">
 
                         <TextView
-                            android:id="@+id/no_dates"
+                            android:id="@+id/noDates"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="60dp"
@@ -210,7 +210,7 @@
                     </LinearLayout>
 
                     <TextView
-                        android:id="@+id/description_bar"
+                        android:id="@+id/descriptionBar"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_marginTop="20dp"
@@ -221,55 +221,55 @@
                         android:textSize="20sp"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/dates_container" />
+                        app:layout_constraintTop_toBottomOf="@id/datesContainer" />
 
                     <View
-                        android:id="@+id/description_bar_hit_area"
+                        android:id="@+id/descriptionBarHitArea"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        app:layout_constraintBottom_toBottomOf="@id/description_bar"
-                        app:layout_constraintLeft_toLeftOf="@id/description_bar"
-                        app:layout_constraintRight_toRightOf="@id/description_bar"
-                        app:layout_constraintTop_toTopOf="@id/description_bar" />
+                        app:layout_constraintBottom_toBottomOf="@id/descriptionBar"
+                        app:layout_constraintLeft_toLeftOf="@id/descriptionBar"
+                        app:layout_constraintRight_toRightOf="@id/descriptionBar"
+                        app:layout_constraintTop_toTopOf="@id/descriptionBar" />
 
                     <ImageView
-                        android:id="@+id/edit_description"
+                        android:id="@+id/editDescription"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginStart="7dp"
                         android:contentDescription="@string/event_edit_description"
                         android:scaleType="center"
                         android:src="@drawable/ic_edit"
-                        app:layout_constraintBottom_toBottomOf="@id/description_bar"
+                        app:layout_constraintBottom_toBottomOf="@id/descriptionBar"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/description_bar"
+                        app:layout_constraintTop_toTopOf="@id/descriptionBar"
                         app:tint="@color/ProEvent_blue_800" />
 
                     <ImageView
-                        android:id="@+id/expand_description"
+                        android:id="@+id/expandDescription"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginStart="7dp"
                         android:contentDescription="@string/event_expand_description"
                         android:scaleType="center"
                         android:src="@drawable/ic_expand"
-                        app:layout_constraintBottom_toBottomOf="@id/description_bar"
+                        app:layout_constraintBottom_toBottomOf="@id/descriptionBar"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/description_bar"
+                        app:layout_constraintTop_toTopOf="@id/descriptionBar"
                         app:tint="@color/ProEvent_blue_800" />
 
                     <FrameLayout
-                        android:id="@+id/description_container"
+                        android:id="@+id/descriptionContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:visibility="gone"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/description_bar">
+                        app:layout_constraintTop_toBottomOf="@id/descriptionBar">
 
                         <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
-                            android:id="@+id/description_text"
+                            android:id="@+id/descriptionText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="20dp"
@@ -280,7 +280,7 @@
                             android:visibility="gone" />
 
                         <TextView
-                            android:id="@+id/no_description"
+                            android:id="@+id/noDescription"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="60dp"
@@ -294,7 +294,7 @@
                     </FrameLayout>
 
                     <TextView
-                        android:id="@+id/maps_bar"
+                        android:id="@+id/mapsBar"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_marginTop="20dp"
@@ -305,54 +305,54 @@
                         android:textSize="20sp"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/description_container" />
+                        app:layout_constraintTop_toBottomOf="@id/descriptionContainer" />
 
                     <View
-                        android:id="@+id/map_bar_hit_area"
+                        android:id="@+id/mapBarHitArea"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        app:layout_constraintBottom_toBottomOf="@id/maps_bar"
-                        app:layout_constraintLeft_toLeftOf="@id/maps_bar"
-                        app:layout_constraintRight_toRightOf="@id/maps_bar"
-                        app:layout_constraintTop_toTopOf="@id/maps_bar" />
+                        app:layout_constraintBottom_toBottomOf="@id/mapsBar"
+                        app:layout_constraintLeft_toLeftOf="@id/mapsBar"
+                        app:layout_constraintRight_toRightOf="@id/mapsBar"
+                        app:layout_constraintTop_toTopOf="@id/mapsBar" />
 
                     <ImageView
-                        android:id="@+id/add_map"
+                        android:id="@+id/addMap"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginStart="7dp"
                         android:contentDescription="@string/add_map"
                         android:scaleType="center"
                         android:src="@drawable/ic_add"
-                        app:layout_constraintBottom_toBottomOf="@id/maps_bar"
+                        app:layout_constraintBottom_toBottomOf="@id/mapsBar"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/maps_bar" />
+                        app:layout_constraintTop_toTopOf="@id/mapsBar" />
 
                     <ImageView
-                        android:id="@+id/expand_maps"
+                        android:id="@+id/expandMaps"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginStart="7dp"
                         android:contentDescription="@string/event_expand_maps"
                         android:scaleType="center"
                         android:src="@drawable/ic_expand"
-                        app:layout_constraintBottom_toBottomOf="@id/maps_bar"
+                        app:layout_constraintBottom_toBottomOf="@id/mapsBar"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/maps_bar"
+                        app:layout_constraintTop_toTopOf="@id/mapsBar"
                         app:tint="@color/ProEvent_blue_800" />
 
                     <LinearLayout
-                        android:id="@+id/maps_container"
+                        android:id="@+id/mapsContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:visibility="gone"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/maps_bar">
+                        app:layout_constraintTop_toBottomOf="@id/mapsBar">
 
                         <TextView
-                            android:id="@+id/no_maps"
+                            android:id="@+id/noMaps"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="60dp"
@@ -369,7 +369,7 @@
                     </LinearLayout>
 
                     <TextView
-                        android:id="@+id/points_bar"
+                        android:id="@+id/pointsBar"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_marginTop="20dp"
@@ -380,54 +380,54 @@
                         android:textSize="20sp"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/maps_container" />
+                        app:layout_constraintTop_toBottomOf="@id/mapsContainer" />
 
                     <View
-                        android:id="@+id/points_bar_hit_area"
+                        android:id="@+id/pointsBarHitArea"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        app:layout_constraintBottom_toBottomOf="@id/points_bar"
-                        app:layout_constraintLeft_toLeftOf="@id/points_bar"
-                        app:layout_constraintRight_toRightOf="@id/points_bar"
-                        app:layout_constraintTop_toTopOf="@id/points_bar" />
+                        app:layout_constraintBottom_toBottomOf="@id/pointsBar"
+                        app:layout_constraintLeft_toLeftOf="@id/pointsBar"
+                        app:layout_constraintRight_toRightOf="@id/pointsBar"
+                        app:layout_constraintTop_toTopOf="@id/pointsBar" />
 
                     <ImageView
-                        android:id="@+id/add_point"
+                        android:id="@+id/addPoint"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginStart="7dp"
                         android:contentDescription="@string/event_points"
                         android:scaleType="center"
                         android:src="@drawable/ic_add"
-                        app:layout_constraintBottom_toBottomOf="@id/points_bar"
+                        app:layout_constraintBottom_toBottomOf="@id/pointsBar"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/points_bar" />
+                        app:layout_constraintTop_toTopOf="@id/pointsBar" />
 
                     <ImageView
-                        android:id="@+id/expand_points"
+                        android:id="@+id/expandPoints"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginStart="7dp"
                         android:contentDescription="@string/event_expand_points"
                         android:scaleType="center"
                         android:src="@drawable/ic_expand"
-                        app:layout_constraintBottom_toBottomOf="@id/points_bar"
+                        app:layout_constraintBottom_toBottomOf="@id/pointsBar"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/points_bar"
+                        app:layout_constraintTop_toTopOf="@id/pointsBar"
                         app:tint="@color/ProEvent_blue_800" />
 
                     <LinearLayout
-                        android:id="@+id/points_container"
+                        android:id="@+id/pointsContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:visibility="gone"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/points_bar">
+                        app:layout_constraintTop_toBottomOf="@id/pointsBar">
 
                         <TextView
-                            android:id="@+id/no_points"
+                            android:id="@+id/noPoints"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="60dp"
@@ -441,7 +441,7 @@
                     </LinearLayout>
 
                     <TextView
-                        android:id="@+id/participants_bar"
+                        android:id="@+id/participantsBar"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_marginTop="20dp"
@@ -452,44 +452,44 @@
                         android:textSize="20sp"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/points_container" />
+                        app:layout_constraintTop_toBottomOf="@id/pointsContainer" />
 
                     <View
-                        android:id="@+id/participants_bar_hit_area"
+                        android:id="@+id/participantsBarHitArea"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        app:layout_constraintBottom_toBottomOf="@id/participants_bar"
-                        app:layout_constraintLeft_toLeftOf="@id/participants_bar"
-                        app:layout_constraintRight_toRightOf="@id/participants_bar"
-                        app:layout_constraintTop_toTopOf="@id/participants_bar" />
+                        app:layout_constraintBottom_toBottomOf="@id/participantsBar"
+                        app:layout_constraintLeft_toLeftOf="@id/participantsBar"
+                        app:layout_constraintRight_toRightOf="@id/participantsBar"
+                        app:layout_constraintTop_toTopOf="@id/participantsBar" />
 
                     <ImageView
-                        android:id="@+id/add_participant"
+                        android:id="@+id/addParticipant"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginStart="7dp"
                         android:contentDescription="@string/event_add_participants"
                         android:scaleType="center"
                         android:src="@drawable/ic_add"
-                        app:layout_constraintBottom_toBottomOf="@id/participants_bar"
+                        app:layout_constraintBottom_toBottomOf="@id/participantsBar"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/participants_bar" />
+                        app:layout_constraintTop_toTopOf="@id/participantsBar" />
 
                     <ImageView
-                        android:id="@+id/expand_participants"
+                        android:id="@+id/expandParticipants"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_marginStart="7dp"
                         android:contentDescription="@string/event_expand_participants"
                         android:scaleType="center"
                         android:src="@drawable/ic_expand"
-                        app:layout_constraintBottom_toBottomOf="@id/participants_bar"
+                        app:layout_constraintBottom_toBottomOf="@id/participantsBar"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/participants_bar"
+                        app:layout_constraintTop_toTopOf="@id/participantsBar"
                         app:tint="@color/ProEvent_blue_800" />
 
                     <LinearLayout
-                        android:id="@+id/participants_container"
+                        android:id="@+id/participantsContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -497,10 +497,10 @@
                         android:visibility="gone"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/participants_bar">
+                        app:layout_constraintTop_toBottomOf="@id/participantsBar">
 
                         <TextView
-                            android:id="@+id/no_participants"
+                            android:id="@+id/noParticipants"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="60dp"
@@ -517,7 +517,7 @@
         </ScrollView>
 
         <TextView
-            android:id="@+id/absolute_bar"
+            android:id="@+id/absoluteBar"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@color/ProEvent_blue_300"
@@ -528,20 +528,20 @@
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/event_bar" />
+            app:layout_constraintTop_toBottomOf="@id/eventBar" />
 
         <View
-            android:id="@+id/absolute_bar_hit_area"
+            android:id="@+id/absoluteBarHitArea"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/absolute_bar"
-            app:layout_constraintLeft_toLeftOf="@id/absolute_bar"
-            app:layout_constraintRight_toRightOf="@id/absolute_bar"
-            app:layout_constraintTop_toTopOf="@id/absolute_bar" />
+            app:layout_constraintBottom_toBottomOf="@id/absoluteBar"
+            app:layout_constraintLeft_toLeftOf="@id/absoluteBar"
+            app:layout_constraintRight_toRightOf="@id/absoluteBar"
+            app:layout_constraintTop_toTopOf="@id/absoluteBar" />
 
         <ImageView
-            android:id="@+id/absolute_bar_edit"
+            android:id="@+id/absoluteBarEdit"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="7dp"
@@ -549,12 +549,12 @@
             android:scaleType="center"
             android:src="@drawable/ic_add"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/absolute_bar"
+            app:layout_constraintBottom_toBottomOf="@id/absoluteBar"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="@id/absolute_bar" />
+            app:layout_constraintTop_toTopOf="@id/absoluteBar" />
 
         <ImageView
-            android:id="@+id/absolute_bar_expand"
+            android:id="@+id/absoluteBarExpand"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="7dp"
@@ -562,9 +562,9 @@
             android:scaleType="center"
             android:src="@drawable/ic_expand"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/absolute_bar"
+            app:layout_constraintBottom_toBottomOf="@id/absoluteBar"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@id/absolute_bar"
+            app:layout_constraintTop_toTopOf="@id/absoluteBar"
             app:tint="@color/ProEvent_bright_orange_300" />
 
         <View
@@ -575,7 +575,7 @@
             android:visibility="gone" />
 
         <include
-            android:id="@id/event_bar"
+            android:id="@+id/eventBar"
             layout="@layout/toolbar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

@@ -6,6 +6,8 @@ import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*
 import ru.myproevent.domain.models.entities.Profile
+import ru.myproevent.domain.models.entities.TimeInterval
+import java.util.*
 
 interface IProEventDataSource {
     @POST("auth/login")
@@ -161,7 +163,7 @@ data class Pageable(
     val pageSize: Int,
     val paged: Boolean,
     val sort: Sort,
-    val unpaged: Boolean
+    val unPaged: Boolean
 )
 
 data class Sort(val empty: Boolean, val sorted: Boolean, val unsorted: Boolean)
@@ -171,8 +173,7 @@ data class EventDto(
     val name: String,
     val ownerUserId: Long,
     val eventStatus: String,
-    val startDate: String,
-    val endDate: String,
+    val eventDates: TreeSet<TimeInterval?>?,
     val description: String?,
     val participantsUserIds: LongArray?,
     val city: String?,
@@ -180,4 +181,19 @@ data class EventDto(
     val mapsFileIds: LongArray?,
     val pointsPointIds: LongArray?,
     val imageFile: String?,
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as EventDto
+        if (ownerUserId != other.ownerUserId) return false
+        if (eventDates != other.eventDates) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = ownerUserId.hashCode()
+        result = 31 * result + (eventDates?.hashCode() ?: 0)
+        return result
+    }
+}
