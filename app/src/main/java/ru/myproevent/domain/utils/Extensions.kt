@@ -33,14 +33,13 @@ fun Profile.toContact(status: Contact.Status?) =
 
 fun Contact.toContactDto() = ContactDto(id, status.toString())
 
-fun EventDto.toEvent(datePattern: String): Event {
-    val dateFormat = SimpleDateFormat(datePattern)
-    dateFormat.timeZone = TimeZone.getTimeZone("GMT")
+fun EventDto.toEvent(): Event {
     return Event(
         id,
         name,
         ownerUserId,
         Event.Status.fromString(eventStatus),
+        eventDates ?: TreeSet(),
         description,
         participantsUserIds,
         city,
@@ -51,14 +50,13 @@ fun EventDto.toEvent(datePattern: String): Event {
     )
 }
 
-fun Event.toEventDto(datePattern: String): EventDto {
-    val dateFormat = SimpleDateFormat(datePattern)
-    dateFormat.timeZone = TimeZone.getTimeZone("GMT")
+fun Event.toEventDto(): EventDto {
     return EventDto(
         id,
         name,
         ownerUserId,
         status.toString(),
+        dates,
         description,
         participantsUserIds,
         city,
@@ -73,10 +71,10 @@ fun Address.Companion.fromString(str: String): Address? {
     val address: Address?
 
     val addressVariables = str.split(" || ")
-    if (addressVariables.size != 3) {
-        address = null
+    address = if (addressVariables.size != 3) {
+        null
     } else {
-        address = try {
+        try {
             Address(
                 addressVariables[1].toDouble(),
                 addressVariables[2].toDouble(),

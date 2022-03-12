@@ -636,8 +636,7 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
 
     fun addEvent(
         name: String,
-        startDate: Date,
-        endDate: Date,
+        dates: TreeSet<TimeInterval?>,
         address: Address?,
         description: String,
         uuid: String?,
@@ -650,6 +649,7 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
                     name = name,
                     ownerUserId = loginRepository.getLocalId()!!,
                     status = Event.Status.ACTUAL,
+                    dates = dates,
                     description = description,
                     participantsUserIds = pickedParticipantsIds.toLongArray(),
                     city = null,
@@ -813,13 +813,13 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
 //        }
     }
 
-    fun initDates(dates: List<TimeInterval>) {
+    fun initDates(dates: TreeSet<TimeInterval?>) {
         if (isDatesInitialized) {
             return
         }
         isDatesInitialized = true
         for (date in dates) {
-            addDateItemView(date)
+            date?.let { addDateItemView(it) }
         }
     }
 
