@@ -10,7 +10,7 @@ data class Event(
     var name: String,
     var ownerUserId: Long,
     var status: Status,
-    var dates: TreeSet<TimeInterval?>,
+    var dates: TreeSet<TimeInterval>,
     var description: String?,
     var participantsUserIds: LongArray?,
     var city: String?,

@@ -43,22 +43,22 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
 
     val participantProfiles = mutableMapOf<Long, Profile>()
 
-    private val dates: MutableList<TimeInterval>? = mutableListOf(
-        TimeInterval(1646817780000, 1646821380000),
-        TimeInterval(1643977614L * 1000L, (1643977614L + 3600L) * 1000L),
-        TimeInterval((1646815896L - 3600L * 2L) * 1000L, 1646815896L * 1000L),
-        TimeInterval(1646815896L * 1000L, (1646815896L + 3600L * 2L) * 1000L),
-        TimeInterval((1646815896L + 86400L * 2L) * 1000L, (1646815896L + 86400L * 3L) * 1000L)
-    ).apply {
-        sortWith { a, b ->
-            val longDiff = a.start - b.start
-            return@sortWith if (longDiff > 0L) {
-                1
-            } else {
-                -1
-            }
-        }
-    }
+//    private val dates: MutableList<TimeInterval>? = mutableListOf(
+//        TimeInterval(1646817780000, 1646821380000),
+//        TimeInterval(1643977614L * 1000L, (1643977614L + 3600L) * 1000L),
+//        TimeInterval((1646815896L - 3600L * 2L) * 1000L, 1646815896L * 1000L),
+//        TimeInterval(1646815896L * 1000L, (1646815896L + 3600L * 2L) * 1000L),
+//        TimeInterval((1646815896L + 86400L * 2L) * 1000L, (1646815896L + 86400L * 3L) * 1000L)
+//    ).apply {
+//        sortWith { a, b ->
+//            val longDiff = a.start - b.start
+//            return@sortWith if (longDiff > 0L) {
+//                1
+//            } else {
+//                -1
+//            }
+//        }
+//    }
 
     private fun removeHeaderItemsFromScreenItems(headerPosition: Int) {
         eventScreenListPresenter.eventScreenItems.subList(
@@ -67,13 +67,16 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
         ).clear()
     }
 
-    private fun addHeaderItemsToScreenItems(headerPosition: Int, items: List<EventScreenItem>) {
+    private fun addHeaderItemsToScreenItems(
+        headerPosition: Int,
+        items: TreeSet<EventScreenItem.ListItem>
+    ) {
         eventScreenListPresenter.eventScreenItems.addAll(headerPosition + 1, items)
     }
 
     private fun enableDescriptionEdit(headerPosition: Int) {
         with(eventScreenListPresenter.eventScreenItems[headerPosition] as EventScreenItem.FormsHeader<EventScreenItem.ListItem>) {
-            if (items[0] is EventScreenItem.NoItemsPlaceholder) {
+            if (items.first() is EventScreenItem.NoItemsPlaceholder) {
                 removeHeaderItemsFromScreenItems(headerPosition)
                 addHeaderItemsToScreenItems(headerPosition, items.apply {
                     clear()
@@ -92,7 +95,7 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
                     isExpanded = true
                     addHeaderItemsToScreenItems(headerPosition, items)
                 }
-                with(items[0] as EventScreenItem.TextBox) {
+                with(items.first() as EventScreenItem.TextBox) {
                     isEditLocked = false
                     hasFocusIntent = true
                 }
@@ -170,23 +173,27 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
                 itemId = EVENT_SCREEN_ITEM_ID.DATES_HEADER,
                 title = "Время проведения",
                 isExpanded = setOfExpandedItems.contains(EVENT_SCREEN_ITEM_ID.DATES_HEADER),
-                items = mutableListOf(), // TODO: отрефакторить: как избежать создание этого пустого mutableList? Он нужен просто как загулшка
+                items = TreeSet(), // TODO: отрефакторить: как избежать создание этого пустого mutableList? Он нужен просто как загулшка
                 editOptionIcon = if (isCurrentUserOwnsEvent) R.drawable.ic_add else null,
                 onEditOptionClick = {
                     openDatePicker(null)
                 }
             ).apply {
-                dates?.forEach {
-                    items.add(EventScreenItem.EventDateItem(it, this))
-                } ?: items.add(
-                    NoDatesPlaceholderFactory.create(header = this)
-                )
+                if (!eventBeforeEdit?.dates.isNullOrEmpty()) {
+                    eventBeforeEdit!!.dates.forEach { timeInterval ->
+                        items.add(EventScreenItem.EventDateItem(timeInterval, this))
+                    }
+                } else {
+                    items.add(
+                        NoDatesPlaceholderFactory.create(header = this)
+                    )
+                }
             },
             EventScreenItem.FormsHeader(
                 itemId = EVENT_SCREEN_ITEM_ID.DESCRIPTION_HEADER,
                 title = "Описание",
                 isExpanded = setOfExpandedItems.contains(EVENT_SCREEN_ITEM_ID.DESCRIPTION_HEADER),
-                items = mutableListOf(),
+                items = TreeSet(),
                 editOptionIcon = if (isCurrentUserOwnsEvent) R.drawable.ic_edit_blue else null,
                 onEditOptionClick = { }
             ).apply {
@@ -214,7 +221,7 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
                 itemId = EVENT_SCREEN_ITEM_ID.MAPS_HEADER,
                 title = "Карты меропрития",
                 isExpanded = setOfExpandedItems.contains(EVENT_SCREEN_ITEM_ID.MAPS_HEADER),
-                items = mutableListOf(),
+                items = TreeSet(),
                 editOptionIcon = if (isCurrentUserOwnsEvent) R.drawable.ic_add else null,
                 onEditOptionClick = {
                     viewState.showMessage("Данный функционал пока не реализован, так как для него нет законченного дизайна")
@@ -226,7 +233,7 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
                 itemId = EVENT_SCREEN_ITEM_ID.POINTS_HEADER,
                 title = "Точки",
                 isExpanded = setOfExpandedItems.contains(EVENT_SCREEN_ITEM_ID.POINTS_HEADER),
-                items = mutableListOf(),
+                items = TreeSet(),
                 editOptionIcon = if (isCurrentUserOwnsEvent) R.drawable.ic_add else null,
                 onEditOptionClick = {
                     viewState.showMessage("Данный функционал пока не реализован, так как для него нет законченного дизайна")
@@ -238,7 +245,7 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
                 itemId = EVENT_SCREEN_ITEM_ID.PARTICIPANTS_HEADER,
                 title = "Участники",
                 isExpanded = setOfExpandedItems.contains(EVENT_SCREEN_ITEM_ID.PARTICIPANTS_HEADER),
-                items = mutableListOf(),
+                items = TreeSet(),
                 editOptionIcon = if (isCurrentUserOwnsEvent) R.drawable.ic_add else null,
                 onEditOptionClick = {
                     localRouter.navigateTo(
@@ -332,7 +339,7 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
 
                 private fun onExpandEvent(headerPosition: Int) {
                     viewState.hideKeyboard()
-                    with(eventScreenItems[headerPosition] as EventScreenItem.FormsHeader<*>) {
+                    with(eventScreenItems[headerPosition] as EventScreenItem.FormsHeader<EventScreenItem.ListItem>) {
                         if (!isExpanded) {
                             addHeaderItemsToScreenItems(headerPosition, items)
                             setOfExpandedItems.add(eventScreenItems[headerPosition].itemId)
@@ -538,18 +545,31 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
 
         val description =
             with(eventScreenListPresenter.eventScreenItems.find { item -> item.itemId == EVENT_SCREEN_ITEM_ID.DESCRIPTION_HEADER } as EventScreenItem.FormsHeader<EventScreenItem.ListItem>) {
-                if (items[0] is EventScreenItem.TextBox) {
-                    (items[0] as EventScreenItem.TextBox).value
+                if (items.first() is EventScreenItem.TextBox) {
+                    (items.first() as EventScreenItem.TextBox).value
                 } else {
                     ""
+                }
+            }
+
+        // TODO: отрефакторить: вынести в extension функцию
+        val dates =
+            with(eventScreenListPresenter.eventScreenItems.find { item -> item.itemId == EVENT_SCREEN_ITEM_ID.DATES_HEADER } as EventScreenItem.FormsHeader<EventScreenItem.ListItem>) {
+                if (items.first() is EventScreenItem.NoItemsPlaceholder) {
+                    TreeSet()
+                } else {
+                    TreeSet<TimeInterval>().apply {
+                        items.forEach {
+                            add((it as EventScreenItem.EventDateItem).timeInterval)
+                        }
+                    }
                 }
             }
 
         if (eventBeforeEdit == null) {
             addEvent(
                 name = (eventScreenListPresenter.eventScreenItems[1] as EventScreenItem.TextForm).value,
-                startDate = Calendar.getInstance().time,
-                endDate = Calendar.getInstance().time,
+                dates = dates,
                 address = Address(
                     0.0,
                     0.0,
@@ -564,7 +584,7 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
                 (eventScreenListPresenter.eventScreenItems.find { item -> item.itemId == EVENT_SCREEN_ITEM_ID.PARTICIPANTS_HEADER } as EventScreenItem.FormsHeader<EventScreenItem.ListItem>).items
             val participantsItemsIterator = participantsItems.iterator()
             val participantsUserIds =
-                if (participantsItems[0] is EventScreenItem.NoItemsPlaceholder) {
+                if (participantsItems.first() is EventScreenItem.NoItemsPlaceholder) {
                     null
                 } else {
                     LongArray(
@@ -578,6 +598,7 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
                 ownerUserId = loginRepository.getLocalId()!!,
                 status = Event.Status.ACTUAL,
                 description = description,
+                dates = dates,
                 participantsUserIds = participantsUserIds,
                 city = "PLACEHHOLDER",
                 address = Address(
@@ -621,11 +642,13 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
         get() {
             val participantsListItems =
                 (eventScreenListPresenter.eventScreenItems.find { item -> item.itemId == EVENT_SCREEN_ITEM_ID.PARTICIPANTS_HEADER } as EventScreenItem.FormsHeader<EventScreenItem.ListItem>).items
-            return if (participantsListItems[0] is EventScreenItem.NoItemsPlaceholder) {
+            return if (participantsListItems.first() is EventScreenItem.NoItemsPlaceholder) {
                 listOf()
             } else {
-                List(participantsListItems.size) { index ->
-                    (participantsListItems[index] as EventScreenItem.ParticipantItem).participantId
+                with(participantsListItems.iterator()) {
+                    List(participantsListItems.size) {
+                        (next() as EventScreenItem.ParticipantItem).participantId
+                    }
                 }
             }
         }
@@ -636,7 +659,7 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
 
     fun addEvent(
         name: String,
-        dates: TreeSet<TimeInterval?>,
+        dates: TreeSet<TimeInterval>,
         address: Address?,
         description: String,
         uuid: String?,
@@ -748,7 +771,7 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
         val headerPosition =
             eventScreenListPresenter.eventScreenItems.indexOfFirst { item -> item.itemId == EVENT_SCREEN_ITEM_ID.DATES_HEADER }
         with(eventScreenListPresenter.eventScreenItems[headerPosition] as EventScreenItem.FormsHeader<EventScreenItem.ListItem>) {
-            if (items[0] is EventScreenItem.NoItemsPlaceholder) {
+            if (items.first() is EventScreenItem.NoItemsPlaceholder) {
                 items.clear()
                 if (isExpanded) {
                     eventScreenListPresenter.eventScreenItems.subList(
@@ -757,17 +780,17 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
                     ).clear()
                 }
             }
-            val listItemPosition = with(items.indexOfFirst { item -> (item as EventScreenItem.EventDateItem).timeInterval.start > timeInterval.start }){
-                if(this == -1){
-                    items.size
-                } else {
-                    this
+            val listItemPosition =
+                with(items.indexOfFirst { item -> (item as EventScreenItem.EventDateItem).timeInterval.start > timeInterval.start }) {
+                    if (this == -1) {
+                        items.size
+                    } else {
+                        this
+                    }
                 }
-            }
             Log.d("[MYLOG]", "listItemPosition($listItemPosition)")
             val screenItemPosition = headerPosition + 1 + listItemPosition
             items.add(
-                listItemPosition,
                 EventScreenItem.EventDateItem(
                     timeInterval = timeInterval,
                     header = this
@@ -833,7 +856,7 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
         val headerPosition =
             eventScreenListPresenter.eventScreenItems.indexOfFirst { item -> item.itemId == EVENT_SCREEN_ITEM_ID.PARTICIPANTS_HEADER }
         with(eventScreenListPresenter.eventScreenItems[headerPosition] as EventScreenItem.FormsHeader<EventScreenItem.ListItem>) {
-            if (items[0] is EventScreenItem.NoItemsPlaceholder) {
+            if (items.first() is EventScreenItem.NoItemsPlaceholder) {
                 items.clear()
                 if (isExpanded) {
                     eventScreenListPresenter.eventScreenItems.subList(
@@ -967,7 +990,7 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
             if (indexOfItemToRemove == -1) {
                 throw RuntimeException("Попытка удалить участника, который не явялется участником редактируемого мероприятия.")
             }
-            items.removeAt(indexOfItemToRemove)
+            items.removeIf { item -> (item as EventScreenItem.ParticipantItem).participantId == id }
             if (!isExpanded) {
                 isExpanded = true
                 setOfExpandedItems.add(EVENT_SCREEN_ITEM_ID.DATES_HEADER)
@@ -978,7 +1001,7 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
                 items.add(NoItemsPlaceholderFactory.create(header = this))
                 eventScreenListPresenter.eventScreenItems.add(
                     headerPosition + 1,
-                    items[0]
+                    items.first()
                 )
             }
         }
@@ -1003,7 +1026,7 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
             if (indexOfItemToRemove == -1) {
                 throw RuntimeException("Попытка удалить дату(временной интервал), которая отсутствует в датах редактируемого мероприятия.")
             }
-            items.removeAt(indexOfItemToRemove)
+            items.removeIf { item -> (item as EventScreenItem.EventDateItem).timeInterval == timeInterval }
             if (!isExpanded) {
                 isExpanded = true
                 setOfExpandedItems.add(EVENT_SCREEN_ITEM_ID.DATES_HEADER)
@@ -1014,7 +1037,7 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
                 items.add(NoDatesPlaceholderFactory.create(header = this))
                 eventScreenListPresenter.eventScreenItems.add(
                     headerPosition + 1,
-                    items[0]
+                    items.first()
                 )
             }
         }

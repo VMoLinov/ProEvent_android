@@ -176,7 +176,7 @@ data class EventDto(
     val name: String,
     val ownerUserId: Long,
     val eventStatus: String,
-    val eventDates: TreeSet<TimeInterval?>?,
+    val eventDates: TreeSet<TimeInterval>?,
     val description: String?,
     val participantsUserIds: LongArray?,
     val city: String?,
