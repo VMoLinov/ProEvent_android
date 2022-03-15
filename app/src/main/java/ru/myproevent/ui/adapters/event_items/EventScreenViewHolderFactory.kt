@@ -43,7 +43,7 @@ class EventScreenViewHolderFactory(
                 parent,
                 false
             ),
-            presenter = presenter.proeventProfilePictureFormItemPresenter
+            presenter = presenter.profilePictureFormItemPresenter
         )
         EventScreenItem.ItemType.TEXT_FORM.ordinal -> ProeventTextFormViewHolder(
             ItemProeventTextFormBinding.inflate(
@@ -51,7 +51,7 @@ class EventScreenViewHolderFactory(
                 parent,
                 false
             ),
-            presenter = presenter.proeventTextFormItemPresenter
+            presenter = presenter.textFormItemPresenter
         )
         EventScreenItem.ItemType.FORM_HEADER.ordinal -> ProeventFormsHeaderViewHolder(
             ItemProeventFormsHeaderBinding.inflate(
@@ -59,7 +59,7 @@ class EventScreenViewHolderFactory(
                 parent,
                 false
             ),
-            presenter = presenter.proeventFormsHeaderItemPresenter
+            presenter = presenter.formsHeaderItemPresenter
         )
         EventScreenItem.ItemType.PARTICIPANT_ITEM.ordinal -> ParticipantItemViewHolder(
             ItemContactBinding.inflate(

@@ -18,7 +18,7 @@ class EventScreenRVAdapter(val presenter: IEventScreenListPresenter) :
         firstVisibleItemPositionChangeWatcher.init(
             this,
             recyclerView,
-            presenter.proeventFormsHeaderItemPresenter
+            presenter.formsHeaderItemPresenter
         )
     }
 
@@ -30,11 +30,11 @@ class EventScreenRVAdapter(val presenter: IEventScreenListPresenter) :
     // TODO: рефактоинг: как это отрефакторить?
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
         when (holder.itemViewType) {
-            EventScreenItem.ItemType.PROFILE_PICTURE_FORM.ordinal -> presenter.proeventProfilePictureFormItemPresenter.bindView(
+            EventScreenItem.ItemType.PROFILE_PICTURE_FORM.ordinal -> presenter.profilePictureFormItemPresenter.bindView(
                 (holder as ProeventProfilePictureFormViewHolder).apply { pos = position })
-            EventScreenItem.ItemType.TEXT_FORM.ordinal -> presenter.proeventTextFormItemPresenter.bindView(
+            EventScreenItem.ItemType.TEXT_FORM.ordinal -> presenter.textFormItemPresenter.bindView(
                 (holder as ProeventTextFormViewHolder).apply { pos = position })
-            EventScreenItem.ItemType.FORM_HEADER.ordinal -> presenter.proeventFormsHeaderItemPresenter.bindView(
+            EventScreenItem.ItemType.FORM_HEADER.ordinal -> presenter.formsHeaderItemPresenter.bindView(
                 (holder as ProeventFormsHeaderViewHolder).apply { pos = position })
             EventScreenItem.ItemType.PARTICIPANT_ITEM.ordinal -> presenter.participantItemPresenter.bindView(
                 (holder as ParticipantItemViewHolder).apply { pos = position })

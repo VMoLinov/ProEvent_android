@@ -9,16 +9,6 @@ import java.text.FieldPosition
 
 @AddToEnd
 interface EventView : BaseMvpView {
-    fun addParticipantItemView(profile: Profile)
-    fun addDateItemView(timeInterval: TimeInterval, position: Int)
-    fun enableDescriptionEdit()
-    fun expandDescription()
-    fun expandMaps()
-    fun expandPoints()
-    fun expandParticipants()
-    fun expandDates()
-    fun clearDates()
-    fun clearParticipants()
     fun showAbsoluteFormsHeader(
         title: String,
         editIcon: Int?,
@@ -29,21 +19,11 @@ interface EventView : BaseMvpView {
     )
 
     fun hideAbsoluteBar()
-    fun unlockNameEdit()
-    fun unlockLocationEdit()
-
-    @OneExecution
-    fun cancelEdit()
     fun showEditOptions()
     fun hideEditOptions()
     fun enableSaveOptions()
     fun disableSaveOptions()
     fun enableActionOptions()
-    fun showDateEditOptions(position: Int)
-    fun hideDateEditOptions()
-    fun lockEdit()
-    fun removeParticipant(id: Long, pickedParticipantsIds: List<Long>)
-    fun removeDate(date: TimeInterval, pickedDates: List<TimeInterval>)
 
     fun init()
     fun updateEventScreenList()

@@ -1,11 +1,10 @@
 package ru.myproevent.ui.adapters.event_items.presenter_interfaces
 
-import ru.myproevent.ui.adapters.IItemPresenter
 import ru.myproevent.ui.adapters.event_items.EVENT_SCREEN_ITEM_ID
-import ru.myproevent.ui.adapters.event_items.EventScreenItem
 import ru.myproevent.ui.adapters.event_items.view_item_interfaces.IProeventFormsHeaderItemView
+import ru.myproevent.ui.presenters.events.event.event_screen_items_presenters.ItemPresenter
 
-interface IFormsHeaderItemPresenter : IItemPresenter<IProeventFormsHeaderItemView> {
+abstract class IFormsHeaderItemPresenter : ItemPresenter<IProeventFormsHeaderItemView>() {
     abstract class AbsoluteFormsHeaderPresenter {
         private var currAbsoluteFormsHeaderId: EVENT_SCREEN_ITEM_ID? = null
 
@@ -22,7 +21,8 @@ interface IFormsHeaderItemPresenter : IItemPresenter<IProeventFormsHeaderItemVie
         }
     }
 
-    val absoluteFormsHeaderPresenter: AbsoluteFormsHeaderPresenter
-    fun onFirstVisibleItemPositionChangeListener(position: Int)
-    fun onEditClick(view: IProeventFormsHeaderItemView)
+    abstract val setOfExpandedItems: MutableSet<EVENT_SCREEN_ITEM_ID>
+    abstract val absoluteFormsHeaderPresenter: AbsoluteFormsHeaderPresenter
+    abstract fun onFirstVisibleItemPositionChangeListener(position: Int)
+    abstract fun onEditClick(view: IProeventFormsHeaderItemView)
 }

@@ -1,6 +1,7 @@
 package ru.myproevent.ui.adapters.event_items
 
 import ru.myproevent.domain.models.entities.TimeInterval
+import ru.myproevent.ui.presenters.events.event.event_screen_items_presenters.forms_header_item_presenters.IHeaderPresenter
 import java.lang.RuntimeException
 import java.util.*
 
@@ -33,7 +34,7 @@ sealed class EventScreenItem(open val itemId: EVENT_SCREEN_ITEM_ID, val type: It
         var isExpanded: Boolean,
         val items: TreeSet<V>,
         var editOptionIcon: Int?,
-        var onEditOptionClick: (headerPosition: Int) -> Unit,
+        var presenter: IHeaderPresenter? = null
     ) : EventScreenItem(itemId, ItemType.FORM_HEADER)
 
     data class ParticipantItem(

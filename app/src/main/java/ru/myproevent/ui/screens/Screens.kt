@@ -48,6 +48,6 @@ class Screens : IScreens {
     override fun eventParticipant(profile: Profile) = FragmentScreen { EventParticipantFragment.newInstance(profile) }
     override fun eventActionConfirmation(event: Event, status: Event.Status?) = FragmentScreen { EventActionConfirmationFragment.newInstance(event, status) }
     override fun events() = FragmentScreen { EventsFragment.newInstance() }
-    override fun event() = FragmentScreen("EVENT") { EventFragmentNew.newInstance() }
-    override fun event(event: Event) = FragmentScreen("EVENT") { EventFragmentNew.newInstance(event) }
+    override fun event() = FragmentScreen("EVENT") { EventFragment.newInstance() }
+    override fun event(event: Event) = FragmentScreen("EVENT") { EventFragment.newInstance(event) }
 }
