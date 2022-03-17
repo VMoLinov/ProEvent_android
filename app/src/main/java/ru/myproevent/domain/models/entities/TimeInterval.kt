@@ -3,6 +3,7 @@ package ru.myproevent.domain.models.entities
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
+import java.io.Serializable
 
 @Parcelize
 data class TimeInterval(
@@ -10,7 +11,7 @@ data class TimeInterval(
     var start: Long,
     @SerializedName("endDate")
     var end: Long
-) : Parcelable, Comparable<TimeInterval> {
+) : Parcelable, Serializable, Comparable<TimeInterval> {
 
     override fun compareTo(other: TimeInterval): Int {
         return when {
