@@ -12,17 +12,18 @@ import ru.myproevent.domain.models.repositories.events.IProEventEventsRepository
 import ru.myproevent.domain.models.repositories.images.IImagesRepository
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
+import ru.myproevent.ui.adapters.event_items.*
+import ru.myproevent.ui.data_items.EventScreenItemsFactory
+import ru.myproevent.ui.data_items.no_items_placeholders.NoDatesPlaceholderFactory
+import ru.myproevent.ui.data_items.no_items_placeholders.NoItemsPlaceholderFactory
 import ru.myproevent.ui.presenters.BaseMvpPresenter
 import java.io.File
+import java.lang.RuntimeException
 import java.util.*
 import javax.inject.Inject
 
-class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRouter) {
-    private val pickedParticipantsIds = mutableListOf<Long>()
-    private var isParticipantsProfilesInitialized = false
-
-    val pickedDates = mutableListOf<TimeInterval>()
-    private var isDatesInitialized = false
+class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
+    BaseMvpPresenter<EventView>(localRouter) {
 
     @Inject
     lateinit var eventsRepository: IProEventEventsRepository
@@ -36,9 +37,38 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
     @Inject
     lateinit var imagesRepository: IImagesRepository
 
+    val isCurrentUserOwnsEvent by lazy {
+        eventBeforeEdit?.let { loginRepository.getLocalId()!! == it.ownerUserId } ?: true
+    }
+
+    fun getEventScreenItemsBeforeEdit() = EventScreenItemsFactory.create(eventPresenter = this)
+
+    val eventScreenListPresenter = EventScreenListPresenter(eventPresenter = this)
+
+    val eventEditOptionsPresenter = EventEditOptionsPresenter(eventPresenter = this)
+
+    val pickedParticipantsIds: List<Long>
+        get() {
+            val participantsListItems =
+                (eventScreenListPresenter.eventScreenItems.find { item -> item.itemId == EVENT_SCREEN_ITEM_ID.PARTICIPANTS_HEADER } as EventScreenItem.FormsHeader<EventScreenItem.ListItem>).items
+            return if (participantsListItems.first() is EventScreenItem.NoItemsPlaceholder) {
+                listOf()
+            } else {
+                with(participantsListItems.iterator()) {
+                    List(participantsListItems.size) {
+                        (next() as EventScreenItem.ParticipantItem).participantId
+                    }
+                }
+            }
+        }
+    private var isParticipantsProfilesInitialized = false
+
+    val pickedDates = mutableListOf<TimeInterval>()
+    private var isDatesInitialized = false
+
     fun addEvent(
         name: String,
-        dates: TreeSet<TimeInterval?>,
+        dates: TreeSet<TimeInterval>,
         address: Address?,
         description: String,
         uuid: String?,
@@ -66,7 +96,7 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
                 callback?.invoke(it)
                 viewState.showMessage(getString(R.string.event_created))
                 viewState.hideEditOptions()
-                viewState.showActionOptions()
+                viewState.enableActionOptions()
             }, {
                 callback?.invoke(null)
                 viewState.showMessage(getString(R.string.error_occurred, it.message))
@@ -102,16 +132,23 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
         imagesRepository.deleteImage(uuid).subscribe().disposeOnDestroy()
     }
 
-    fun finishEvent(event: Event) =
-        localRouter.navigateTo(screens.eventActionConfirmation(event, Event.Status.COMPLETED))
+    private fun finishEvent() =
+        localRouter.navigateTo(
+            screens.eventActionConfirmation(
+                eventBeforeEdit!!,
+                Event.Status.COMPLETED
+            )
+        )
 
     fun cancelEvent(event: Event) =
         localRouter.navigateTo(screens.eventActionConfirmation(event, Event.Status.CANCELLED))
 
-    fun deleteEvent(event: Event) =
-        localRouter.navigateTo(screens.eventActionConfirmation(event, null))
+    private fun deleteEvent() =
+        localRouter.navigateTo(screens.eventActionConfirmation(eventBeforeEdit!!, null))
 
-    fun copyEvent(event: Event) {
+    private fun copyEvent() {
+        // TODO: вывести предпреждения что не сохранённые данные не будут перенесены в копию? Уточнить у дизайнера
+        val event = eventBeforeEdit!!
         event.ownerUserId = loginRepository.getLocalId()!!
         event.status = Event.Status.ACTUAL
         eventsRepository
@@ -133,48 +170,54 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
             .show()
     }
 
-    fun openParticipant(profile: Profile) {
-        localRouter.navigateTo(screens.eventParticipant(profile))
-    }
-
-    fun openDateEditOptions(timeInterval: TimeInterval) {
-        viewState.showDateEditOptions(pickedDates.indexOf(timeInterval))
-    }
-
-    private fun addParticipantItemView(profile: Profile) {
-        viewState.addParticipantItemView(profile)
-        pickedParticipantsIds.add(profile.id)
-    }
-
+    // TODO: отрефакторить: копирует addParticipantsProfiles
     private fun addDateItemView(timeInterval: TimeInterval) {
-        val datePosition =
-            pickedDates.indexOfLast { currTimeInterval -> return@indexOfLast currTimeInterval.start <= timeInterval.start } + 1
-        viewState.addDateItemView(
-            timeInterval,
-            datePosition
-        )
-        pickedDates.add(datePosition, timeInterval)
-    }
-
-    fun initParticipantsProfiles(participantsIds: LongArray) {
-        if (isParticipantsProfilesInitialized) {
-            return
-        }
-        isParticipantsProfilesInitialized = true
-        for (id in participantsIds) {
-            profilesRepository.getProfile(id)
-                .observeOn(uiScheduler)
-                .subscribe({ profileDto ->
-                    addParticipantItemView(profileDto!!)
-                }, {
-                    val profile = Profile(
-                        id = id,
-                        fullName = "Заглушка",
-                        description = "Профиля нет, или не загрузился",
+        // TODO: отрефакторить: перенести это в eventScreenListPresenter
+        val headerPosition =
+            eventScreenListPresenter.eventScreenItems.indexOfFirst { item -> item.itemId == EVENT_SCREEN_ITEM_ID.DATES_HEADER }
+        with(eventScreenListPresenter.eventScreenItems[headerPosition] as EventScreenItem.FormsHeader<EventScreenItem.ListItem>) {
+            if (items.first() is EventScreenItem.NoItemsPlaceholder) {
+                items.clear()
+                if (isExpanded) {
+                    eventScreenListPresenter.eventScreenItems.subList(
+                        headerPosition + 1,
+                        headerPosition + 2
+                    ).clear()
+                }
+            }
+            val listItemPosition =
+                with(items.indexOfFirst { item -> (item as EventScreenItem.EventDateItem).timeInterval.start > timeInterval.start }) {
+                    if (this == -1) {
+                        items.size
+                    } else {
+                        this
+                    }
+                }
+            // TODO: ВОЗМОЖНЫЙ БАГ: НУЖНО ЛИ ДОБАЛЯТЬ 1?
+            val screenItemPosition = headerPosition + 1 + listItemPosition
+            items.add(
+                EventScreenItem.EventDateItem(
+                    timeInterval = timeInterval,
+                    header = this
+                )
+            )
+            if (isExpanded) {
+                eventScreenListPresenter.eventScreenItems.add(
+                    screenItemPosition,
+                    EventScreenItem.EventDateItem(
+                        timeInterval = timeInterval,
+                        header = this
                     )
-                    addParticipantItemView(profile)
-                }).disposeOnDestroy()
+                )
+            }
+            if (!isExpanded) {
+                isExpanded = true
+                eventScreenListPresenter.formsHeaderItemPresenter.setOfExpandedItems.add(EVENT_SCREEN_ITEM_ID.DATES_HEADER)
+                eventScreenListPresenter.eventScreenItems.addAll(headerPosition + 1, items)
+            }
         }
+        viewState.updateEventScreenList()
+        viewState.showEditOptions()
     }
 
     fun initDates(dates: TreeSet<TimeInterval?>) {
@@ -187,13 +230,53 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
         }
     }
 
+    // TODO: отрефакторить: передавать только id
     fun addParticipantsProfiles(participants: Array<Profile>) {
-        for (participant in participants) {
-            addParticipantItemView(participant)
+        // TODO: отрефакторить: перенести это в eventScreenListPresenter
+        val headerPosition =
+            eventScreenListPresenter.eventScreenItems.indexOfFirst { item -> item.itemId == EVENT_SCREEN_ITEM_ID.PARTICIPANTS_HEADER }
+        with(eventScreenListPresenter.eventScreenItems[headerPosition] as EventScreenItem.FormsHeader<EventScreenItem.ListItem>) {
+            if (items.first() is EventScreenItem.NoItemsPlaceholder) {
+                items.clear()
+                if (isExpanded) {
+                    eventScreenListPresenter.eventScreenItems.subList(
+                        headerPosition + 1,
+                        headerPosition + 2
+                    ).clear()
+                }
+            }
+            for (participantProfile in participants) {
+                eventScreenListPresenter.participantItemPresenter.participantProfiles[participantProfile.id] = participantProfile
+                items.add(
+                    EventScreenItem.ParticipantItem(
+                        participantId = participantProfile.id,
+                        header = this
+                    )
+                )
+                if (isExpanded) {
+                    // TODO: я не понял почему не нужно добавлять + 1 к индексу
+                    val prevLastItemPosition = headerPosition + items.size
+                    eventScreenListPresenter.eventScreenItems.add(
+                        prevLastItemPosition,
+                        EventScreenItem.ParticipantItem(
+                            participantId = participantProfile.id,
+                            header = this
+                        )
+                    )
+                }
+            }
+            if (!isExpanded) {
+                isExpanded = true
+                eventScreenListPresenter.formsHeaderItemPresenter.setOfExpandedItems.add(EVENT_SCREEN_ITEM_ID.PARTICIPANTS_HEADER)
+                eventScreenListPresenter.eventScreenItems.addAll(headerPosition + 1, items)
+            }
         }
+
+        viewState.updateEventScreenList()
+        viewState.showEditOptions()
     }
 
-    fun datePickerFragment(timeInterval: TimeInterval?) {
+    fun openDatePicker(timeInterval: TimeInterval?) {
         localRouter.navigateTo(screens.eventDatesPicker(timeInterval))
     }
 
@@ -201,122 +284,123 @@ class EventPresenter(localRouter: Router) : BaseMvpPresenter<EventView>(localRou
         addDateItemView(timeInterval)
     }
 
-    fun clearDates() {
-        viewState.clearDates()
-        pickedDates.clear()
-        isDatesInitialized = false
-    }
-
-    fun clearParticipants() {
-        viewState.clearParticipants()
-        pickedParticipantsIds.clear()
-        isParticipantsProfilesInitialized = false
-    }
-
-    fun addEventPlace(address: Address?) {
-        localRouter.navigateTo(screens.addEventPlace(address))
-    }
-
-    fun enableDescriptionEdit() {
-        viewState.enableDescriptionEdit()
-    }
-
-    fun expandDescription() {
-        viewState.expandDescription()
-    }
-
-    fun expandMaps() {
-        viewState.expandMaps()
-    }
-
-    fun expandPoints() {
-        viewState.expandPoints()
-    }
-
-    fun expandParticipants() {
-        viewState.expandParticipants()
-    }
-
-    fun expandDates() {
-        viewState.expandDates()
-    }
-
-    fun cancelEdit() {
-        viewState.cancelEdit()
-    }
-
-    fun hideEditOptions() {
-        viewState.hideEditOptions()
-    }
-
-    fun lockEdit() {
-        viewState.lockEdit()
-    }
-
-    fun showMessage(message: String) {
-        viewState.showMessage(message)
-    }
-
-    fun showAbsoluteBar(
-        title: String,
-        iconResource: Int?,
-        iconTintResource: Int?,
-        onCollapseScroll: Int,
-        onCollapse: () -> Unit,
-        onEdit: () -> Unit
-    ) {
-        viewState.showAbsoluteBar(
-            title,
-            iconResource,
-            iconTintResource,
-            onCollapseScroll,
-            onCollapse,
-            onEdit
-        )
-    }
-
-    fun hideAbsoluteBar() {
-        viewState.hideAbsoluteBar()
-    }
-
-    fun unlockNameEdit() {
-        viewState.unlockNameEdit()
-    }
-
-    fun unlockLocationEdit() {
-        viewState.unlockLocationEdit()
-    }
-
-    fun removeParticipant(id: Long) {
-        // .toList() используется чтобы передать именно копию pickedParticipantsIds, а не ссылку
-        viewState.removeParticipant(id, pickedParticipantsIds.toList())
-        pickedParticipantsIds.remove(id)
-    }
-
-    fun removeDate(timeInterval: TimeInterval) {
-        viewState.removeDate(timeInterval, pickedDates.toList())
-        pickedDates.remove(timeInterval)
-    }
-
-    fun removeDate(position: Int) {
-        viewState.removeDate(pickedDates[position], pickedDates.toList())
-        pickedDates.removeAt(position)
-    }
-
-    fun editDate(position: Int) {
-        Toast.makeText(
-            ProEventApp.instance,
-            "EventPresenter::editDate call;\npickedDates[position]: ${pickedDates[position]};",
-            Toast.LENGTH_LONG
-        )
-            .show()
-    }
-
-    fun showEditOptions() {
+    // TODO: отрефакторить: копирует removeDateItem()
+    private fun removeParticipantItem(id: Long) {
+        val headerPosition =
+            eventScreenListPresenter.eventScreenItems.indexOfFirst { item -> item.itemId == EVENT_SCREEN_ITEM_ID.PARTICIPANTS_HEADER }
+        with(eventScreenListPresenter.eventScreenItems[headerPosition] as EventScreenItem.FormsHeader<EventScreenItem.ListItem>) {
+            val indexOfItemToRemove =
+                items.indexOfFirst { item -> (item as EventScreenItem.ParticipantItem).participantId == id }
+            if (indexOfItemToRemove == -1) {
+                throw RuntimeException("Попытка удалить участника, который не явялется участником редактируемого мероприятия.")
+            }
+            items.removeIf { item -> (item as EventScreenItem.ParticipantItem).participantId == id }
+            if (!isExpanded) {
+                isExpanded = true
+                eventScreenListPresenter.formsHeaderItemPresenter.setOfExpandedItems.add(EVENT_SCREEN_ITEM_ID.DATES_HEADER)
+            } else {
+                eventScreenListPresenter.eventScreenItems.removeAt(headerPosition + 1 + indexOfItemToRemove)
+            }
+            if (items.isEmpty()) {
+                items.add(NoItemsPlaceholderFactory.create(header = this))
+                eventScreenListPresenter.eventScreenItems.add(
+                    headerPosition + 1,
+                    items.first()
+                )
+            }
+        }
+        viewState.updateEventScreenList()
         viewState.showEditOptions()
     }
 
-    fun hideDateEditOptions() {
-        viewState.hideDateEditOptions()
+    fun removeParticipant(id: Long) {
+        removeParticipantItem(id)
+    }
+
+    private fun removeDateItem(timeInterval: TimeInterval) {
+        val headerPosition =
+            eventScreenListPresenter.eventScreenItems.indexOfFirst { item -> item.itemId == EVENT_SCREEN_ITEM_ID.DATES_HEADER }
+        with(eventScreenListPresenter.eventScreenItems[headerPosition] as EventScreenItem.FormsHeader<EventScreenItem.ListItem>) {
+            val indexOfItemToRemove =
+                items.indexOfFirst { item -> (item as EventScreenItem.EventDateItem).timeInterval == timeInterval }
+            if (indexOfItemToRemove == -1) {
+                throw RuntimeException("Попытка удалить дату(временной интервал), которая отсутствует в датах редактируемого мероприятия.")
+            }
+            items.removeIf { item -> (item as EventScreenItem.EventDateItem).timeInterval == timeInterval }
+            if (!isExpanded) {
+                isExpanded = true
+                eventScreenListPresenter.formsHeaderItemPresenter.setOfExpandedItems.add(EVENT_SCREEN_ITEM_ID.DATES_HEADER)
+            } else {
+                eventScreenListPresenter.eventScreenItems.removeAt(headerPosition + 1 + indexOfItemToRemove)
+            }
+            if (items.isEmpty()) {
+                items.add(NoDatesPlaceholderFactory.create(header = this))
+                eventScreenListPresenter.eventScreenItems.add(
+                    headerPosition + 1,
+                    items.first()
+                )
+            }
+        }
+        viewState.updateEventScreenList()
+        viewState.showEditOptions()
+    }
+
+    fun removeDate(timeInterval: TimeInterval) {
+        removeDateItem(timeInterval)
+    }
+
+    private fun loadProfiles() {
+        for (participantItem in (eventScreenListPresenter.eventScreenItems[7] as EventScreenItem.FormsHeader<*>).items) {
+            if (participantItem is EventScreenItem.NoItemsPlaceholder) {
+                return
+            }
+            profilesRepository.getProfile((participantItem as EventScreenItem.ParticipantItem).participantId)
+                .observeOn(uiScheduler)
+                .subscribe({ profileDto ->
+                    eventScreenListPresenter.participantItemPresenter.participantProfiles[participantItem.participantId] = profileDto!!
+                    viewState.updateEventScreenList()
+                }, {
+                    val profile = Profile(
+                        id = participantItem.participantId,
+                        fullName = "[ОШИБКА]",
+                        description = "Профиля нет, или не загрузился",
+                    )
+                    eventScreenListPresenter.participantItemPresenter.participantProfiles[participantItem.participantId] = profile
+                    viewState.updateEventScreenList()
+                }).disposeOnDestroy()
+        }
+    }
+
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        eventScreenListPresenter.eventScreenItems.addAll(getEventScreenItemsBeforeEdit())
+        viewState.init()
+        if (eventBeforeEdit != null) {
+            viewState.enableActionOptions()
+        } else {
+            viewState.showEditOptions()
+        }
+        loadProfiles()
+    }
+
+    fun getEventActionOptions(): List<Pair<String, () -> Unit>> {
+        return if (eventBeforeEdit!!.ownerUserId == loginRepository.getLocalId()!!) {
+            if (eventBeforeEdit!!.status == Event.Status.ACTUAL) {
+                listOf(
+                    Pair("Заваершить мероприятие") { finishEvent() },
+                    Pair("Скопировать мероприятие") { copyEvent() },
+                    Pair("Удалить мероприятие") { deleteEvent() }
+                )
+            } else {
+                listOf(
+                    Pair("Скопировать мероприятие") { copyEvent() },
+                    Pair("Удалить мероприятие") { deleteEvent() }
+                )
+            }
+        } else {
+            listOf(
+                Pair("Скопировать мероприятие") { copyEvent() },
+            )
+        }
     }
 }

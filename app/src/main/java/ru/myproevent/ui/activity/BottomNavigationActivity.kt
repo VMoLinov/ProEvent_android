@@ -30,8 +30,7 @@ class BottomNavigationActivity : MvpAppCompatActivity(), BottomNavigation, Botto
     @Inject
     lateinit var navigatorHolder: NavigatorHolder
 
-    private var _binding: ActivityMainBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: ActivityMainBinding
 
     @Inject
     lateinit var router: Router
@@ -54,7 +53,7 @@ class BottomNavigationActivity : MvpAppCompatActivity(), BottomNavigation, Botto
         ProEventApp.instance.appComponent.inject(this)
         setTheme(R.style.Theme_Proevent_NoActionBar)
         super.onCreate(savedInstanceState)
-        _binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initViews()
     }
@@ -204,10 +203,5 @@ class BottomNavigationActivity : MvpAppCompatActivity(), BottomNavigation, Botto
         } else {
             presenter.onBackPressed()
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
     }
 }

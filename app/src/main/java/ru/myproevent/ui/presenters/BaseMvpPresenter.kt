@@ -13,7 +13,7 @@ import ru.myproevent.domain.models.repositories.resourceProvider.IResourceProvid
 import ru.myproevent.ui.screens.IScreens
 import javax.inject.Inject
 
-open class BaseMvpPresenter<V : BaseMvpView>(protected open var localRouter: Router) :
+open class BaseMvpPresenter<V : BaseMvpView>(open var localRouter: Router) :
     MvpPresenter<V>() {
 
     @Inject

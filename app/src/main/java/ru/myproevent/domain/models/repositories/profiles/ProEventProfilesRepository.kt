@@ -1,6 +1,7 @@
 package ru.myproevent.domain.models.repositories.profiles
 
 import android.util.Log
+import android.net.Uri
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -14,6 +15,9 @@ import ru.myproevent.domain.models.entities.Contact.Status
 import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.utils.toContact
 import ru.myproevent.domain.utils.toProfile
+import ru.myproevent.domain.utils.toProfileDto
+import java.io.File
+import java.util.*
 import javax.inject.Inject
 
 class ProEventProfilesRepository @Inject constructor(
@@ -36,6 +40,7 @@ class ProEventProfilesRepository @Inject constructor(
         throw HttpException(response)
     }.subscribeOn(Schedulers.io())
 
+    // TODO: ошибки здесь обрабатывабтся не правильно
     override fun saveProfile(profile: Profile): Completable =
         Completable.fromCallable {
             val oldProfileResponse = api.getProfile(profile.id).execute()

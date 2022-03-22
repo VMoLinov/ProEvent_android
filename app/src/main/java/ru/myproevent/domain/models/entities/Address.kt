@@ -10,5 +10,5 @@ data class Address(
     val longitude: Double,
     val addressLine: String
 ) : Parcelable {
-    companion object
+    companion object // Данный companion object нужен для extension функции ru.myproevent.domain.utils Address.Companion.fromString
 }

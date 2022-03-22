@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/ProEvent_white">
+
+    <TextView
+        android:id="@+id/no_items"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="60dp"
+        android:backgroundTint="@color/ProEvent_blue_600"
+        android:gravity="center"
+        android:paddingVertical="20dp"
+        android:textColor="@color/ProEvent_blue_800"
+        android:textSize="16sp"
+        tools:text="Отсутствует.\nНажмите + чтобы добавить." />
+</FrameLayout>

@@ -7,9 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.myproevent.R
 import ru.myproevent.databinding.ItemContactBinding
 import ru.myproevent.domain.models.entities.Contact.Status
-import ru.myproevent.domain.utils.load
 import ru.myproevent.ui.presenters.contacts.contacts_list.IContactItemView
-
+import ru.myproevent.domain.utils.load
 
 class ContactsRVAdapter(val presenter: IContactsListPresenter) :
     RecyclerView.Adapter<ContactsRVAdapter.ViewHolder>() {

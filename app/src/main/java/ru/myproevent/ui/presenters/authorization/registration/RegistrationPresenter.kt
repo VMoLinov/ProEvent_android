@@ -3,9 +3,9 @@ package ru.myproevent.ui.presenters.authorization.registration
 import android.util.Log
 import com.github.terrakok.cicerone.Router
 import io.reactivex.observers.DisposableCompletableObserver
+import ru.myproevent.domain.models.providers.internet_access_info.IInternetAccessInfoProvider
 import ru.myproevent.R
 import ru.myproevent.domain.models.repositories.email_hint.IEmailHintRepository
-import ru.myproevent.domain.models.repositories.internet_access_info.IInternetAccessInfoRepository
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
 import java.util.regex.Pattern
@@ -35,7 +35,7 @@ class RegistrationPresenter(localRouter: Router) : BaseMvpPresenter<Registration
                 }
                 return
             }
-            interAccessInfoRepository
+            interAccessInfoProvider
                 .hasInternetConnection()
                 .observeOn(uiScheduler)
                 .subscribeWith(InterAccessInfoObserver(error.message))
@@ -50,7 +50,7 @@ class RegistrationPresenter(localRouter: Router) : BaseMvpPresenter<Registration
     lateinit var emailHintRepository: IEmailHintRepository
 
     @Inject
-    lateinit var interAccessInfoRepository: IInternetAccessInfoRepository
+    lateinit var interAccessInfoProvider: IInternetAccessInfoProvider
 
     fun signup() {
         localRouter.navigateTo(screens.authorization())

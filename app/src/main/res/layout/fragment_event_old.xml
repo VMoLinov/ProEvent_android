@@ -1,0 +1,835 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ProEvent_white">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/ProEvent_white">
+
+        <ScrollView
+            android:id="@+id/scroll"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fadeScrollbars="false"
+            android:scrollbarThumbVertical="@color/ProEvent_orange_200"
+            app:layout_constraintBottom_toTopOf="@id/edit_options"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/event_bar"
+            app:layout_constraintWidth_max="360dp">
+
+            <LinearLayout
+                android:id="@+id/scroll_child"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="vertical"
+                android:scrollbars="vertical">
+
+                <ImageView
+                    android:id="@+id/event_image_view"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="3dp"
+                    android:contentDescription="@string/event_image"
+                    android:src="@drawable/ic_event_image_placeholder" />
+
+                <TextView
+                    android:id="@+id/edit_event_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/edit_event_image"
+                    android:textAlignment="center"
+                    android:textColor="@color/ProEvent_blue_600"
+                    android:textSize="12sp" />
+
+                <LinearLayout
+                    android:id="@+id/name_input_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="16dp"
+                    android:maxWidth="320dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/name_input_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginBottom="4dp"
+                        android:text="@string/event_name_input_title"
+                        android:textColor="@color/ProEvent_bright_orange_500"
+                        android:textSize="16sp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/name_input"
+                        style="@style/ProEventRWTextInputLayoutStyle"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:endIconMode="none">
+
+                        <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
+                            android:id="@+id/name_edit"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:hint="@string/event_name_input_hint"
+                            android:inputType="textPersonName"
+                            android:maxLength="320"
+                            android:textColorHint="@color/ProEvent_blue_600"
+                            android:textIsSelectable="true" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/date_input_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="16dp"
+                    android:maxWidth="320dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/date_input_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginBottom="4dp"
+                        android:text="@string/date_input_title"
+                        android:textColor="@color/ProEvent_bright_orange_500"
+                        android:textSize="16sp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/date_input"
+                        style="@style/ProEventRWTextInputLayoutStyle"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:endIconMode="none">
+
+                        <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
+                            android:id="@+id/date_edit"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:hint="@string/date_input_hint"
+                            android:inputType="textPersonName"
+                            android:maxLength="320"
+                            android:textColorHint="@color/ProEvent_blue_600"
+                            android:textIsSelectable="true" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/location_input_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="16dp"
+                    android:maxWidth="320dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/location_input_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginBottom="4dp"
+                        android:text="@string/location_input_title"
+                        android:textColor="@color/ProEvent_bright_orange_500"
+                        android:textSize="16sp" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/location_input"
+                        style="@style/ProEventRWTextInputLayoutStyle"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:endIconMode="none">
+
+                        <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
+                            android:id="@+id/location_edit"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:hint="@string/location_input_hint"
+                            android:inputType="textPersonName"
+                            android:maxLength="320"
+                            android:textColorHint="@color/ProEvent_blue_600"
+                            android:textIsSelectable="true" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/dates_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@color/ProEvent_blue_300"
+                        android:gravity="center"
+                        android:text="Даты мероприятия"
+                        android:textColor="@color/ProEvent_blue_800"
+                        android:textSize="20sp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <View
+                        android:id="@+id/dates_bar_hit_area"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        app:layout_constraintBottom_toBottomOf="@id/dates_bar"
+                        app:layout_constraintLeft_toLeftOf="@id/dates_bar"
+                        app:layout_constraintRight_toRightOf="@id/dates_bar"
+                        app:layout_constraintTop_toTopOf="@id/dates_bar" />
+
+                    <ImageView
+                        android:id="@+id/add_date"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="7dp"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_add"
+                        app:layout_constraintBottom_toBottomOf="@id/dates_bar"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/dates_bar" />
+
+                    <ImageView
+                        android:id="@+id/expand_dates"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="7dp"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_expand"
+                        app:layout_constraintBottom_toBottomOf="@id/dates_bar"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/dates_bar"
+                        app:tint="@color/ProEvent_blue_800" />
+
+                    <LinearLayout
+                        android:id="@+id/dates_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/dates_bar">
+
+                        <TextView
+                            android:id="@+id/no_dates"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="60dp"
+                            android:backgroundTint="@color/ProEvent_blue_600"
+                            android:gravity="center"
+                            android:paddingTop="30dp"
+                            android:paddingBottom="10dp"
+                            android:text="Отсутствует.\nНажмите + чтобы добавить."
+                            android:textColor="@color/ProEvent_blue_800"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/description_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@color/ProEvent_blue_300"
+                        android:gravity="center"
+                        android:text="@string/event_description"
+                        android:textColor="@color/ProEvent_blue_800"
+                        android:textSize="20sp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/dates_container" />
+
+                    <View
+                        android:id="@+id/description_bar_hit_area"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        app:layout_constraintBottom_toBottomOf="@id/description_bar"
+                        app:layout_constraintLeft_toLeftOf="@id/description_bar"
+                        app:layout_constraintRight_toRightOf="@id/description_bar"
+                        app:layout_constraintTop_toTopOf="@id/description_bar" />
+
+                    <ImageView
+                        android:id="@+id/edit_description"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="7dp"
+                        android:contentDescription="@string/event_edit_description"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_edit"
+                        app:layout_constraintBottom_toBottomOf="@id/description_bar"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/description_bar"
+                        app:tint="@color/ProEvent_blue_800" />
+
+                    <ImageView
+                        android:id="@+id/expand_description"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="7dp"
+                        android:contentDescription="@string/event_expand_description"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_expand"
+                        app:layout_constraintBottom_toBottomOf="@id/description_bar"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/description_bar"
+                        app:tint="@color/ProEvent_blue_800" />
+
+                    <FrameLayout
+                        android:id="@+id/description_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/description_bar">
+
+                        <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
+                            android:id="@+id/text_box"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="20dp"
+                            android:layout_marginTop="20dp"
+                            android:background="@color/ProEvent_white"
+                            android:textColor="@color/ProEvent_blue_800"
+                            android:textSize="16sp"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/no_description"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="60dp"
+                            android:backgroundTint="@color/ProEvent_blue_600"
+                            android:gravity="center"
+                            android:paddingTop="30dp"
+                            android:paddingBottom="10dp"
+                            android:text="@string/event_no_description"
+                            android:textColor="@color/ProEvent_blue_800"
+                            android:textSize="16sp" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/maps_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@color/ProEvent_blue_300"
+                        android:gravity="center"
+                        android:text="@string/event_map"
+                        android:textColor="@color/ProEvent_blue_800"
+                        android:textSize="20sp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/description_container" />
+
+                    <View
+                        android:id="@+id/map_bar_hit_area"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        app:layout_constraintBottom_toBottomOf="@id/maps_bar"
+                        app:layout_constraintLeft_toLeftOf="@id/maps_bar"
+                        app:layout_constraintRight_toRightOf="@id/maps_bar"
+                        app:layout_constraintTop_toTopOf="@id/maps_bar" />
+
+                    <ImageView
+                        android:id="@+id/add_map"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="7dp"
+                        android:contentDescription="@string/add_map"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_add"
+                        app:layout_constraintBottom_toBottomOf="@id/maps_bar"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/maps_bar" />
+
+                    <ImageView
+                        android:id="@+id/expand_maps"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="7dp"
+                        android:contentDescription="@string/event_expand_maps"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_expand"
+                        app:layout_constraintBottom_toBottomOf="@id/maps_bar"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/maps_bar"
+                        app:tint="@color/ProEvent_blue_800" />
+
+                    <LinearLayout
+                        android:id="@+id/maps_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/maps_bar">
+
+                        <TextView
+                            android:id="@+id/no_maps"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="60dp"
+                            android:backgroundTint="@color/ProEvent_blue_600"
+                            android:gravity="center"
+                            android:paddingTop="30dp"
+                            android:paddingBottom="10dp"
+                            android:text="@string/event_no_maps"
+                            android:textColor="@color/ProEvent_blue_800"
+                            android:textSize="16sp"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/points_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@color/ProEvent_blue_300"
+                        android:gravity="center"
+                        android:text="@string/event_points"
+                        android:textColor="@color/ProEvent_blue_800"
+                        android:textSize="20sp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/maps_container" />
+
+                    <View
+                        android:id="@+id/points_bar_hit_area"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        app:layout_constraintBottom_toBottomOf="@id/points_bar"
+                        app:layout_constraintLeft_toLeftOf="@id/points_bar"
+                        app:layout_constraintRight_toRightOf="@id/points_bar"
+                        app:layout_constraintTop_toTopOf="@id/points_bar" />
+
+                    <ImageView
+                        android:id="@+id/add_point"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="7dp"
+                        android:contentDescription="@string/event_points"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_add"
+                        app:layout_constraintBottom_toBottomOf="@id/points_bar"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/points_bar" />
+
+                    <ImageView
+                        android:id="@+id/expand_points"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="7dp"
+                        android:contentDescription="@string/event_expand_points"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_expand"
+                        app:layout_constraintBottom_toBottomOf="@id/points_bar"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/points_bar"
+                        app:tint="@color/ProEvent_blue_800" />
+
+                    <LinearLayout
+                        android:id="@+id/points_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/points_bar">
+
+                        <TextView
+                            android:id="@+id/no_points"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="60dp"
+                            android:backgroundTint="@color/ProEvent_blue_600"
+                            android:gravity="center"
+                            android:paddingTop="30dp"
+                            android:paddingBottom="10dp"
+                            android:text="@string/event_no_points"
+                            android:textColor="@color/ProEvent_blue_800"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/participants_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@color/ProEvent_blue_300"
+                        android:gravity="center"
+                        android:text="@string/event_participants"
+                        android:textColor="@color/ProEvent_blue_800"
+                        android:textSize="20sp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/points_container" />
+
+                    <View
+                        android:id="@+id/participants_bar_hit_area"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        app:layout_constraintBottom_toBottomOf="@id/participants_bar"
+                        app:layout_constraintLeft_toLeftOf="@id/participants_bar"
+                        app:layout_constraintRight_toRightOf="@id/participants_bar"
+                        app:layout_constraintTop_toTopOf="@id/participants_bar" />
+
+                    <ImageView
+                        android:id="@+id/add_participant"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="7dp"
+                        android:contentDescription="@string/event_add_participants"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_add"
+                        app:layout_constraintBottom_toBottomOf="@id/participants_bar"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/participants_bar" />
+
+                    <ImageView
+                        android:id="@+id/expand_participants"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="7dp"
+                        android:contentDescription="@string/event_expand_participants"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_expand"
+                        app:layout_constraintBottom_toBottomOf="@id/participants_bar"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/participants_bar"
+                        app:tint="@color/ProEvent_blue_800" />
+
+                    <LinearLayout
+                        android:id="@+id/participants_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingBottom="20dp"
+                        android:visibility="gone"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/participants_bar">
+
+                        <TextView
+                            android:id="@+id/no_participants"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="60dp"
+                            android:backgroundTint="@color/ProEvent_blue_600"
+                            android:gravity="center"
+                            android:paddingTop="30dp"
+                            android:paddingBottom="10dp"
+                            android:text="@string/event_no_participants"
+                            android:textColor="@color/ProEvent_blue_800"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <TextView
+            android:id="@+id/absolute_bar"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/ProEvent_blue_300"
+            android:gravity="center"
+            android:text="@string/event_description"
+            android:textColor="@color/ProEvent_blue_800"
+            android:textSize="20sp"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/event_bar" />
+
+        <View
+            android:id="@+id/absolute_bar_hit_area"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/absolute_bar"
+            app:layout_constraintLeft_toLeftOf="@id/absolute_bar"
+            app:layout_constraintRight_toRightOf="@id/absolute_bar"
+            app:layout_constraintTop_toTopOf="@id/absolute_bar" />
+
+        <ImageView
+            android:id="@+id/absolute_bar_edit"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="7dp"
+            android:contentDescription="@string/progress_bar"
+            android:scaleType="center"
+            android:src="@drawable/ic_add"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/absolute_bar"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@id/absolute_bar" />
+
+        <ImageView
+            android:id="@+id/absolute_bar_expand"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="7dp"
+            android:contentDescription="@string/progress_bar"
+            android:scaleType="center"
+            android:src="@drawable/ic_expand"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/absolute_bar"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/absolute_bar"
+            app:tint="@color/ProEvent_bright_orange_300" />
+
+        <View
+            android:id="@+id/shadow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ProEvent_blue_800_opacity_20"
+            android:visibility="gone" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/event_bar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/ProEvent_white"
+            android:paddingTop="40dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_max="360dp">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:ellipsize="end"
+                android:includeFontPadding="false"
+                android:maxLines="2"
+                android:text="@string/event_new_event"
+                android:textAlignment="center"
+                android:textColor="@color/ProEvent_blue_800"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toRightOf="@id/back_hit_area"
+                app:layout_constraintRight_toLeftOf="@id/action_menu_icon_hit_area"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:paddingHorizontal="20dp"
+                android:text="@string/event_save"
+                android:textColor="@color/ProEvent_bright_orange_500"
+                android:textSize="16sp"
+                android:visibility="gone"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/title" />
+
+            <View
+                android:id="@+id/save_hit_area"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/save"
+                app:layout_constraintLeft_toLeftOf="@id/save"
+                app:layout_constraintRight_toRightOf="@id/save"
+                app:layout_constraintTop_toTopOf="@id/save" />
+
+            <TextView
+                android:id="@+id/cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="20dp"
+                android:paddingHorizontal="20dp"
+                android:text="@string/event_cancel"
+                android:textColor="@color/ProEvent_bright_orange_500"
+                android:textSize="16sp"
+                android:visibility="gone"
+                app:layout_constraintRight_toLeftOf="@id/save"
+                app:layout_constraintTop_toBottomOf="@id/title" />
+
+            <View
+                android:id="@+id/cancel_hit_area"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/cancel"
+                app:layout_constraintLeft_toLeftOf="@id/cancel"
+                app:layout_constraintRight_toRightOf="@id/cancel"
+                app:layout_constraintTop_toTopOf="@id/cancel" />
+
+            <ImageView
+                android:id="@+id/action_menu_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/event_action_menu"
+                android:src="@drawable/ic_pie"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/action_menu_icon_hit_area"
+                app:layout_constraintLeft_toLeftOf="@+id/action_menu_icon_hit_area"
+                app:layout_constraintRight_toRightOf="@id/action_menu_icon_hit_area"
+                app:layout_constraintTop_toTopOf="@id/action_menu_icon_hit_area" />
+
+            <View
+                android:id="@+id/action_menu_icon_hit_area"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="7dp"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="@+id/title"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/title" />
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:contentDescription="@string/event_back"
+                android:src="@drawable/ic_back_to"
+                app:layout_constraintBottom_toBottomOf="@id/title"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@id/title" />
+
+            <View
+                android:id="@+id/back_hit_area"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:layout_constraintBottom_toBottomOf="@id/back"
+                app:layout_constraintLeft_toLeftOf="@id/back"
+                app:layout_constraintRight_toRightOf="@id/back"
+                app:layout_constraintTop_toTopOf="@id/back" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/title">
+
+                <TextView
+                    android:id="@+id/copy_event"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/ProEvent_white"
+                    android:includeFontPadding="false"
+                    android:paddingHorizontal="13dp"
+                    android:paddingVertical="14dp"
+                    android:text="@string/copy_event"
+                    android:textColor="@color/ProEvent_blue_800"
+                    android:textSize="16sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/finish_event"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/ProEvent_white"
+                    android:includeFontPadding="false"
+                    android:paddingHorizontal="13dp"
+                    android:paddingVertical="14dp"
+                    android:text="@string/finish_event"
+                    android:textColor="@color/ProEvent_blue_800"
+                    android:textSize="16sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/cancel_event"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/ProEvent_white"
+                    android:includeFontPadding="false"
+                    android:paddingHorizontal="13dp"
+                    android:paddingVertical="14dp"
+                    android:text="@string/event_cancel_event"
+                    android:textColor="@color/ProEvent_blue_800"
+                    android:textSize="16sp"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@+id/finish_event" />
+
+                <TextView
+                    android:id="@+id/delete_event"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/ProEvent_white"
+                    android:includeFontPadding="false"
+                    android:paddingHorizontal="13dp"
+                    android:paddingVertical="14dp"
+                    android:text="@string/event_delete_event"
+                    android:textColor="@color/ProEvent_blue_800"
+                    android:textSize="16sp"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@+id/finish_event" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <FrameLayout
+            android:id="@+id/edit_options"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/PE_blue_gray" />
+
+            <TextView
+                android:id="@+id/cancel_edits"
+                fontPath="@string/default_font_bold_path"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:gravity="center_vertical"
+                android:minHeight="50dp"
+                android:text="Отменить"
+                android:textColor="@color/ProEvent_blue_800"
+                android:textSize="20sp"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:id="@+id/save_edits"
+                fontPath="@string/default_font_bold_path"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="20dp"
+                android:gravity="center_vertical"
+                android:minHeight="50dp"
+                android:text="Сохранить"
+                android:textColor="@color/ProEvent_blue_800"
+                android:textSize="20sp"
+                tools:ignore="MissingPrefix" />
+        </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

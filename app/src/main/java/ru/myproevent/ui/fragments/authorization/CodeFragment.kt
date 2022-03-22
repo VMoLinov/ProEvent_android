@@ -133,9 +133,10 @@ class CodeFragment : BaseMvpFragment<FragmentCodeBinding>(FragmentCodeBinding::i
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
         super.onViewCreated(view, savedInstanceState)
         setLayoutParams()
-        codeExplanation.text = getString(R.string.code_explanation_text, presenter.getEmail())
+        codeExplanation.text =
+            String.format(getString(R.string.code_explanation_text), presenter.getEmail())
         continueRegistration.setOnClickListener {
-            getVerificationCode().let { code -> presenter.continueRegistration(code) }
+            presenter.continueRegistration(getVerificationCode())
         }
         refreshCode.setOnClickListener { presenter.refreshCode() }
         authorize.setOnClickListener { presenter.authorize() }

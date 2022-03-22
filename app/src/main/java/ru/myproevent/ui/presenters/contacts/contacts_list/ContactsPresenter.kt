@@ -1,5 +1,6 @@
 package ru.myproevent.ui.presenters.contacts.contacts_list
 
+import android.util.Log
 import com.github.terrakok.cicerone.Router
 import ru.myproevent.R
 import ru.myproevent.domain.models.entities.Contact

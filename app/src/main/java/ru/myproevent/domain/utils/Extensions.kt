@@ -9,9 +9,10 @@ import ru.myproevent.domain.models.EventDto
 import ru.myproevent.domain.models.ProfileMiniDto
 import ru.myproevent.domain.models.entities.Address
 import ru.myproevent.domain.models.entities.Contact
-import ru.myproevent.domain.models.entities.Contact.Status
 import ru.myproevent.domain.models.entities.Event
 import ru.myproevent.domain.models.entities.Profile
+import ru.myproevent.ui.adapters.event_items.EventScreenItem
+import java.text.SimpleDateFormat
 import java.util.*
 
 fun ImageView.load(url: String) {
@@ -27,7 +28,7 @@ fun ProfileMiniDto.toProfile() =
 fun Profile.toProfileDto() =
     Profile(id, email, fullName, nickName, phone, position, birthdate, imgUri, description)
 
-fun Profile.toContact(status: Status?) =
+fun Profile.toContact(status: Contact.Status?) =
     Contact(id, status, email, fullName, nickName, phone, position, birthdate, imgUri, description)
 
 fun Contact.toContactDto() = ContactDto(id, status.toString())
@@ -95,3 +96,13 @@ fun pxValue(dp: Float) = TypedValue.applyDimension(
     dp,
     Resources.getSystem().displayMetrics
 )
+
+// TODO: рефакторинг: возможно стоит использовать не каст, а чтонибудь другое. Пока не знаю как это сделать проще
+fun LongArray.toParticipantItems(header: EventScreenItem.FormsHeader<EventScreenItem.ListItem>): Array<EventScreenItem.ParticipantItem>{
+    val arrayOfLongs = this.toTypedArray()
+    val result = arrayOfNulls<EventScreenItem.ParticipantItem>(size)
+    for (index in indices)
+        result[index] = EventScreenItem.ParticipantItem(arrayOfLongs[index], header)
+    @Suppress("UNCHECKED_CAST")
+    return result as Array<EventScreenItem.ParticipantItem>
+}

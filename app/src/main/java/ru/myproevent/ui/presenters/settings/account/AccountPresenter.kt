@@ -8,7 +8,7 @@ import io.reactivex.observers.DisposableSingleObserver
 import ru.myproevent.R
 import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.repositories.images.IImagesRepository
-import ru.myproevent.domain.models.repositories.internet_access_info.IInternetAccessInfoRepository
+import ru.myproevent.domain.models.providers.internet_access_info.IInternetAccessInfoProvider
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
 import ru.myproevent.domain.utils.GlideLoader
@@ -33,7 +33,7 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
 
         override fun onError(error: Throwable) {
             error.printStackTrace()
-            interAccessInfoRepository
+            interAccessInfoProvider
                 .hasInternetConnection()
                 .observeOn(uiScheduler)
                 .subscribeWith(
@@ -57,7 +57,7 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
                 }
                 return
             }
-            interAccessInfoRepository
+            interAccessInfoProvider
                 .hasInternetConnection()
                 .observeOn(uiScheduler)
                 .subscribeWith(
@@ -74,7 +74,7 @@ class AccountPresenter(localRouter: Router) : BaseMvpPresenter<AccountView>(loca
     lateinit var profilesRepository: IProEventProfilesRepository
 
     @Inject
-    lateinit var interAccessInfoRepository: IInternetAccessInfoRepository
+    lateinit var interAccessInfoProvider: IInternetAccessInfoProvider
 
     @Inject
     lateinit var imagesRepository: IImagesRepository

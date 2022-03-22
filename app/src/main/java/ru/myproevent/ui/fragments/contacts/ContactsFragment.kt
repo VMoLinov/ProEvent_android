@@ -11,6 +11,7 @@ import ru.myproevent.ProEventApp
 import ru.myproevent.R
 import ru.myproevent.databinding.FragmentContactsBinding
 import ru.myproevent.domain.models.entities.Contact.Status
+import ru.myproevent.domain.models.entities.Contact
 import ru.myproevent.ui.fragments.BaseMvpFragment
 import ru.myproevent.ui.presenters.contacts.contacts_list.ContactsPresenter
 import ru.myproevent.ui.presenters.contacts.contacts_list.ContactsView
@@ -50,10 +51,10 @@ class ContactsFragment : BaseMvpFragment<FragmentContactsBinding>(FragmentContac
         headerFilter.setItems(R.array.contacts_filter_items, R.array.contacts_filter_titles)
         headerFilter.setOnItemClickListener { i, _ ->
             val status = when (i) {
-                0 -> Status.ALL
-                1 -> Status.PENDING
-                2 -> Status.REQUESTED
-                else -> Status.ALL
+                0 -> Contact.Status.ALL
+                1 -> Contact.Status.PENDING
+                2 -> Contact.Status.REQUESTED
+                else -> Contact.Status.ALL
             }
             presenter.filterContacts(status)
         }
@@ -96,9 +97,9 @@ class ContactsFragment : BaseMvpFragment<FragmentContactsBinding>(FragmentContac
         binding.noContactsLayout.visibility = GONE
     }
 
-    override fun showNoContactsLayout(status: Status) {
+    override fun showNoContactsLayout(status: Contact.Status) {
         binding.noContactsText.text = when (status) {
-            Status.ALL -> getString(R.string.you_have_no_contacts)
+            Contact.Status.ALL -> getString(R.string.you_have_no_contacts)
             else -> getString(R.string.you_have_no_active_requests)
         }
         binding.noContactsLayout.visibility = VISIBLE

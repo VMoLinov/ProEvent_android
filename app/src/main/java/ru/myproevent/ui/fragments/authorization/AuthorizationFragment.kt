@@ -27,15 +27,6 @@ class AuthorizationFragment :
     private var emailInvalidError = false
     private var passwordInvalidError = false
 
-    private fun getStatusBarHeight(): Int {
-        var result = 0
-        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resourceId > 0) {
-            result = resources.getDimensionPixelSize(resourceId)
-        }
-        return result
-    }
-
     private fun setLayoutParams() = with(binding) {
         // https://stackoverflow.com/a/24035591/11883985
         body.post {

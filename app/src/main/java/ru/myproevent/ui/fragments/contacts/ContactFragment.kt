@@ -3,6 +3,7 @@ package ru.myproevent.ui.fragments.contacts
 import android.os.Bundle
 import android.view.View
 import android.view.View.VISIBLE
+import moxy.MvpView
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.databinding.FragmentContactBinding

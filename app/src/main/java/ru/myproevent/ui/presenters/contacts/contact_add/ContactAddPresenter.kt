@@ -8,8 +8,8 @@ import retrofit2.HttpException
 import ru.myproevent.R
 import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.domain.models.repositories.contacts.IProEventContactsRepository
-import ru.myproevent.domain.models.repositories.internet_access_info.IInternetAccessInfoRepository
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
+import ru.myproevent.domain.models.providers.internet_access_info.IInternetAccessInfoProvider
 import ru.myproevent.domain.models.repositories.profiles.IProEventProfilesRepository
 import ru.myproevent.ui.presenters.BaseMvpPresenter
 import java.util.regex.Pattern
@@ -30,7 +30,7 @@ class ContactAddPresenter(localRouter: Router) : BaseMvpPresenter<ContactAddView
                 return
             }
             error.printStackTrace()
-            interAccessInfoRepository
+            interAccessInfoProvider
                 .hasInternetConnection()
                 .observeOn(uiScheduler)
                 .subscribeWith(InterAccessInfoObserver(error.message))
@@ -45,7 +45,7 @@ class ContactAddPresenter(localRouter: Router) : BaseMvpPresenter<ContactAddView
     lateinit var profilesRepository: IProEventProfilesRepository
 
     @Inject
-    lateinit var interAccessInfoRepository: IInternetAccessInfoRepository
+    lateinit var interAccessInfoProvider: IInternetAccessInfoProvider
 
     @Inject
     lateinit var loginRepository: IProEventLoginRepository

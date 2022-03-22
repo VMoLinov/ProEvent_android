@@ -19,13 +19,12 @@ import ru.myproevent.domain.models.repositories.local_proevent_user_token.IToken
 import javax.inject.Named
 import javax.inject.Singleton
 
-
 @Module
 class ProEventApiModule {
 
     @Named("baseUrl")
     @Provides
-    fun baseUrl(): String = "http://178.249.69.107:8762/api/v1/"
+    fun baseUrl(): String = BuildConfig.PROEVENT_API_URL
 
     @Provides
     fun provideProEventApi(

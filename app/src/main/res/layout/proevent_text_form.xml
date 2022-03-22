@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/name_input_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="20dp"
+    android:layout_marginTop="16dp"
+    android:background="@color/ProEvent_white"
+    android:maxWidth="320dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/input_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/ProEvent_bright_orange_500"
+        android:textSize="16sp"
+        tools:text="Название формы" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/input"
+        style="@style/ProEventRWTextInputLayoutStyle"
+        android:clickable="true"
+        android:focusable="true"
+        app:endIconMode="none">
+
+        <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
+            android:id="@+id/input_edit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textPersonName"
+            android:maxLength="320"
+            android:textColorHint="@color/ProEvent_blue_600"
+            android:textIsSelectable="true"
+            tools:hint="Введите значение формы" />
+    </com.google.android.material.textfield.TextInputLayout>
+</LinearLayout>

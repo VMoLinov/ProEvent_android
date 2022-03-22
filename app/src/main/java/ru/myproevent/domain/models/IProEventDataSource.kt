@@ -1,8 +1,11 @@
 package ru.myproevent.domain.models
 
+import android.os.Parcelable
 import io.reactivex.Completable
 import io.reactivex.Single
+import kotlinx.parcelize.Parcelize
 import okhttp3.MultipartBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
 import ru.myproevent.domain.models.entities.Profile
@@ -173,7 +176,7 @@ data class EventDto(
     val name: String,
     val ownerUserId: Long,
     val eventStatus: String,
-    val eventDates: TreeSet<TimeInterval?>?,
+    val eventDates: TreeSet<TimeInterval>?,
     val description: String?,
     val participantsUserIds: LongArray?,
     val city: String?,

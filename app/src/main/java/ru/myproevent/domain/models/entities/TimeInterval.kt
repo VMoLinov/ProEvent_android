@@ -7,8 +7,10 @@ import java.io.Serializable
 
 @Parcelize
 data class TimeInterval(
+    /** the milliseconds since January 1, 1970, 00:00:00 GMT **/
     @SerializedName("startDate")
     var start: Long,
+    /** the milliseconds since January 1, 1970, 00:00:00 GMT **/
     @SerializedName("endDate")
     var end: Long
 ) : Parcelable, Serializable, Comparable<TimeInterval> {

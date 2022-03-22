@@ -1,5 +1,6 @@
 package ru.myproevent.domain.models.repositories.profiles
 
+import android.net.Uri
 import io.reactivex.Completable
 import io.reactivex.Single
 import ru.myproevent.domain.models.ContactDto

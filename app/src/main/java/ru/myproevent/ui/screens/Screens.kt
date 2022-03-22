@@ -2,11 +2,8 @@ package ru.myproevent.ui.screens
 
 import com.github.terrakok.cicerone.Screen
 import com.github.terrakok.cicerone.androidx.FragmentScreen
-import ru.myproevent.domain.models.entities.Address
-import ru.myproevent.domain.models.entities.Event
-import ru.myproevent.domain.models.entities.Profile
-import ru.myproevent.domain.models.entities.TimeInterval
-import ru.myproevent.ui.fragments.HomeFragment
+import ru.myproevent.domain.models.entities.*
+import ru.myproevent.ui.fragments.*
 import ru.myproevent.ui.fragments.authorization.*
 import ru.myproevent.ui.fragments.chat.Chat1Fragment
 import ru.myproevent.ui.fragments.chat.ChatFragment
