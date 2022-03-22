@@ -104,7 +104,12 @@ interface IProEventDataSource {
 
     @DELETE("storage/{uuid}")
     fun deleteImage(@Path("uuid") uuid: String): Completable
+
+    @POST("events")
+    fun saveEventMap(@Body eventMap: EventMapDto): Single<EventMapDto>
 }
+
+data class EventMapDto(val id: Long?, val description: String, val downloadUrl: String)
 
 data class TokenBody(val token: String)
 

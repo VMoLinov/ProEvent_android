@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ProEvent_white">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/top_bar"
+        style="@style/ProEventSettingsButtonItem"
+        fontPath="@string/default_font_bold_path"
+        android:layout_marginTop="25dp"
+        android:text="Редактировать карту"
+        android:textAlignment="center"
+        app:icon="@drawable/ic_back_to"
+        app:iconGravity="start"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/mapImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="20dp"
+        app:layout_constraintBottom_toTopOf="@id/edit_options"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_bar"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <FrameLayout
+        android:id="@+id/edit_options"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:visibility="visible">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/PE_blue_gray" />
+
+        <TextView
+            android:id="@+id/cancel_edits"
+            fontPath="@string/default_font_bold_path"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:gravity="center_vertical"
+            android:minHeight="50dp"
+            android:text="Отменить"
+            android:textColor="@color/ProEvent_blue_800"
+            android:textSize="20sp"
+            tools:ignore="MissingPrefix" />
+
+        <TextView
+            android:id="@+id/save_edits"
+            fontPath="@string/default_font_bold_path"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="20dp"
+            android:gravity="center_vertical"
+            android:minHeight="50dp"
+            android:text="Сохранить"
+            android:textColor="@color/ProEvent_blue_800"
+            android:textSize="20sp"
+            tools:ignore="MissingPrefix" />
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

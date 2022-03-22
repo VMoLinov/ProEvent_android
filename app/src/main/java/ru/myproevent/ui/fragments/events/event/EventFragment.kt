@@ -1,9 +1,10 @@
 package ru.myproevent.ui.fragments.events.event
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import moxy.ktx.moxyPresenter
@@ -42,6 +43,12 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
 
     var adapter: EventScreenRVAdapter? = null
 
+    private var pickResultCallback: ((Uri?) -> Unit)? = null
+
+    private val getImageResultLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        pickResultCallback?.invoke(uri)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initResultListeners()
@@ -76,6 +83,11 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             imm?.hideSoftInputFromWindow(view.windowToken, 0)
             view.clearFocus() // TODO: разобраться почему это сточка пофиксила баг. Как воспроизвести баг записал на видео
         }
+    }
+
+    override fun launchImagePicker(pickResultCallback: (Uri?) -> Unit) {
+        this.pickResultCallback = pickResultCallback
+        getImageResultLauncher.launch("image/*")
     }
 
     override fun showAbsoluteFormsHeader(
@@ -171,3 +183,4 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
         }
     }
 }
+

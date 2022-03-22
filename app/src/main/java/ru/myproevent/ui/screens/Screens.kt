@@ -1,5 +1,6 @@
 package ru.myproevent.ui.screens
 
+import android.net.Uri
 import com.github.terrakok.cicerone.Screen
 import com.github.terrakok.cicerone.androidx.FragmentScreen
 import ru.myproevent.domain.models.entities.*
@@ -13,6 +14,9 @@ import ru.myproevent.ui.fragments.contacts.ContactFragment
 import ru.myproevent.ui.fragments.contacts.ContactsFragment
 import ru.myproevent.ui.fragments.events.EventsFragment
 import ru.myproevent.ui.fragments.events.event.*
+import ru.myproevent.ui.fragments.events.event.event_map.EventMapFragment
+import ru.myproevent.ui.fragments.events.event.map_image_picker.MapCreatorFragment
+import ru.myproevent.ui.fragments.events.event.map_image_picker.MapImagePickerFragment
 import ru.myproevent.ui.fragments.events.event.participant_pickers.ParticipantByEmailPickerFragment
 import ru.myproevent.ui.fragments.events.event.participant_pickers.ParticipantFromContactsPickerFragment
 import ru.myproevent.ui.fragments.events.event.participant_pickers.ParticipantPickerTypeSelectionFragment
@@ -50,4 +54,7 @@ class Screens : IScreens {
     override fun events() = FragmentScreen { EventsFragment.newInstance() }
     override fun event() = FragmentScreen("EVENT") { EventFragment.newInstance() }
     override fun event(event: Event) = FragmentScreen("EVENT") { EventFragment.newInstance(event) }
+    override fun eventMap() = FragmentScreen { EventMapFragment.newInstance() }
+    override fun mapImagePicker(uri: Uri) = FragmentScreen { MapImagePickerFragment.newInstance(uri) }
+    override fun mapCreator(mapImageUUID: String) = FragmentScreen { MapCreatorFragment.newInstance(mapImageUUID) }
 }
