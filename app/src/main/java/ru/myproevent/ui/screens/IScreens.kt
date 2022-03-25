@@ -1,5 +1,6 @@
 package ru.myproevent.ui.screens
 
+import android.net.Uri
 import com.github.terrakok.cicerone.Screen
 import ru.myproevent.domain.models.entities.Address
 import ru.myproevent.domain.models.entities.Event
@@ -36,4 +37,7 @@ interface IScreens {
     fun events(): Screen
     fun event(): Screen
     fun event(event: Event): Screen
+    fun eventMap(): Screen
+    fun mapImagePicker(uri: Uri): Screen
+    fun mapCreator(mapImageUUID: String): Screen
 }

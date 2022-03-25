@@ -10,6 +10,8 @@ class MapsHeaderPresenter(val item: EventScreenItem.FormsHeader<EventScreenItem.
     }
 
     override fun onEditOptionClick(headerPosition: Int) {
-        eventPresenter.viewState.showMessage("Данный функционал пока не реализован, так как для него нет законченного дизайна")
+        eventPresenter.viewState.launchImagePicker { uri ->
+            uri?.let { eventPresenter.localRouter.navigateTo(eventPresenter.screens.mapImagePicker(uri)) }
+        }
     }
 }

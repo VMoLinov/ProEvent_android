@@ -1,5 +1,6 @@
 package ru.myproevent.ui.presenters.events.event
 
+import android.net.Uri
 import moxy.viewstate.strategy.alias.AddToEnd
 import moxy.viewstate.strategy.alias.OneExecution
 import ru.myproevent.domain.models.entities.Profile
@@ -32,4 +33,7 @@ interface EventView : BaseMvpView {
 
     @OneExecution
     fun hideKeyboard()
+
+    @OneExecution
+    fun launchImagePicker(pickResultCallback: (Uri?) -> Unit)
 }

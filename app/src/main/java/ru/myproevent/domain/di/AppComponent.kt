@@ -21,6 +21,9 @@ import ru.myproevent.ui.presenters.events.event.EventPresenter
 import ru.myproevent.ui.presenters.events.event.addEventPlace.AddEventPlacePresenter
 import ru.myproevent.ui.presenters.events.event.confirmation.EventActionConfirmPresenter
 import ru.myproevent.ui.presenters.events.event.datespicker.EventDatesPickerPresenter
+import ru.myproevent.ui.presenters.events.event.event_map.EventMapPresenter
+import ru.myproevent.ui.presenters.events.event.map_image_picker.MapImagePickerPresenter
+import ru.myproevent.ui.presenters.events.event.map_image_picker.map_creator.MapCreatorPresenterPresenter
 import ru.myproevent.ui.presenters.events.event.participant.EventParticipantPresenter
 import ru.myproevent.ui.presenters.events.event.participant_pickers.ParticipantPickerTypeSelectionPresenter
 import ru.myproevent.ui.presenters.events.event.participant_pickers.participant_by_email_picker.ParticipantByEmailPickerPresenter
@@ -73,4 +76,7 @@ interface AppComponent {
     fun inject(eventActionConfirmPresenter: EventActionConfirmPresenter)
     fun inject(eventPresenter: EventPresenter)
     fun inject(eventsPresenter: EventsPresenter)
+    fun inject(eventMapPresenter: EventMapPresenter)
+    fun inject(mapImagePickerPresenter: MapImagePickerPresenter)
+    fun inject(mapCreatorPresenterPresenter: MapCreatorPresenterPresenter)
 }

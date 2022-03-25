@@ -12,6 +12,8 @@ import ru.myproevent.domain.models.repositories.images.IImagesRepository
 import ru.myproevent.domain.models.repositories.images.ImagesRepository
 import ru.myproevent.domain.models.providers.internet_access_info.IInternetAccessInfoProvider
 import ru.myproevent.domain.models.providers.internet_access_info.InternetAccessInfoProvider
+import ru.myproevent.domain.models.repositories.event_maps.EventMapsRepository
+import ru.myproevent.domain.models.repositories.event_maps.IEventMapsRepository
 import ru.myproevent.domain.models.repositories.local_proevent_user_token.ITokenLocalRepository
 import ru.myproevent.domain.models.repositories.local_proevent_user_token.TokenLocalRepository
 import ru.myproevent.domain.models.repositories.proevent_login.IProEventLoginRepository
@@ -59,4 +61,8 @@ interface ProEventRepositoriesModule {
     @Singleton
     @Binds
     fun bindEmailHintRepository(emailHintRepository: EmailHintRepository): IEmailHintRepository
+
+    @Singleton
+    @Binds
+    fun bindEventMapsRepository(eventMapsRepository: EventMapsRepository): IEventMapsRepository
 }

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ProEvent_white">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/top_bar"
+        style="@style/ProEventSettingsButtonItem"
+        fontPath="@string/default_font_bold_path"
+        android:layout_marginTop="25dp"
+        android:text="Редактировать карту"
+        android:textAlignment="center"
+        app:icon="@drawable/ic_back_to"
+        app:iconGravity="start"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/map_name_input_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="23dp"
+        android:maxWidth="320dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/top_bar">
+
+        <TextView
+            android:id="@+id/map_name_input_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="4dp"
+            android:text="Название"
+            android:textColor="@color/ProEvent_bright_orange_500"
+            android:textSize="16sp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/mpa_name_input"
+            style="@style/ProEventRWTextInputLayoutStyle"
+            app:endIconMode="none"
+            android:clickable="true">
+
+            <ru.myproevent.ui.views.KeyboardAwareAutoCompleteTextView
+                android:id="@+id/map_name_edit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Введите название карты"
+                android:inputType="textEmailAddress"
+                android:maxLength="320"
+                android:paddingLeft="@dimen/email_padding_left"
+                android:textColorHint="@color/ProEvent_blue_600"
+                android:textIsSelectable="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/add_map"
+        style="@style/ProEventConfirmButton"
+        android:layout_width="0dp"
+        android:layout_height="56sp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="60dp"
+        android:text="@string/continue_text"
+        app:layout_constraintTop_toBottomOf="@+id/map_name_input_container"
+        android:layout_marginTop="40dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

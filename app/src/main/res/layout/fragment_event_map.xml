@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/topBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/ProEvent_white"
+        android:paddingTop="40dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="7dp"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:maxLines="2"
+            android:text="@string/event_new_event"
+            android:textAlignment="center"
+            android:textColor="@color/ProEvent_blue_800"
+            android:textSize="20sp"
+            app:layout_constraintLeft_toRightOf="@id/back_hit_area"
+            app:layout_constraintRight_toLeftOf="@id/action_menu_icon_hit_area"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="16dp"
+            android:paddingHorizontal="20dp"
+            android:text="@string/event_save"
+            android:textColor="@color/ProEvent_bright_orange_500"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title" />
+
+        <View
+            android:id="@+id/save_hit_area"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/save"
+            app:layout_constraintLeft_toLeftOf="@id/save"
+            app:layout_constraintRight_toRightOf="@id/save"
+            app:layout_constraintTop_toTopOf="@id/save" />
+
+        <TextView
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="20dp"
+            android:paddingHorizontal="20dp"
+            android:text="@string/event_cancel"
+            android:textColor="@color/ProEvent_bright_orange_500"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:layout_constraintRight_toLeftOf="@id/save"
+            app:layout_constraintTop_toBottomOf="@id/title" />
+
+        <View
+            android:id="@+id/cancel_hit_area"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/cancel"
+            app:layout_constraintLeft_toLeftOf="@id/cancel"
+            app:layout_constraintRight_toRightOf="@id/cancel"
+            app:layout_constraintTop_toTopOf="@id/cancel" />
+
+        <ImageView
+            android:id="@+id/action_menu_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/event_action_menu"
+            android:src="@drawable/ic_pie"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/action_menu_icon_hit_area"
+            app:layout_constraintLeft_toLeftOf="@+id/action_menu_icon_hit_area"
+            app:layout_constraintRight_toRightOf="@id/action_menu_icon_hit_area"
+            app:layout_constraintTop_toTopOf="@id/action_menu_icon_hit_area"
+            tools:visibility="visible" />
+
+        <View
+            android:id="@+id/action_menu_icon_hit_area"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="7dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/title"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/title" />
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:contentDescription="@string/event_back"
+            android:src="@drawable/ic_back_to"
+            app:layout_constraintBottom_toBottomOf="@id/title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@id/title" />
+
+        <View
+            android:id="@+id/back_hit_area"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_constraintBottom_toBottomOf="@id/back"
+            app:layout_constraintLeft_toLeftOf="@id/back"
+            app:layout_constraintRight_toRightOf="@id/back"
+            app:layout_constraintTop_toTopOf="@id/back" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/mapComposeView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topBar" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/to_points_list"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        app:iconPadding="0dp"
+        app:iconSize="24dp"
+        app:icon="@drawable/outline_format_list_bulleted_24"
+        app:iconTintMode="multiply"
+        android:layout_margin="20dp"
+        app:layout_constraintBottom_toTopOf="@id/add_point"
+        app:layout_constraintRight_toRightOf="parent"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Rounded" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/add_point"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        app:iconPadding="0dp"
+        app:iconSize="24dp"
+        app:icon="@drawable/ic_add_no_background"
+        app:iconTintMode="multiply"
+        android:layout_margin="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Rounded" />
+</androidx.constraintlayout.widget.ConstraintLayout>

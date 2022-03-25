@@ -228,4 +228,5 @@
     <string name="join_invitation_is_sent">Пользователю отправлено приглашение</string>
     <string name="contact_added">Контакт добавлен</string>
     <string name="you_already_have_contact">Контакт уже присутствует в вашей адресной книге</string>
+    <string name="title_activity_compose">ComposeActivity</string>
 </resources>
