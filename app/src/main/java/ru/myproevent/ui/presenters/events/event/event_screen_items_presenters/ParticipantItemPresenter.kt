@@ -24,10 +24,11 @@ class ParticipantItemPresenter(
             with(eventPresenter.eventScreenListPresenter.eventScreenItems[pos] as EventScreenItem.ParticipantItem) {
                 participantProfiles[participantId]?.let {
                     setName(if (!it.fullName.isNullOrBlank()) it.fullName!! else if (!it.nickName.isNullOrBlank()) it.nickName!! else if (!it.email.isNullOrBlank()) it.email!! else "#$participantId")
-                    setStatus(if (!it.description.isNullOrBlank()) it.description!! else if (!it.nickName.isNullOrBlank()) it.nickName!! else if (!it.email.isNullOrBlank()) it.email!! else "id пользователя: $participantId")
+                    setDescription(if (!it.description.isNullOrBlank()) it.description!! else if (!it.nickName.isNullOrBlank()) it.nickName!! else if (!it.email.isNullOrBlank()) it.email!! else "id пользователя: $participantId")
+                    setStatus(it.deleted)
                 } ?: run {
                     setName("[LOADING]")
-                    setStatus("[LOADING]")
+                    setDescription("[LOADING]")
                 }
             }
         }

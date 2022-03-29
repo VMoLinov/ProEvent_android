@@ -229,4 +229,10 @@
     <string name="contact_added">Контакт добавлен</string>
     <string name="you_already_have_contact">Контакт уже присутствует в вашей адресной книге</string>
     <string name="title_activity_compose">ComposeActivity</string>
+    <string name="deleted">DELETED</string>
+    <string name="event_choice_point">Выберете точку</string>
+    <string name="coordinator">Координатор</string>
+    <string name="event_write_message">Написать сообщение</string>
+    <string name="event_open_profile">Открыть профиль</string>
+    <string name="event_remove_participant">Удалить участника</string>
 </resources>

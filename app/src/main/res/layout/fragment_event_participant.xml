@@ -6,7 +6,7 @@
     android:background="@color/ProEvent_white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/event_bar"
+        android:id="@+id/eventBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/ProEvent_white"
@@ -18,10 +18,9 @@
 
         <TextView
             android:id="@+id/title"
-            fontPath="@string/default_font_bold_path"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="7dp"
+            android:layout_marginStart="7dp"
             android:ellipsize="end"
             android:includeFontPadding="false"
             android:maxLines="2"
@@ -29,15 +28,15 @@
             android:textAlignment="center"
             android:textColor="@color/ProEvent_blue_800"
             android:textSize="20sp"
-            app:layout_constraintLeft_toRightOf="@id/back_hit_area"
-            app:layout_constraintRight_toLeftOf="@id/action_menu_icon_hit_area"
+            app:layout_constraintEnd_toStartOf="@id/actionMenuIconHitArea"
+            app:layout_constraintStart_toEndOf="@id/backHitArea"
             app:layout_constraintTop_toTopOf="parent" />
 
         <View
-            android:id="@+id/action_menu_icon_hit_area"
+            android:id="@+id/actionMenuIconHitArea"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginRight="7dp"
+            android:layout_marginEnd="7dp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/title"
             app:layout_constraintRight_toRightOf="parent"
@@ -47,14 +46,14 @@
             android:id="@+id/back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:src="@drawable/ic_back_to"
             app:layout_constraintBottom_toBottomOf="@id/title"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="@id/title" />
 
         <View
-            android:id="@+id/back_hit_area"
+            android:id="@+id/backHitArea"
             android:layout_width="50dp"
             android:layout_height="50dp"
             app:layout_constraintBottom_toBottomOf="@id/back"
@@ -73,7 +72,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/event_bar"
+        app:layout_constraintTop_toBottomOf="@id/eventBar"
         app:layout_constraintWidth_max="360dp">
 
         <LinearLayout
@@ -82,15 +81,23 @@
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/profile_picture"
+                android:id="@+id/profilePicture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="3dp"
                 android:src="@drawable/ic_profile_picture_placeholder_big" />
 
+            <TextView
+                android:id="@+id/isDeleted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/deleted"
+                android:visibility="gone" />
+
             <LinearLayout
-                android:id="@+id/point_input_container"
+                android:id="@+id/pointInputContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
@@ -99,27 +106,27 @@
                 android:orientation="vertical"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/profile_picture">
+                app:layout_constraintTop_toBottomOf="@id/profilePicture">
 
                 <TextView
-                    android:id="@+id/point_input_title"
+                    android:id="@+id/pointInputTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
                     android:layout_marginBottom="4dp"
                     android:text="@string/point_input_title"
                     android:textColor="@color/ProEvent_bright_orange_500"
-                    android:textSize="16dp" />
+                    android:textSize="@dimen/fixed_input_text_size" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/point_input"
+                    android:id="@+id/pointInput"
                     style="@style/ProEventTextInputLayoutStyle">
 
                     <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
                         android:id="@+id/point_edit"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:hint="Выберете точку"
+                        android:hint="@string/event_choice_point"
                         android:inputType="textEmailAddress"
                         android:maxLength="320"
                         android:textColorHint="@color/ProEvent_blue_600"
@@ -128,36 +135,33 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/position_input_container"
+                android:id="@+id/positionInputContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="10dp"
                 android:maxWidth="320dp"
-                android:orientation="vertical"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/profile_picture">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/position_input_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
                     android:layout_marginBottom="4dp"
                     android:text="@string/position_input_title"
                     android:textColor="@color/ProEvent_bright_orange_500"
-                    android:textSize="16dp" />
+                    android:textSize="@dimen/fixed_input_text_size" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/position_input"
+                    android:id="@+id/positionInput"
                     style="@style/ProEventTextInputLayoutStyle">
 
                     <ru.myproevent.ui.views.KeyboardAwareTextInputEditText
-                        android:id="@+id/position_edit"
+                        android:id="@+id/positionEdit"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:hint="Координатор"
+                        android:hint="@string/coordinator"
                         android:inputType="textEmailAddress"
                         android:maxLength="320"
                         android:textColorHint="@color/ProEvent_blue_600"
@@ -166,18 +170,17 @@
             </LinearLayout>
 
             <ru.myproevent.ui.views.ProEventConfirmButton
-                android:id="@+id/to_chat"
+                android:id="@+id/toChat"
                 style="@style/ProEventConfirmButton"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginHorizontal="40dp"
                 android:layout_marginTop="40dp"
-                android:text="Написать сообщение" />
+                android:text="@string/event_write_message" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/to_profile"
+                android:id="@+id/toProfile"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                fontPath="@string/default_font_bold_path"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginHorizontal="40dp"
@@ -186,7 +189,7 @@
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
                 android:letterSpacing="0"
-                android:text="Открыть профиль"
+                android:text="@string/event_open_profile"
                 android:textAllCaps="false"
                 android:textColor="@color/ProEvent_white"
                 android:textSize="@dimen/fixed_title_text_size"
@@ -194,9 +197,8 @@
                 app:rippleColor="@android:color/transparent" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/remove_participant"
+                android:id="@+id/removeParticipant"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                fontPath="@string/default_font_bold_path"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginHorizontal="40dp"
@@ -205,7 +207,7 @@
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
                 android:letterSpacing="0"
-                android:text="Удалить участника"
+                android:text="@string/event_remove_participant"
                 android:textAllCaps="false"
                 android:textColor="@color/ProEvent_blue_800"
                 android:textSize="@dimen/fixed_title_text_size"
@@ -215,5 +217,4 @@
                 app:strokeWidth="2dp" />
         </LinearLayout>
     </ScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
