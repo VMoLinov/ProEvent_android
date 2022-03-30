@@ -108,6 +108,7 @@ class EventDatesPickerFragment :
         timePickersNotify()
         timePickersListeners()
         saveButtonListener()
+        saveButtonCheckEnable()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -167,6 +168,16 @@ class EventDatesPickerFragment :
         timeIntervalInput?.let {
             startDate = Instant.ofEpochMilli(it.start).atZone(ZoneId.systemDefault()).toLocalDate()
             endDate = Instant.ofEpochMilli(it.end).atZone(ZoneId.systemDefault()).toLocalDate()
+            val start = Calendar.getInstance(Locale.getDefault())
+            val end = Calendar.getInstance(Locale.getDefault())
+            start.timeInMillis = it.start
+            end.timeInMillis = it.end
+            with(binding) {
+                timePickerStart.hour = start.get(Calendar.HOUR_OF_DAY)
+                timePickerStart.minute = start.get(Calendar.MINUTE)
+                timePickerEnd.hour = end.get(Calendar.HOUR_OF_DAY)
+                timePickerEnd.minute = end.get(Calendar.MINUTE)
+            }
         }
     }
 
@@ -325,7 +336,7 @@ class EventDatesPickerFragment :
                 it.monthValue - 1,
                 it.dayOfMonth,
                 binding.timePickerStart.hour,
-                binding.timePickerEnd.minute
+                binding.timePickerStart.minute
             ).timeInMillis
             if (endDate != null) {
                 endTime = GregorianCalendar(
