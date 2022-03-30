@@ -2,7 +2,6 @@ package ru.myproevent.ui.adapters.event_items
 
 import ru.myproevent.domain.models.entities.TimeInterval
 import ru.myproevent.ui.presenters.events.event.event_screen_items_presenters.forms_header_item_presenters.IHeaderPresenter
-import java.lang.RuntimeException
 import java.util.*
 
 /**
@@ -56,7 +55,7 @@ sealed class EventScreenItem(open val itemId: EVENT_SCREEN_ITEM_ID, val type: It
         override val header: FormsHeader<ListItem>
     ) : ListItem(ItemType.EVENT_DATE_ITEM) {
         override fun compareTo(other: ListItem) = when (other) {
-            is EventDateItem -> (timeInterval.start - other.timeInterval.start).toInt()
+            is EventDateItem -> timeInterval.compareTo(other.timeInterval)
             else -> throw RuntimeException("Отсутствует операция сравнения EventDateItem-а и переданного compareTo аргумента")
         }
     }
@@ -69,7 +68,7 @@ sealed class EventScreenItem(open val itemId: EVENT_SCREEN_ITEM_ID, val type: It
     ) : ListItem(ItemType.NO_ITEMS_PLACEHOLDER) {
         override fun compareTo(other: ListItem) = when (other) {
             is NoItemsPlaceholder -> 0 // TODO: я не понял зачем, но похоже даже если в TreeSet нет элементов, при добавлении первого элемента через .add всё равно вызывается compareTo(видимо сам с собой).
-                                       //       Поэтому реализованно это по сути не нужное сравнение.
+            //       Поэтому реализованно это по сути не нужное сравнение.
             else -> throw RuntimeException("Отсутствует операция сравнения NoItemsPlaceholder-а и переданного compareTo аргумента")
         }
     }
@@ -82,7 +81,7 @@ sealed class EventScreenItem(open val itemId: EVENT_SCREEN_ITEM_ID, val type: It
     ) : ListItem(ItemType.TEXT_BOX), LockableEdit {
         override fun compareTo(other: ListItem) = when (other) {
             is TextBox -> 0 // TODO: я не понял зачем, но похоже даже если в TreeSet нет элементов, при добавлении первого элемента через .add всё равно вызывается compareTo(видимо сам с собой).
-                            //       Поэтому реализованно это по сути не нужное сравнение.
+            //       Поэтому реализованно это по сути не нужное сравнение.
             else -> throw RuntimeException("Отсутствует операция сравнения TextBox-а и переданного compareTo аргумента")
         }
     }
