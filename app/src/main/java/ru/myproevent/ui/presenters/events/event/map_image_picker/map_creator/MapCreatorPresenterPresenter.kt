@@ -24,8 +24,8 @@ class MapCreatorPresenterPresenter(private val mapImageUUID: String, localRouter
             .observeOn(uiScheduler)
             .subscribe({ uuidBody ->
                 localRouter.backTo(screens.currentlyOpenEventScreen())
-            }, {
-                viewState.showMessage("Не удалось создать карту")
+            }, { error ->
+                viewState.showMessage("Не удалось создать карту: $error")
             })
             .disposeOnDestroy()
         viewState.setResult(

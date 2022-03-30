@@ -14,15 +14,15 @@ class MapCreatorFragment :
     BaseMvpFragment<FragmentMapCreatorBinding>(FragmentMapCreatorBinding::inflate),
     MapCreatorView {
     companion object {
-        val MAP_IMAGE_UUID_ARG = "MAP_IMAGE_UUID"
-        fun newInstance(mapImageUUID: String) = MapImagePickerFragment().apply {
+        const val MAP_IMAGE_UUID_ARG = "MAP_IMAGE_UUID"
+        fun newInstance(mapImageUUID: String) = MapCreatorFragment().apply {
             arguments = Bundle().apply { putString(MAP_IMAGE_UUID_ARG, mapImageUUID) }
         }
     }
 
     override val presenter by moxyPresenter {
         MapCreatorPresenterPresenter(
-            requireArguments().getParcelable(
+            requireArguments().getString(
                 MAP_IMAGE_UUID_ARG
             )!!,
             (parentFragment as RouterProvider).router,
