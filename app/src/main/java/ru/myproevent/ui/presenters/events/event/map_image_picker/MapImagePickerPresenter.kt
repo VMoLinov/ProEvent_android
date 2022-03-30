@@ -22,14 +22,9 @@ class MapImagePickerPresenter(private val uri: Uri, localRouter: Router) :
         viewState.initImageCropper(uri)
     }
 
-    fun saveMapImage(){
-
-        val cacheUri = Cache().saveToCacheAndGetUri(MediaStore.Images.Media.getBitmap(ProEventApp.instance.contentResolver, uri))
-        val path = cacheUri.path.orEmpty()
-        Log.d("[ERROR]", "path: $path")
-
+    fun saveMapImage(file: File){
         imagesRepository
-            .saveImage(File(path))
+            .saveImage(file)
             .observeOn(uiScheduler)
             .subscribe({ uuidBody ->
                 localRouter.navigateTo(screens.mapCreator(uuidBody.uuid))
