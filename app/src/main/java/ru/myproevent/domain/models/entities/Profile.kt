@@ -16,7 +16,8 @@ open class Profile(
     var position: String? = null,
     var birthdate: String? = null,
     var imgUri: String? = null,
-    var description: String? = null
+    var description: String? = null,
+    val deleted: Boolean = true
 ) : Parcelable {
 
     internal fun merge(oldProfile: Profile): Profile {

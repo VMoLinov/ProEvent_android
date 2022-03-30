@@ -10,26 +10,25 @@
     android:paddingVertical="10dp"
     tools:background="@color/ProEvent_white">
 
-
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_img"
+        android:id="@+id/ivImg"
         android:layout_width="44dp"
         android:layout_height="44dp"
         android:layout_gravity="center_vertical"
         app:srcCompat="@drawable/ic_profile_picture_placeholder_small" />
 
     <TextView
-        android:id="@+id/tv_name"
+        android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="84dp"
         android:singleLine="true"
         android:textColor="@color/ProEvent_blue_800"
         android:textSize="16sp"
-        tools:text="Иванова Анна"  />
+        tools:text="Иванова Анна" />
 
     <TextView
-        android:id="@+id/tv_description"
+        android:id="@+id/tvDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -39,16 +38,25 @@
         android:textSize="16sp"
         tools:text="Куратор на все руки" />
 
+    <TextView
+        android:id="@+id/isDeleted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginEnd="50dp"
+        android:text="@string/deleted"
+        android:visibility="gone" />
+
     <ImageView
-        android:id="@+id/request_status"
+        android:id="@+id/requestStatus"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_gravity="end"
         tools:src="@drawable/ic_outgoing_request" />
 
     <View
-        android:id="@+id/request_status_hit_area"
+        android:id="@+id/requestStatusHitArea"
         android:layout_width="44dp"
         android:layout_height="44dp"
-        android:layout_gravity="end"/>
+        android:layout_gravity="end" />
 </FrameLayout>

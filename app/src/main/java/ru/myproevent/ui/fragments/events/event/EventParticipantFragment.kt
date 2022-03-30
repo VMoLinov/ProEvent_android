@@ -3,6 +3,7 @@ package ru.myproevent.ui.fragments.events.event
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.view.isVisible
 import moxy.ktx.moxyPresenter
 import ru.myproevent.ProEventApp
 import ru.myproevent.databinding.FragmentEventParticipantBinding
@@ -44,6 +45,7 @@ class EventParticipantFragment :
             toChat.setOnClickListener { presenter.openChat(profile.id) }
             toProfile.setOnClickListener { presenter.openProfile(profile) }
             removeParticipant.setOnClickListener { presenter.removeParticipant(profile.id) }
+            isDeleted.isVisible = deleted
         }
     }
 
