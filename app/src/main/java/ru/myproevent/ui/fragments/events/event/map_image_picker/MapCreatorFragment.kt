@@ -14,7 +14,7 @@ class MapCreatorFragment :
     BaseMvpFragment<FragmentMapCreatorBinding>(FragmentMapCreatorBinding::inflate),
     MapCreatorView {
     companion object {
-        val MAP_IMAGE_UUID_ARG = "MAP_IMAGE_UUID"
+        const val MAP_IMAGE_UUID_ARG = "MAP_IMAGE_UUID"
         fun newInstance(mapImageUUID: String) = MapImagePickerFragment().apply {
             arguments = Bundle().apply { putString(MAP_IMAGE_UUID_ARG, mapImageUUID) }
         }
