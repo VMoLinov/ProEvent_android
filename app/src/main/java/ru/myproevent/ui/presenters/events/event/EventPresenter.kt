@@ -322,7 +322,8 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
             eventScreenListPresenter.eventScreenItems.indexOfFirst { item -> item.itemId == EVENT_SCREEN_ITEM_ID.DATES_HEADER }
         with(eventScreenListPresenter.eventScreenItems[headerPosition] as EventScreenItem.FormsHeader<EventScreenItem.ListItem>) {
             val indexOfItemToRemove =
-                items.indexOfFirst { item -> (item as EventScreenItem.EventDateItem).timeInterval == timeInterval }
+                items.indexOfFirst { item -> 
+                    (item as EventScreenItem.EventDateItem).timeInterval == timeInterval }
             if (indexOfItemToRemove == -1) {
                 throw RuntimeException("Попытка удалить дату(временной интервал), которая отсутствует в датах редактируемого мероприятия.")
             }

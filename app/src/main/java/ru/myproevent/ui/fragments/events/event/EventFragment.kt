@@ -178,8 +178,8 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
             DATE_PICKER_EDIT_RESULT_KEY,
             this
         ) { _, bundle ->
-            bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)?.let { presenter.addEventDate(it) }
             bundle.getParcelable<TimeInterval>(OLD_DATE_KEY)?.let { presenter.removeDate(it) }
+            bundle.getParcelable<TimeInterval>(NEW_DATE_KEY)?.let { presenter.addEventDate(it) }
         }
     }
 }
