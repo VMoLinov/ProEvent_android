@@ -138,6 +138,10 @@ class EventFragment : BaseMvpFragment<FragmentEventBinding>(FragmentEventBinding
         overflowMenu.setOptions(presenter.getEventActionOptions())
     }
 
+    override fun eventBarTitleSet(title: String) {
+        binding.title.text = title
+    }
+
     private fun initClickListeners() = with(binding) {
         saveEdits.setOnClickListener { presenter.eventEditOptionsPresenter.saveEvent() }
         cancelEdits.setOnClickListener { presenter.eventEditOptionsPresenter.cancelEdit() }

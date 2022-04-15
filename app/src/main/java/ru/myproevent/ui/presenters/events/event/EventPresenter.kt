@@ -376,6 +376,7 @@ class EventPresenter(localRouter: Router, var eventBeforeEdit: Event?) :
         super.onFirstViewAttach()
         eventScreenListPresenter.eventScreenItems.addAll(getEventScreenItemsBeforeEdit())
         viewState.init()
+        eventBeforeEdit?.name?.let { viewState.eventBarTitleSet(it) }
         if (eventBeforeEdit != null) {
             viewState.enableActionOptions()
         } else {
