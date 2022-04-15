@@ -22,13 +22,13 @@ fun ImageView.load(url: String) {
 }
 
 fun Profile.toProfile() =
-    Profile(id, email, fullName, nickName, phone, position, birthdate, imgUri, description)
+    Profile(id, email, fullName, nickName, phone, position, birthdate, imgUri, description, profileStatus)
 
 fun ProfileMiniDto.toProfile() =
     Profile(userId, null, fullName, nickName, null, null, null, imgUri, description)
 
 fun Profile.toProfileDto() =
-    Profile(id, email, fullName, nickName, phone, position, birthdate, imgUri, description)
+    Profile(id, email, fullName, nickName, phone, position, birthdate, imgUri, description, profileStatus)
 
 fun Profile.toContact(status: Contact.Status?) =
     Contact(id, status, email, fullName, nickName, phone, position, birthdate, imgUri, description)

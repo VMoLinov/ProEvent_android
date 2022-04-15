@@ -17,8 +17,12 @@ open class Profile(
     var birthdate: String? = null,
     var imgUri: String? = null,
     var description: String? = null,
-    val deleted: Boolean = true
+    @SerializedName("status")
+    var profileStatus: String? = null
 ) : Parcelable {
+
+    @Parcelize
+    enum class Status : Parcelable { ACTIVE, INACTIVE, DELETED }
 
     internal fun merge(oldProfile: Profile): Profile {
         if (email.isNullOrBlank()) email = oldProfile.email
@@ -29,6 +33,7 @@ open class Profile(
         if (birthdate.isNullOrBlank()) birthdate = oldProfile.birthdate
         if (description.isNullOrBlank()) description = oldProfile.description
         if (imgUri.isNullOrBlank()) imgUri = oldProfile.imgUri
+        if (profileStatus.isNullOrBlank()) profileStatus = oldProfile.profileStatus
         return this
     }
 }
