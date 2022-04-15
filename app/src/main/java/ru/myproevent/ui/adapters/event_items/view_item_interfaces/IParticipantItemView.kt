@@ -5,5 +5,5 @@ import ru.myproevent.ui.presenters.IItemView
 interface IParticipantItemView : IItemView {
     fun setName(name: String)
     fun setDescription(description: String)
-    fun setStatus(deleted: Boolean)
+    fun setStatus(status: String)
 }

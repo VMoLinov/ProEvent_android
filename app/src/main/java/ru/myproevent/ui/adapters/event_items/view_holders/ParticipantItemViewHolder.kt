@@ -3,6 +3,7 @@ package ru.myproevent.ui.adapters.event_items.view_holders
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import ru.myproevent.databinding.ItemContactBinding
+import ru.myproevent.domain.models.entities.Profile
 import ru.myproevent.ui.adapters.IItemPresenter
 import ru.myproevent.ui.adapters.event_items.view_item_interfaces.IParticipantItemView
 
@@ -31,7 +32,7 @@ class ParticipantItemViewHolder(
         tvDescription.text = description
     }
 
-    override fun setStatus(deleted: Boolean) = with(binding) {
-        isDeleted.isVisible = deleted
+    override fun setStatus(status: String) = with(binding) {
+        isDeleted.isVisible = Profile.Status.ACTIVE.toString() != status
     }
 }

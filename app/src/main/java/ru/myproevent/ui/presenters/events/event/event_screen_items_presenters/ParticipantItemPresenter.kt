@@ -25,7 +25,7 @@ class ParticipantItemPresenter(
                 participantProfiles[participantId]?.let {
                     setName(if (!it.fullName.isNullOrBlank()) it.fullName!! else if (!it.nickName.isNullOrBlank()) it.nickName!! else if (!it.email.isNullOrBlank()) it.email!! else "#$participantId")
                     setDescription(if (!it.description.isNullOrBlank()) it.description!! else if (!it.nickName.isNullOrBlank()) it.nickName!! else if (!it.email.isNullOrBlank()) it.email!! else "id пользователя: $participantId")
-                    setStatus(it.deleted)
+                    it.profileStatus?.let { status -> setStatus(status) }
                 } ?: run {
                     setName("[LOADING]")
                     setDescription("[LOADING]")
