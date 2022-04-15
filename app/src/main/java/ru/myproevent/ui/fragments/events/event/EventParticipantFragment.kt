@@ -45,7 +45,7 @@ class EventParticipantFragment :
             toChat.setOnClickListener { presenter.openChat(profile.id) }
             toProfile.setOnClickListener { presenter.openProfile(profile) }
             removeParticipant.setOnClickListener { presenter.removeParticipant(profile.id) }
-            isDeleted.isVisible = profileStatus
+            isDeleted.isVisible = profileStatus != Profile.Status.ACTIVE.toString()
         }
     }
 
