@@ -20,6 +20,7 @@ class EventEditOptionsPresenter(private val eventPresenter: EventPresenter) {
         }
         eventPresenter.eventBeforeEdit = successEvent
         eventPresenter.viewState.hideEditOptions()
+        eventPresenter.viewState.eventBarTitleSet(successEvent.name)
         cancelEdit()
     }
 

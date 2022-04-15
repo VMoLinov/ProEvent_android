@@ -25,6 +25,7 @@ interface EventView : BaseMvpView {
     fun enableSaveOptions()
     fun disableSaveOptions()
     fun enableActionOptions()
+    fun eventBarTitleSet(title: String)
 
     fun init()
     fun updateEventScreenList()
